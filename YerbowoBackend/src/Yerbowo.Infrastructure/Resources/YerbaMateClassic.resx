@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AguantadoraTerere" xml:space="preserve">
+    <value>Klasyczna argentyńska mate zawierająca liście i patyczki przygotowana do zalewania na zimno.  
+Yerba ta sezonowana jest aż 18 miesięcy. Dzięki suszeniu powietrzem ma delikatny smak, nie traci jednak przy tym na mocy działania.</value>
+  </data>
+  <data name="Amanda" xml:space="preserve">
+    <value>&lt;p&gt;Klasyczna argentyńska yerba mate o delikatnym aromacie i łagodnym, słodkawym smaku. Składa się z listków i gałązek, bardzo mało pylista i umiarkowanie pobudzająca, przeznaczona do codziennej konsumpcji. Amanda pochodzi z plantacji La Cauchera ze słynnej prowincji Misiones należącej do polskich emigrantów Szychowskich. Jedna z najpopularniejszych marek yerba mate w Argentynie.&lt;/p&gt;
+            &lt;strong&gt;Sposób użycia:&lt;/strong&gt;
+            &lt;br&gt;
+            &lt;span&gt;1. Nasyp do 3/4 objętości naczynia susz yerba mate i przykryj ręką górną część naczynia.&lt;/span&gt;
+            &lt;br&gt;
+            &lt;span&gt;2. Odwróć naczynie i wstrząśnij tak by pył z suszu znalazł się na ręce.&lt;/span&gt;
+            &lt;br&gt;
+            &lt;span&gt;3. Delikatnie odwróć naczynie, tak by zawartość nie zmieniła swojego położenia.&lt;/span&gt;
+            &lt;br&gt;
+            &lt;span&gt;4. Włóż bombillę i zalej wodą o temp. 70-80°C&lt;/span&gt;
+            &lt;br&gt;
+            &lt;span&gt;5. Czekaj 2-3 minuty i pij przez bombillę powoli, pamiętając o tym by nie mieszać naparu.&lt;/span&gt;
+            &lt;p&gt;Przechowywać w suchym, szczelnie zamkniętym, oryginalnym opakowaniu.&lt;/p&gt;
+            &lt;p&gt;&lt;strong&gt;Składniki:&lt;/strong&gt; 100 % yerba mate&lt;/p&gt;
+            &lt;p&gt;&lt;strong&gt;Kraj pochodzenia:&lt;/strong&gt; Argentyna&lt;/p&gt;</value>
+  </data>
+  <data name="BaraoDeCotegipePremium" xml:space="preserve">
+    <value>&lt;h2&gt;Yerba mate Barao de Cotegipe Premium - daj się ponieść energii&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Yerba mate Barao de Cotegipe Premium&lt;/b&gt;, to mate hodowana i tworzona według receptur brazylijskich. Na susz składają się bardzo drobno zmielone listki wysokogatunkowego ostrokrzewu paragwajskiego oraz drobne patyczki i gałązki - to sprawia, że jest to &lt;b&gt;yerba mate premium&lt;/b&gt;. Zmielenie zielonych fragmentów rośliny niemal na pył sprawia, że brazylijska yerba mate jest niezwykle intensywna w działaniu i wyrazista w smaku. W utrzymaniu właściwości przez długi czas pomaga próżniowe pakowanie suszu. &lt;b&gt;Yerba mate premium&lt;/b&gt; jest niezwykle orzeźwiająca w smaku i mocno roślinna, wręcz trawiasta. Jej smak nie jest goryczkowy, przez co ta &lt;b&gt;brazylijska yerba mate&lt;/b&gt; spotka się z uznaniem również początkujących mateistów. Ta pyszna, wyjątkowa &lt;b&gt;yerba mate premium&lt;/b&gt; również korzystnie wpływa na trawienie oraz układ krążenia. Polecana osobom oczekującym intensywnego pobudzenia.&lt;/p&gt;&lt;h3&gt;Yerba mate Barao de Cotegipe Premium - Sposób zaparzania:&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Napełnij naczynie do yerba mate suszem do  objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70-80 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty. Po tym czasie Twoja mate jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Składniki: 100% ostrokrzew paragwajski Kraj pochodzenia: Brazylia&lt;/p&gt;</value>
+  </data>
+  <data name="CampesinoClasica" xml:space="preserve">
+    <value>Yerba mate Campesino Clasica to aromatyczna paragwajska mate bez dodatków. Posiada drobno zmielone listki i patyczki, dzięki czemu możemy w pełni cieszyć się jej mocą.</value>
+  </data>
+  <data name="NoblezaGauchaMolienda" xml:space="preserve">
+    <value>Argentyńska mate, której susz składa się głównie z drobno ciętych listków i dużej ilości pyłu. 
+Dość delikatna w smaku, jednak nie zmniejsza się przez to moc pobudzenia. 
+Polecana zarówno dla osób rozpoczynających przygodę z yerbą, jak i dla wprawionych yerboholików.</value>
+  </data>
+  <data name="PiporeTerere" xml:space="preserve">
+    <value>&lt;h2&gt;Yerba mate Pipore Terere - orzeźwiająca nutka pobudzenia&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Yerba mate Pipore&lt;/b&gt;, to argentyńska mate przeznaczona do przygotowania w formie terere, czyli na zimno. &lt;b&gt;Pipore yerba&lt;/b&gt; stworzona została z myślą o tych, którzy chcą poczuć prawdziwie mroźne orzeźwienie. &lt;b&gt;Yerba Pipore&lt;/b&gt; przygotowana w formie terere, doskonale gasi pragnienie podczas upałów, pomaga utrzymać dobry nastrój i energię przez cały dzień. Jej smak można urozmaicić, dodając ulubiony sok albo kawałki cytryny. &lt;b&gt;Yerba Pipore&lt;/b&gt; Terere będzie idealna podczas wzmożonego wysiłku intelektualnego i fizycznego - nie tylko orzeźwiając i dodając energii, ale także uzupełniając zapas witamin i minerałów. A to dlatego, że napar przyrządzony z suszu &lt;b&gt;Pipore yerba&lt;/b&gt; mate, posiada dużą ilość witamin z grupy B, oraz mnóstwo mikroelementów takich jak cynk, żelazo, magnez, czy potas. To doskonała alternatywa dla kawy i napojów energetycznych.&lt;/p&gt;&lt;h3&gt;Pipore yerba - sposób użycia:&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Napełnij naczynie suszem &lt;b&gt;yerba Pipore&lt;/b&gt; do  objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Włóż bombillę i zalej wodą o temp. 70-80°C&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty. Po tym czasie Twoja &lt;b&gt;yerba mate Pipore&lt;/b&gt; jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Składniki: 100% ostrokrzew paragwajski &lt;/p&gt;&lt;p&gt; Kraj pochodzenia: Argentyna&lt;/p&gt;</value>
+  </data>
+  <data name="Rosamonte" xml:space="preserve">
+    <value>&lt;p&gt;Rosamonte to najstarsza argentyńska marka yerba mate. Od lat znana i ceniona na całym świecie, codziennie zyskuje nowe rzesze zwolenników. Na susz składają się drobno cięte listki, gałązki oraz naturalny pył. Jest niezwykle intensywna w smaku, jak przystało na tradycyjną argentyńską mate. Poza wyraźną nutą ostrokrzewu paragwajskiego, wyczuwalny jest także zapach drzewa różanego. W jego towarzystwie bowiem leżakują zbiory tej wyjątkowej yerby. Uzyskany napar jest bardzo energetyzujący. Działa zdecydowanie mocniej niż kawa, jednak swoje właściwości uwalnia stopniowo. Dzięki temu pobudzenie odczuwalne jest wiele godzin. Jest aprobowana przez Argentyńskie Towarzystwo Kardiologiczne, z uwagi na prozdrowotny charakter.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Sposób zaparzania:&lt;/strong&gt;&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Napełnij naczynie suszem do  objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty. Po tym czasie mate jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;strong&gt;Składniki:&lt;/strong&gt;&amp;nbsp;100% ostrokrzew paragwajski&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kraj pochodzenia:&lt;/strong&gt;&amp;nbsp;Argentyna&lt;/p&gt;&lt;p&gt;&lt;/p&gt;</value>
+  </data>
+  <data name="SaraRojaTradicionalSinPalo" xml:space="preserve">
+    <value>&lt;h2&gt;Yerba mate Sara Roja - ekscytująca mieszanka smaku&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Yerba mate Sara Roja&lt;/b&gt;, to klasyczna &lt;b&gt;brazylijska yerba mate&lt;/b&gt;, choć produkowana jest głównie na rynek urugwajski. Charakteryzuje się wyrazistym smakiem i mocnym, długo utrzymującym się działaniem. Ta &lt;b&gt;brazylijska yerba mate&lt;/b&gt; składa się z bardzo drobno zmielonych liści, a także prawie w ogóle nie zawiera patyków. Można zalewać ją nawet do 8 razy, ponieważ dzięki swojej intensywności, długo utrzymuje smak i aromat. Aby rozkoszować się w pełni mocą tego naparu, wystarczy napełnić naczynie do yerba mate suszem, zaparzyć wg podanych wskazówek i można wyruszać w krainę smaku i energetycznych wrażeń, jakie zapewnia ten napój z ostrokrzewu paragwajskiego. Ta &lt;b&gt;brazylijska yerba mate&lt;/b&gt; sprawdzi się znakomicie zarówno w przypadku intensywnego wysiłku fizycznego, jak i intelektualnego. Dlatego będzie idealna na trening, do nauki czy do pracy.&lt;/p&gt;&lt;h3&gt;Yerba mate Sara Roja - Sposób zaparzania:&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Napełnij &lt;b&gt;naczynie do yerba mate&lt;/b&gt; suszem do  objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć &lt;b&gt;naczynie do yerba mate&lt;/b&gt; i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70-80 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty. Po tym czasie mate jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Składniki: 100% ostrokrzew paragwajski Kraj pochodzenia: Brazylia/Urugwaj&lt;/p&gt;</value>
+  </data>
+</root>

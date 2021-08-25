@@ -1,0 +1,23 @@
+<div class="nav">
+  <div class="app-container">
+      <!-- <div class="nav-items-left" style="color: darkgray">
+          Wersja demonstracyjna (<a style="color: deepskyblue" href="http://www.woytech.net">WoyTech.net</a>)
+      </div> -->
+      <div class="nav-items-right">
+          <label id="nav-hamburger" for="nav-toggle"></label>
+          <input type="checkbox" id="nav-toggle" />
+          <div class="nav-items">
+                <a *ngIf="!loggedIn()" [routerLink]="['/login']">Zaloguj się</a>
+                <a *ngIf="!loggedIn()" [routerLink]="['/register']">Załóż konto</a>
+                <a *ngIf="loggedIn()" [routerLink]="['/moje-konto']"class="nav-items-account-my-account">
+                    <img src="{{authService.photoUrl}}" alt="" style="max-height: 40px;">
+                    <span class="nav-items-account-username">
+                        {{ authService.decodedToken?.unique_name.split("@")[0] | titlecase }}
+                    </span>
+                </a>
+                <a *ngIf="loggedIn()" (click)="logout()">Wyloguj</a>
+          </div>
+      </div>
+
+  </div>
+</div>

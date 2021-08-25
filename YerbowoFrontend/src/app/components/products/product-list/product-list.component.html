@@ -1,0 +1,25 @@
+<br />
+<hr />
+<h1 style="text-align: center;">{{subcategory.toUpperCase()}}</h1>
+<hr />
+
+<div *ngIf="isAnyProduct()" class="wrapper-products">
+  <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+</div>
+
+<div class="product-info-empty" *ngIf="!isAnyProduct()">
+  <h1 class="text-center">Brak produktów</h1>
+</div>
+
+<div style="display:none;" class="loader"></div>
+
+<br><br>
+<div class="d-flex justify-content-center">
+  <pagination [boundaryLinks]="true" 
+  [totalItems]="pagination.totalItems"
+  [itemsPerPage]="pagination.itemsPerPage"
+  [(ngModel)]="pagination.currentPage"
+  (pageChanged)="pageChanged($event)"
+  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+  </pagination>
+</div>

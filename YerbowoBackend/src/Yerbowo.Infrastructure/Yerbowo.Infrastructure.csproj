@@ -1,0 +1,93 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="DotNetCore.EntityFrameworkCore" Version="10.28.0" />
+    <PackageReference Include="Enums.NET" Version="2.3.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yerbowo.Domain\Yerbowo.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\YerbaMateEco.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateEco.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateFruits.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateFruits.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateGentle.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateGentle.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateGreen.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateGreen.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateSets.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateSets.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateStrong.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateStrong.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\YerbaMateWithHerbs.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YerbaMateWithHerbs.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\YerbaMateEco.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateEco.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateFruits.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateFruits.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateGentle.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateGentle.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateGreen.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateGreen.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateSets.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateSets.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateStrong.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateStrong.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\YerbaMateWithHerbs.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YerbaMateWithHerbs.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

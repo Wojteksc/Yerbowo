@@ -1,0 +1,9 @@
+<br><br>
+<h3 class="text-left">Witaj {{ authService.decodedToken?.unique_name.split("@")[0] | titlecase }}</h3>
+<hr/>
+<div class="grid-account-tabs">
+    <a class="grid-account-tabs-item text-center" [routerLink]="['/moje-konto/dane']" routerLinkActive="active">Moje konto</a>
+    <a class="grid-account-tabs-item text-center" [routerLink]="['/moje-konto/zamowienia']" routerLinkActive="active">Historia zamówień</a>
+    <a class="grid-account-tabs-item text-center" [routerLink]="['/moje-konto/adresy']" routerLinkActive="active">Adresy</a>
+    <a class="grid-account-tabs-item text-center" [routerLink]="['/moje-konto/obserwowane']" routerLinkActive="active">Obserwowane</a>
+</div>

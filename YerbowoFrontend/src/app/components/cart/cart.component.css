@@ -1,0 +1,224 @@
+.grid-cart {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px 10px;
+}
+
+.cart-mobile {
+  display: none;
+}
+
+.grid-item-full-row {
+  grid-column: 1 / 13;
+  border: 1px solid #ebebeb;
+}
+
+.cart-info-empty {
+    margin-top: 15%;
+    margin-bottom: 18%;
+    color: firebrick;
+  }
+
+  .grid-column-center {
+    justify-self: center;
+  }
+  
+  .grid-row-center {
+    align-self: center;
+  }
+  
+  .grid-cell-center {
+    justify-self: center;
+    align-self: center;
+  }
+  
+  .grid-cell-left {
+    justify-self: flex-start;
+    align-self: center;
+  }
+  
+  .grid-column-product-name { grid-column: 1 / 6 }
+  .grid-item-product-image { grid-column: 1 / 2 }
+  .grid-item-product-name { grid-column: 2 / 6 }
+  .grid-item-product-price, .grid-column-product-price { grid-column: 6 / 8 }
+  .grid-item-product-quantity, .grid-column-product-quantity { grid-column: 8 / 10 }
+  .grid-item-product-value, .grid-item-product-total, .grid-column-product-value { grid-column: 10 / 12 }
+  .grid-item-product-delete, .grid-column-product-delete { grid-column: 12 / 13 }
+
+  .grid-item-product-delete,
+  .grid-mobile-product-delete {
+    cursor: pointer;
+  }
+
+  .grid-item-product-delete:hover,
+  .grid-mobile-product-delete  {
+    color: orangered;
+  }
+
+  .cart-product-image {
+    height: 60px; 
+    width: 75%;
+  }
+
+  .cart-product-name {
+   display: inline;   
+  }
+  
+  .number-wrapper {
+    border: 2px #dcd3d3 solid;
+    padding: 5px;
+    display: flex;
+    border-radius: 15px;
+  }
+  
+  .plusminus {
+    width: 30px;
+    background: white;
+    border: none;
+    font-size: 30px;
+    color: #5f5fce;
+  }
+ .plusminus:focus {
+  outline: 0 !important;
+}
+  
+  .num {
+    text-align: center;
+    border: 1px solid #6C757D;
+    border: none;
+    font-size: 20px;
+    -webkit-appearance: textfield !important;
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+  }
+
+  .num::-webkit-inner-spin-button,
+  .num::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  @media only screen and (max-width: 1025px) {
+
+    .grid-cart {
+      display: none;
+    }
+
+    .cart-mobile {
+      display: block;
+    }
+
+    .grid-mobile {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      grid-gap: 20px 10px;
+    }
+
+    .cart-product-image {
+      height: 100%; 
+      width: 50%;
+    }
+
+    .grid-mobile-product-image {
+      grid-column: 2 / 9;
+      grid-row: 1 / 6;
+    }
+
+    .grid-mobile-product-name {
+      grid-column: 1 / 13;
+      grid-row: 1 / 2;
+      justify-self: center;
+    }
+
+    .grid-mobile-product-quantity-label {
+      grid-column: 8;
+      grid-row: 3 / 4;
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-quantity {
+      grid-column: 8 / 13;
+      grid-row: 3 / 4;
+    }
+
+    .grid-mobile-product-price-label {
+      grid-column: 8;
+      grid-row: 2 / 3;
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-price {
+      grid-column: 8 / 13;
+      grid-row: 2 / 3;
+    }
+
+    .grid-mobile-product-value-label {
+      grid-column: 8;
+      grid-row: 4 / 5;
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-value {
+      grid-column: 8 / 13;
+      grid-row: 4 / 5;
+    }
+
+    .grid-mobile-product-delete {
+      grid-column: 8 / 13;
+      grid-row: 5 / 6;
+    }
+
+  }
+
+  @media only screen and (max-width: 768px) {
+    .grid-mobile-product-image {
+      grid-column: 1 / 7;
+      grid-row: 1 / 6;
+    }
+
+    .grid-mobile-product-quantity-label {
+      grid-column: 6 / 7;
+      grid-row: 3 / 4;
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-quantity {
+      grid-column: 7 / 13;
+      grid-row: 3 / 4;
+    }
+
+    .grid-mobile-product-price-label {
+      grid-column: 6 / 7;
+      grid-row: 2 / 3;   
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-price {
+      grid-column: 7 / 13;
+      grid-row: 2 / 3;
+    }
+
+    .grid-mobile-product-value-label {
+      grid-column: 6 / 7;
+      grid-row: 4 / 5;
+      align-self: center;
+      justify-self: self-end;
+    }
+
+    .grid-mobile-product-value {
+      grid-column: 7 / 13;
+      grid-row: 4 / 5;
+    }
+
+    .grid-mobile-product-delete {
+      grid-column: 7 / 13;
+      grid-row: 5 / 6;
+    }
+  }
+  

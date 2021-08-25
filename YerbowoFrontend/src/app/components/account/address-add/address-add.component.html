@@ -1,0 +1,96 @@
+<br>
+<h5 class="back-button" [routerLink]="'/moje-konto/adresy'">
+  <span class="fa fa-arrow-circle-left fa-fw"></span>Powrót do adresów
+</h5>
+<h3 class="text-center">Nowy adres</h3>
+<div class="grid">
+  <div class="grid-area-center">
+    <form [formGroup]="addressAddForm" (ngSubmit)="createAddress()" class="subgrid-col-2">
+
+      <label class="label-small" for="alias">Alias: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.alias.errors && f.alias.touched }"
+      formControlName="alias"  
+      class="input-text-small">
+      <div *ngIf="f.alias.touched && f.alias.errors?.required" class="invalid-feedback">Pole 'Alias' jest wymagane.</div>
+      
+      <label class="label-small" for="firstName">Imię: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched }"
+      formControlName="firstName"  
+      class="input-text-small">
+      <div *ngIf="f.firstName.touched && f.firstName.errors?.required" class="invalid-feedback">Pole 'Imię' jest wymagane.</div>
+
+      <label class="label-small" for="lastName">Nazwisko: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched }"
+      formControlName="lastName"  
+      class="input-text-small">
+      <div *ngIf="f.lastName.touched && f.lastName.errors?.required" class="invalid-feedback">Pole 'Nazwisko' jest wymagane.</div>
+
+      <label class="label-small" for="street">Ulica: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.street.errors && f.street.touched }"
+      formControlName="street"  
+      class="input-text-small">
+      <div *ngIf="f.street.touched && f.street.errors?.required" class="invalid-feedback">Pole 'Ulica' jest wymagane.</div>
+
+      <label class="label-small" for="buildingNumber">Numer budynku: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.buildingNumber.errors && f.buildingNumber.touched }"
+      formControlName="buildingNumber"  
+      class="input-text-small">
+      <div *ngIf="f.buildingNumber.touched && f.buildingNumber.errors?.required" class="invalid-feedback">Pole 'Numer budynku' jest wymagane.</div>
+
+      <label class="label-small" for="apartmentNumber">Numer lokalu: </label>
+      <input type="text" 
+      formControlName="apartmentNumber"  
+      class="input-text-small">
+
+      <label class="label-small" for="place">Miejscowość: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.place.errors && f.place.touched }"
+      formControlName="place"  
+      class="input-text-small">
+      <div *ngIf="f.place.touched && f.place.errors?.required" class="invalid-feedback">Pole 'Miejscowość' jest wymagane.</div>
+
+      <label class="label-small" for="postCode">Kod pocztowy: *</label>
+      <input type="text" 
+      [ngClass]="{ 'is-invalid': f.postCode.errors && f.postCode.touched }"
+      formControlName="postCode"  
+      class="input-text-small">
+      <div *ngIf="f.postCode.touched && f.postCode.errors?.required" class="invalid-feedback">Pole 'Kod pocztowy' jest wymagane.</div>
+
+      <label class="label-small" for="phone">Telefon: *</label>
+      <input type="tel" 
+      [ngClass]="{ 'is-invalid': f.phone.errors && f.phone.touched }"
+      formControlName="phone"  
+      class="input-text-small">
+      <div *ngIf="f.phone.touched && f.phone.errors?.required" class="invalid-feedback">Pole 'Telefon' jest wymagane.</div>
+      
+      <label class="label-small" for="email">E-mail: *</label>
+      <input type="email" 
+      [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }"
+      formControlName="email"  
+      class="input-text-small">
+      <div *ngIf="f.email.touched && f.email.errors?.required" class="invalid-feedback">Pole 'E-mail' jest wymagane.</div>
+      
+      <label class="label-small" for="nip">NIP: </label>
+      <input type="text" 
+      formControlName="nip"  
+      class="input-text-small">
+
+      <label class="label-small" for="company">Firma: </label>
+      <input type="text" 
+      formControlName="company"  
+      class="input-text-small">
+
+      <div class="full-row">
+        <hr>
+      </div>
+
+      <input [disabled]='!addressAddForm.valid' type="submit" class="btn-submit" value="Zapisz"/>
+
+    </form>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+.text-big {
+  font-size: 24px;
+}
+
+.text-medium {
+  font-size: 18px;
+}
+
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 15px 0px;
+}
+
+.grid-item-full-row {
+  grid-column: 1 / 13;
+  border: 1px solid #ebebeb;
+}
+
+.grid-area-center-column {
+  justify-self: center;
+  align-self: center;
+} 
+
+.grid-item-end-column {
+  justify-self: end;
+}
+
+.grid-item-product {
+  grid-column: 1 / 10;
+  display: flex;
+}
+
+.grid-item-price {
+  grid-column: 10 / 11;
+  display: flex;
+}
+
+.grid-item-quantity {
+  grid-column: 11 / 12;
+  display: flex;
+}
+
+.grid-item-value {
+  grid-column: 12 / 13;
+  display: flex;
+}
+
+.grid-item-total-value-label {
+  grid-column: 1 / 11;
+  display: flex;
+}
+
+.grid-item-total-value {
+  grid-column: 11 / 13;
+  display: flex;
+}
+
+.grid-item-product img {
+  width: 20%;
+}
+
+.grid-item-number-product div:hover {
+  cursor: pointer;
+  color: #2dca71;
+}
+
+.flex-align-items-center {
+  align-items: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.grid-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+}
+
+@media(max-width: 800px) {
+  .grid-products {
+    grid-gap: 15px 20px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

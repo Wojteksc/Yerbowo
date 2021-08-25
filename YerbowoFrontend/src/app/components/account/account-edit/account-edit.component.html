@@ -1,0 +1,106 @@
+<br>
+<h5 class="back-button" [routerLink]="'/moje-konto'">
+    <span class="fa fa-arrow-circle-left fa-fw"></span>Powrót do twojego konta
+</h5>
+<h3 class="text-center">Twoje dane osobiste</h3>
+<div class="grid">
+    <div class="grid-area-center">
+        <form [formGroup]="accountForm" (ngSubmit)="updateUser()" class="subgrid-col-2">
+
+            <input type="hidden" formControlName="id">
+
+
+            <label class="label-small" for="firstName">Imię: *</label>
+            <input type="text" 
+            [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched }"
+            formControlName="firstName"  
+            class="input-text-small">
+            <div *ngIf="f.firstName.touched && f.firstName.errors?.required" class="invalid-feedback">Pole 'Imię' jest wymagane.</div>
+            
+
+            <label class="label-small" for="lastName">Nazwisko: *</label>
+            <input type="text" 
+            [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched }"
+            formControlName="lastName" 
+            class="input-text-small">
+            <div *ngIf="f.lastName.touched && f.lastName.errors?.required" class="invalid-feedback">Pole 'Nazwisko' jest wymagane.</div>
+            
+            
+            <label class="label-small" for="companyName">Nazwa firmy:</label>
+            <input type="text" 
+            formControlName="companyName" 
+            class="input-text-small">
+
+            
+            <label class="label-small" for="email">E-mail: *</label>
+            <input type="email"
+            [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }" 
+            formControlName="email" 
+            class="input-text-small">
+            <div *ngIf="f.email.touched && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required" class="invalid-feedback">Pole 'E-mail' jest wymagane.</div>
+                <div *ngIf="f.email.errors.email" class="invalid-feedback">Nieprawidłowy format adresu e-mail.</div>
+            </div>
+            
+            
+            <label class="label-small" for="confirmEmail">Powtórz e-mail: *</label>
+            <input type="email" 
+            [ngClass]="{ 'is-invalid': f.confirmEmail.errors && f.confirmEmail.touched
+            ||  f.confirmEmail.touched && accountForm.hasError('mismatchEmail') }"
+            formControlName="confirmEmail"
+            class="input-text-small">
+            <div *ngIf="f.confirmEmail.touched" class="invalid-feedback">
+                <div *ngIf="f.confirmEmail.errors?.required">Pole 'Powtórz e-mail' jest wymagane.</div>
+                <div *ngIf="f.confirmEmail.errors?.email">Nieprawidłowy format adresu e-mail.</div>
+            </div>
+            <div *ngIf="f.confirmEmail.touched && accountForm.hasError('mismatchEmail')" class="invalid-feedback">Adresy e-mail nie są takie same.</div>
+            
+            
+            <div class="full-row">
+                <hr>
+            </div>
+            
+            <label class="label-small" for="password">Nowe hasło:</label>
+            <input type="password"
+            [ngClass]="{ 'is-invalid': f.newPassword.errors && f.newPassword.touched }" 
+            formControlName="newPassword"  
+            class="input-text-small">
+            <div *ngIf="f.newPassword.touched && f.newPassword.errors?.minlength" class="invalid-feedback">Hasło musi mieć co najmniej 4 znaki.</div>
+            
+            
+            <label class="label-small" for="confirmPassword">Powtórz hasło:</label>
+            <input type="password" 
+            formControlName="confirmPassword" 
+            class="input-text-small">
+            <div *ngIf="f.confirmPassword.touched" class="invalid-feedback">
+                <div *ngIf="accountForm.hasError('mismatchPassword')">Hasła nie są takie same.</div>
+            </div>
+            <div class="right-side">
+                <p class="text-gray">Pozostaw pole puste, aby pozostawić dotychczasowe hasło.</p>
+            </div>
+
+            <div class="full-row">
+                <hr>
+            </div>
+
+            <label class="label-small" for="currentPassword">Aktualne hasło: *</label>
+            <input type="password" 
+            [ngClass]="{ 'is-invalid': f.currentPassword.errors && f.currentPassword.touched }" 
+            formControlName="currentPassword"
+            class="input-text-small">
+            <div *ngIf="f.currentPassword.touched" class="invalid-feedback">
+                <div *ngIf="f.currentPassword.errors?.required">Pole 'Aktualne hasło' jest wymagane.</div>
+            </div>
+            <div class="right-side">
+                <p class="text-gray">Wprowadź aktualne hasło aby autoryzować zmiany.</p>
+                <p class="text-danger">Pola oznaczone (*) są wymagane.</p>
+            </div>
+            <div class="full-row">
+                <hr>
+            </div>
+            
+            <input [disabled]="!accountForm.valid" type="submit" class="btn-submit" value="Zapisz"/>
+        </form>  
+    </div>
+  </div>
+  

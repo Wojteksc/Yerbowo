@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AguantadoraSeleccionEspecial" xml:space="preserve">
+    <value>Klasyczna argentyńska mate z listkami i patykami. 
+Ma delikatny dymny smak, który przypadnie do gustu również tym, którzy rozpoczynają swoją przygodę z yerbą.</value>
+  </data>
+  <data name="KrausGauchoSinPalo" xml:space="preserve">
+    <value>&lt;p&gt;Kraus Gaucho sin palo to jedna z najzdrowszych i najbardziej ekologicznych mate dostępnych na rynku. Dzięki metodzie suszenia ciepłym powietrzem, napar nie zyskuje specyficznego zapachu dymu, jak w tradycyjnych yerbach suszonych nad ogniem. Sin palo oznacza, że susz jest czysty, pozbawiony patyczków oraz pyłu. Napar jest naturalnie gorzkawy, przyjemnie roślinny i łagodny dla żołądka. Mimo swojej lekkości wykazuje silne działanie pobudzające to dawka energii znacznie większa niż w przypadku tradycyjnej kawy. Polecamy wszystkim, którzy poszukują produktów spełniających wszelkie wymagania produkcji ekologicznej oraz fair trade. Z pewnością przypadnie do gustu miłośnikom mieszanek o łagodnym smaku, a także początkującym.&lt;/p&gt;&lt;p class="western" style="margin-bottom: 0.35cm; line-height: 115%;"&gt;&lt;strong&gt;Sposób zaparzania:&lt;/strong&gt;&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Napełnij suszem naczynie do objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70-80 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty.&lt;/li&gt;&lt;li&gt;Po tym czasie mate jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ol&gt;&lt;p class="western" style="margin-bottom: 0.35cm; line-height: 115%;"&gt;&lt;strong&gt;Składniki:&lt;/strong&gt;&amp;nbsp;100% ostrokrzew paragwajski&lt;/p&gt;&lt;p class="western" style="margin-bottom: 0.35cm; line-height: 115%;"&gt;&lt;strong&gt;Kraj pochodzenia:&lt;/strong&gt;&amp;nbsp;Argentyna&lt;/p&gt;</value>
+  </data>
+  <data name="LaMercedCampoMonte" xml:space="preserve">
+    <value>Dla osób, które ponad wszystko cenią jakość, marka La Merced uważana jest za najlepszą yerba mate na świecie. Jest to jedyna odmiana, która uprawiana jest w górach, gdzie krzewy mają idealne warunki do rozwijania się.
+W tym opakowaniu znajdziemy to co najlepsze, czyli połączenie odmiany Campo z Monte. 
+Zawiera listki i patyczki. Bardzo pobudzająca.</value>
+  </data>
+  <data name="PajaritoSeleccionEspecial" xml:space="preserve">
+    <value>&lt;h2&gt;Yerba mate Pajarito Seleccion - wyjątkowa intensywność smaku&lt;/h2&gt;&lt;p&gt;Ta wyjątkowa, sezonowana odmiana, jaką jest &lt;b&gt;Yerba mate Pajarito Seleccion&lt;/b&gt; wywodzi się prosto z Paragwaju. &lt;b&gt;Yerba Pajarito&lt;/b&gt; zawiera starannie selekcjonowane listki oraz dodatek drobnych gałązek. Spośród innych gatunków &lt;b&gt;Pajarito yerba&lt;/b&gt; mate wyróżnia się wydłużonym okresem leżakowania, trwającym aż dwa lata. W tym czasie &lt;b&gt;yerba Pajarito seleccion&lt;/b&gt; nabiera niezwykłej mocy, która stawia ją wśród najsilniejszych suszów dostępnych na rynku. Ma niezwykle intensywny smak, z wyczuwalną nutą dymu, co jest charakterystyczną cechą &lt;b&gt;Pajarito. Yerba&lt;/b&gt; ta wspaniale sprawdza się w wielokrotnym zaparzaniu. Każde kolejne zalanie uwalnia nowe nuty smakowe i zapachowe, zapewniając smakoszom pełnię doznań. Staranny proces przygotowywania i pakowania sprawia, że &lt;b&gt;Pajarito yerba seleccion&lt;/b&gt; długo zachowuje swoją świeżość.&lt;/p&gt;&lt;h3&gt;Yerba Pajarito - Sposób zaparzania:&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Napełnij naczynie suszem do objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70-80 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty. Po tym czasie Twoja &lt;b&gt;Yerba mate Pajarito Seleccion&lt;/b&gt; jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ul&gt;&lt;ul&gt;Składniki: 100% ostrokrzew paragwajski&lt;/ul&gt;&lt;ul&gt;Kraj pochodzenia: Paragwaj&lt;/ul&gt;</value>
+  </data>
+  <data name="PiporeEspecial" xml:space="preserve">
+    <value>&lt;p&gt;Yerba mate Pipore Seleccion Especial to produkt z najwyższej półki. Zadowoli nawet najbardziej wymagających koneserów. Intensywny aromat przyjemnie uderzający w nozdrza oraz niepowtarzalny smak to zasługa procesów hodowli, zbioru i selekcji, które prowadzone są z troską o najdrobniejsze szczegóły. Tylko listki bez najdrobniejszej skazy trafiają do jej produkcji. Ma wyczuwalne działanie pobudzające, lecz jednocześnie doskonale redukuje poziom stresu. Odpręża, poprawia nastrój i wzmaga chęć na więcej. Każdy jej łyk jest wyjątkowy, a każde kolejne zalanie uwalnia nowe nuty.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Sposób zaparzania:&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Napełnij suszem naczynie do objętości, następnie przykryj dłonią górną część naczynia.&lt;/li&gt;&lt;li&gt;Odwróć naczynie i potrząśnij tak, by pył z suszu znalazł się na ręce.&lt;/li&gt;&lt;li&gt;Delikatnie odwróć naczynie do pierwotnej pozycji, uważając, by zawartość nie zmieniła swego położenia.&lt;/li&gt;&lt;li&gt;Umieść bombillę w naczyniu i zalej wodą o temperaturze 70-80 stopni Celsjusza.&lt;/li&gt;&lt;li&gt;Odczekaj 2-3 minuty.&lt;/li&gt;&lt;li&gt;Po tym czasie mate jest gotowa. Należy pić ją powoli przez bombillę. Naparu nie powinno się mieszać.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;Składniki:&lt;/strong&gt;&lt;span&gt;&lt;strong&gt;&amp;nbsp;&lt;/strong&gt;&lt;/span&gt;100% yerba mate&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Kraj pochodzenia:&lt;/strong&gt;&lt;span&gt;&amp;nbsp;&lt;/span&gt;Argentyna&lt;/p&gt;</value>
+  </data>
+</root>

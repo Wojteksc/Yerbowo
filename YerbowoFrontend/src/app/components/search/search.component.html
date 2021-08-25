@@ -1,0 +1,21 @@
+<div class="wrapper-logo">
+      <div id="logo">
+          <a [routerLink]="['/home']">
+              <img src="/assets/images/common/yerbowo-logo.png" />
+              
+          </a>
+      </div>
+      <div id="search-top">
+          <div class="subwrapper-search">
+              <input type="search" class="form-control" placeholder="Np. Amanda" />
+              <button type="submit" class="search-button"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </div>
+      </div>
+      <div id="shopping-cart">
+          <a [routerLink]="['/koszyk']">
+              <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+              <span class="basket-title"> Koszyk </span>
+              ({{totalCartProducts}})
+          </a>
+      </div>
+</div>

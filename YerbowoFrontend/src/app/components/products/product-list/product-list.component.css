@@ -1,0 +1,10 @@
+img {
+  max-width: 100%;
+}
+
+.product-info-empty {
+  margin-top: 10%;
+  margin-bottom: 20%;
+  color: firebrick;
+}
+

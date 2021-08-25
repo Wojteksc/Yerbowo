@@ -1,0 +1,51 @@
+<br>
+<h5 class="back-button" [routerLink]="'/moje-konto'">
+  <span class="fa fa-arrow-circle-left fa-fw"></span>Powrót do twojego konta
+</h5>
+<h3 class="text-center">Historia zamówień</h3>
+<br>
+<div class="grid-order-history-table">
+  <div class="grid-item-full-row"></div>		 		
+  <div class="grid-area-center-column grid-item-number">
+    Numer zamówienia
+  </div>
+  <div class="grid-area-center-column grid-item-images">
+    Zamówione produkty
+  </div>
+  <div class="grid-area-center-column grid-item-date">
+    Data złożenia zamówienia
+  </div>
+  <div class="grid-area-center-column grid-item-value">
+    Wartość
+  </div>
+  <div class="grid-area-center-column grid-item-status">
+    Status
+  </div>
+
+  <div class="grid-item-full-row"></div>
+  <ng-container *ngFor="let order of orders">
+    <div class="ignore-subgrid row-hover" [routerLink]="['/moje-konto/zamowienia/', order.id]">
+      <div class="grid-area-center-cell grid-item-number grid-item-number-data">
+        {{order.id}}
+      </div>
+      <div class="grid-item-images">
+        <ng-container *ngFor="let image of order.productImages">
+          <div class="grid-item-image-container">
+            <img src="assets/images/products/yerba/{{image.name}}">
+            <div class="image-quantity"><span class="circle-quantity">{{image.quantity}} szt.</span></div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="grid-area-center-cell grid-item-date">
+        {{order.date}}
+      </div>
+      <div class="grid-area-center-cell grid-item-value">
+        {{order.total}} zł
+      </div>
+      <div class="grid-area-center-cell grid-item-status">
+        <b>{{order.status}}</b>
+      </div>
+      <div class="grid-item-full-row"></div>	
+    </div>
+  </ng-container>
+</div>

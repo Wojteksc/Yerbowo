@@ -1,0 +1,11 @@
+/* You can add global styles to this file, and also import other style files */
+@import './app/styles/default.css';
+@import './app/styles/loader.css';
+@import './app/styles/band.css';
+@import './app/styles/alert.css';
+@import './app/styles/validator.css';
+@import './app/styles/social-buttons.css';
+@import './app/styles/bootstrap.min.css';
+@import '../node_modules/font-awesome/css/font-awesome.min.css';
+@import '../node_modules/alertifyjs/build/css/alertify.min.css';
+@import '../node_modules/alertifyjs/build/css/themes/bootstrap.min.css';

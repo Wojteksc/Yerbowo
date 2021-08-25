@@ -1,0 +1,19 @@
+<br>
+<h5 class="back-button" [routerLink]="'/moje-konto'">
+    <span class="fa fa-arrow-circle-left fa-fw"></span>Powrót do twojego konta
+</h5>
+<h3 class="text-center">Twoje adresy</h3>
+<br>
+
+<input type="button" class="btn-submit" value="Utwórz nowy adres" [routerLink]="['/moje-konto/adresy/dodaj']"/>
+
+<div class="address-info-empty" *ngIf="!isAnyAddress()">
+    <h1 class="text-center">Brak adresów. Utwórz nowy adres.</h1>
+</div>
+
+<div *ngIf="isAnyAddress()" class="grid-addresses">
+    <app-address-card (onDeleteAddress)="removeAddress(address.id)" 
+        [address]="address"
+        *ngFor="let address of addresses;">
+    </app-address-card>
+</div>

@@ -1,0 +1,44 @@
+
+.grid-account-tabs {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+}
+
+.grid-account-tabs-item {
+  color: #bbb;
+  list-style: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px;
+  list-style: none;
+}
+
+.grid-account-tabs-item.active {
+  color: #555;
+  border-bottom: 2px solid orange;
+}
+
+.grid-account-tabs-item.active {
+  border: 1px solid #ddd;
+  border-top: 2px solid orange;
+  border-bottom: 2px solid orange;
+}
+
+@media (min-width: 830px) {
+  .grid-account-tabs{
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .grid-account-tabs-item.active {
+    border: unset;
+    border-bottom: 2px solid orange;
+  }
+
+  .grid-account-tabs-item {
+    padding: 0px 0px 10px 0px;
+  }
+}

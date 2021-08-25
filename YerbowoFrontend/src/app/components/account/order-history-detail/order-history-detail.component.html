@@ -1,0 +1,46 @@
+<br/>
+<h5 class="back-button" [routerLink]="'/moje-konto/zamowienia'">
+  <span class="fa fa-arrow-circle-left fa-fw"></span>Powrót do historii zamówień
+</h5>
+<p class="text-big text-center">Numer twojego zamówienia: <b>{{order.id}}</b></p>
+<br/>
+<p class="text-medium text-center">Zakupione produkty</p>
+<div class="grid-products">
+  <div class="grid-item-full-row"></div>
+  <div class="grid-item-product">Produkt</div>
+  <div class="grid-area-center-column grid-item-price">Cena</div>
+  <div class="grid-area-center-column grid-item-quantity">Ilość</div>
+  <div class="grid-area-center-column grid-item-value">Wartość</div>
+  
+  <div class="grid-item-full-row"></div>
+
+  <ng-container *ngFor="let item of order.orderItems">
+    <div class="grid-item-product flex-align-items-center">
+      <img class="cursor-pointer" src="assets/images/products/yerba/{{item.productImage}}" [routerLink]="['/sklep/', item.productCategorySlug, item.productSubcategorySlug, item.productSlug]">
+      <div class="cursor-pointer" [routerLink]="['/sklep/', item.productCategorySlug, item.productSubcategorySlug, item.productSlug]">{{item.productName}}</div>
+    </div>
+    <div class="grid-area-center-column grid-item-price">{{item.price.toFixed(2)}} zł</div>
+    <div class="grid-area-center-column grid-item-quantity">{{item.quantity}}</div>
+    <div class="grid-area-center-column grid-item-value">{{item.sum.toFixed(2)}} zł</div>
+    <div class="grid-item-full-row"></div>
+  </ng-container>
+  <div class="grid-area-center-column grid-item-total-value-label grid-item-end-column text-big">
+    Razem do zapłaty
+  </div>
+  <div class="grid-area-center-column grid-item-total-value text-big grid-item-end-column">
+    {{order.totalCost.toFixed(2)}} zł
+  </div>
+</div>
+<br><br><br>
+<div class="grid-details">
+    <div class="grid-item-contact-details">
+      <p class="text-big">Dane kontaktowe</p>
+      <p>Telefon: {{order.address.phone}}</p>
+    </div>
+    <div class="grid-item-delivery-address">
+      <p class="text-big">Adres dostawy</p>
+      <p>{{order.address.firstName}} {{order.address.lastName}}</p>
+      <p>{{order.address.street}} {{order.address.buildingNumber}}/{{order.address.apartmentNumber}}</p>
+      <p>{{order.address.postCode}} {{order.address.place}}</p>
+    </div>
+</div>

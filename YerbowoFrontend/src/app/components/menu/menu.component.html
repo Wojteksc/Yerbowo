@@ -1,0 +1,91 @@
+
+<div class="top-menu">
+    <div id="top-menu-title">MENU</div>
+    <label class="top-menu-plus" for="top-menu-toggle">+</label>
+    <input type="checkbox" id="top-menu-toggle" />
+    <ul class="top-menu-items" (click)="clickedMenuItem($event)">
+        <li>
+            <a>YERBA MATE</a>
+            <ul class="top-menu-items-level1">
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'klasyczne']">KLASYCZNE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'z-ziolami']">Z ZIOŁAMI</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'lagodne']">ŁAGODNE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'mocne']">MOCNE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'owocowe']">OWOCOWE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'green']">GREEN</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'wyselekcjonowane']">WYSELEKCJONOWANE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'ekologiczne']">EKOLOGICZNE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'yerba-mate', 'probki']">PRÓBKI</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a>ZESTAWY</a>
+            <ul class="top-menu-items-level1">
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'zestawy', 'prezenty']">PREZENTY</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'zestawy', 'startowe']">STARTOWE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'zestawy', 'dla-yerbaholikow']">DLA YERBAHOLIKÓW</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a>AKCESORIA</a>
+            <ul class="top-menu-items-level1">
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'akcesoria', 'bombille']">BOMBILLE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'akcesoria', 'naczynia']">NACZYNIA</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'akcesoria', 'naczynia ozdobne']">NACZYNIA OZDOBNE</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a>HERBATY</a>
+            <ul class="top-menu-items-level1">
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'herbaty', 'zielone']">ZIELONE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'herbaty', 'czarne']">CZARNE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'herbaty', 'czerwone']">CZERWONE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'herbaty', 'biale']">BIAŁE</a>
+                </li>
+                <li>
+                    <a class="top-menu-items-link" [routerLink]="['/sklep', 'herbaty', 'owocowe']">OWOCOWE</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a>ZIOŁA</a>
+        </li>
+    </ul>
+</div>

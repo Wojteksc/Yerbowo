@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="LaTranquera" xml:space="preserve">
+    <value>&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;&lt;strong&gt;YERBA MATE LA TRANQUERA&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Argentyńska yerba mate La Tranquera. Średnio cięte listki z gałązkami. Delikatny, łagodny smak. Polecana dla osób, które rozpoczynają przygodę z yerba mate.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;&lt;strong&gt;Sposób użycia:&lt;br&gt;&lt;/strong&gt;1. Nasyp do 3/4 objętości naczynia, susz Yerba Mate i przykryj ręką górną część naczynia.&lt;br&gt;2. Odwróć naczynie i wstrząśnij tak by pył z suszu znalazł się na ręce.&lt;br&gt;3. Delikatnie odwróć naczynie, tak by zawartość nie zmieniła swojego położenia.&lt;br&gt;4. Włóż bombillę i zalej wodą o temp. 70-80°C&lt;br&gt;5. Czekaj 2-3 minuty i pij przez bombillę powoli, pamiętając o tym by nie mieszać naparu.&lt;/span&gt;&lt;/p&gt;&lt;table border="1" width="601" cellspacing="0" cellpadding="7"&gt;&lt;colgroup&gt;&lt;col width="185"&gt; &lt;col width="186"&gt; &lt;col width="185"&gt; &lt;/colgroup&gt;&lt;tbody&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Wartość energetyczna&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;w 100 g produktu&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;w 1 porcji (50g)&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Wartość energetyczna&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;412kJ/98/kcal&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;206kJ/49kcal&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Tłuszcz&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;0g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;0g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Węglowodany&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;22g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;11g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Białko&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;2,4g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;1,2g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr valign="TOP"&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;Błonnik&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="186"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;1,52g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;td width="185"&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;0,76g&lt;/span&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;&lt;strong&gt;Składniki: &lt;/strong&gt;100%&amp;nbsp;ostrokrzew paragwajski&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&amp;nbsp;&lt;/p&gt;&lt;p&gt;&lt;span style="font-family: arial, helvetica, sans-serif; font-size: 10pt;"&gt;&lt;strong&gt;Kraj pochodzenia:&lt;/strong&gt; Argentyna&lt;/span&gt;&lt;/p&gt;</value>
+  </data>
+</root>

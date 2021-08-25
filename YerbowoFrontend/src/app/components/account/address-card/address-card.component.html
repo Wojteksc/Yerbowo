@@ -1,0 +1,22 @@
+<div class="address-card">
+  <div class="address-card-body">
+    <h4>{{ address.alias }}</h4>
+    <address>
+      {{ address.firstName }} {{ address.lastName }}
+      <br>
+      {{ address.street }} {{ getAddressDelivery() }}
+      <br>
+      {{ address.postCode }} {{ address.place }}
+      <br>
+      {{ address.phone }}
+    </address>
+  </div>
+  <div class="address-card-footer"> 
+    <a class="address-card-footer-link" [routerLink]="['/moje-konto/adresy/', address.id, 'edycja']" routerLinkActive="active">
+      <div class="address-card-footer-text-update">Ukatualnij</div>
+    </a>
+    <a class="address-card-footer-link">
+      <div class="address-card-footer-text-remove" (click)="delete()">Usuń</div>
+    </a>
+  </div>
+</div>

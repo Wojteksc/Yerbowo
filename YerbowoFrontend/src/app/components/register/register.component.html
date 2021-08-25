@@ -1,0 +1,74 @@
+<div class="grid">
+  <div class="grid-area-center">
+      <h1 class="text-center">Stwórz konto</h1>
+      <form [formGroup]="registerForm" (ngSubmit)="register()" class="subgrid-col-2">
+          
+          <label class="label" for="firstName">Imię: *</label>
+          <input type="text"
+          [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched }"
+          formControlName="firstName"
+          class="input-text">
+          <div *ngIf="f.firstName.touched && f.firstName.errors?.required" class="invalid-feedback">Pole 'Imię' jest wymagane.</div>
+
+          <label class="label" for="lastName">Nazwisko: *</label>
+          <input type="text"
+          [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched }"
+          formControlName="lastName"
+          class="input-text">
+          <div *ngIf="f.lastName.touched && f.lastName?.errors">Pole 'Nazwisko' jest wymagane.</div>
+
+          <label class="label" for="companyName">Nazwa firmy: </label>
+          <input type="text"
+          formControlName="companyName"
+          class="input-text">
+          
+          <label class="label" for="email">E-mail: *</label>
+          <input type="email"
+          [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }"
+          formControlName="email"
+          class="input-text">
+          <div *ngIf="f.email.touched && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Pole 'E-mail' jest wymagane.</div>
+            <div *ngIf="f.email.errors.email">Niepoprawny format adresu e-mail</div>
+          </div>
+          
+          <label class="label" for="confirmEmail">Powtórz e-mail: *</label>
+          <input type="email"
+          [ngClass]="{ 'is-invalid': f.confirmEmail.errors && f.confirmEmail.touched}"
+          formControlName="confirmEmail"
+          class="input-text">
+          <div *ngIf="f.confirmEmail.touched && f.confirmEmail.errors" class="invalid-feedback">
+            <div *ngIf="f.confirmEmail.errors.required">Pole 'Potwórz e-mail' jest wymagane</div>
+            <div *ngIf="f.confirmEmail.errors.email">Nieprawidłowy format adresu e-mail</div>
+          </div>
+          <div *ngIf="f.confirmEmail.touched && registerForm.hasError('mismatchEmail')" class="invalid-feedback">Adresy e-mail nie są takie same.</div>
+          
+          
+          <label class="label" for="password">Hasło: *</label>
+          <input type="password"
+          [ngClass]="{ 'is-invalid': f.password.errors && f.password.touched}"
+          formControlName="password"
+          class="input-text">
+          <div *ngIf="f.password.touched && f.password.errors.required" class="invalid-feedback">Pole 'Hasło' jest wymagane.</div>
+          
+          <label class="label" for="confirmPassword">Powtórz hasło: *</label>
+          <input type="password"
+          [ngClass]="{ 'is-invalid': f.confirmPassword.errors && f.confirmPassword.touched }"
+          formControlName="confirmPassword"
+          class="input-text">
+          <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors.required" class="invalid-feedback">Pole 'Potwórz hasło' jest wymagane.</div>
+          <div *ngIf="f.confirmPassword.touched && registerForm.hasError('mismatchPassword')" class="invalid-feedback">Hasła nie są takie same</div>
+           
+          <div class="right-side">
+            <p class="text-danger">Pola oznaczone (*) są wymagane.</p>
+          </div>
+
+          <div class="full-row">
+            <hr>
+          </div>
+
+          <input [disabled]="!registerForm.valid" type="submit" class="btn-submit" value="Zapisz">
+        
+      </form>  
+  </div>
+</div>

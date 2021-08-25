@@ -1,0 +1,60 @@
+/* HOME PAGE TABS */
+
+.homepage-tabs {
+  margin-top: 40px;
+}
+
+.tab-label {
+  display: inline-block;
+  margin: 0 0 -1px;
+  padding: 15px 25px;
+  font-weight: 600;
+  text-align: center;
+  color: #bbb;
+  border: 1px solid transparent;
+}
+
+.tab-label:hover {
+  color: #888;
+  cursor: pointer;
+}
+
+.tab-toggle:checked + .tab-label {
+  color: #555;
+  border: 1px solid #ddd;
+  border-top: 2px solid orange;
+  border-bottom: 1px solid #fff;
+}
+
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3,
+#tab4:checked ~ #content4 {
+  display: block;
+}
+
+.tab-content {
+  display: none;
+  padding: 20px 0 0;
+  border-top: 1px solid #ddd;
+}
+
+.tab-toggle {
+  display: none;
+}
+
+@media only screen and (max-width: 801px) {
+  .tab-label {
+      display: block;
+  }
+
+  .tab-toggle:checked + .tab-label {
+      border-bottom: 2px solid orange;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .homepage-tabs {
+      margin-bottom: 150px;
+  }
+}
