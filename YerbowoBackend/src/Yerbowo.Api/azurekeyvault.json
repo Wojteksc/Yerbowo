@@ -1,0 +1,8 @@
+{
+	"KeyVaultConfig": {
+		"KVUrl": "",
+		"TenantId": "",
+		"ClientId": "",
+		"ClientSecret": ""
+	}
+}

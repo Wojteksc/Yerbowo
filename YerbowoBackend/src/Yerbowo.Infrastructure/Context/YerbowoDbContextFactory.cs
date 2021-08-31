@@ -12,6 +12,7 @@ namespace Yerbowo.Infrastructure.Context
             IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../Yerbowo.Api"))
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("azurekeyvault.json", optional: false, reloadOnChange: true)
             .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<YerbowoContext>();
