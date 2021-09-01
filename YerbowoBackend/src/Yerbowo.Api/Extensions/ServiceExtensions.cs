@@ -21,7 +21,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Api.Extensions
 {
-	public static class ServiceExtensions
+    public static class ServiceExtensions
 	{
 
 		public static void AddControllersOptions(this IServiceCollection services)

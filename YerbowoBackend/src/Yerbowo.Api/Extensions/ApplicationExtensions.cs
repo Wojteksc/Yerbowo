@@ -7,7 +7,7 @@ using System.Net;
 
 namespace Yerbowo.Api.Extensions
 {
-	public static class ApplicationExtensions
+    public static class ApplicationExtensions
 	{
 		public static void UseSecurityHeaders(this IApplicationBuilder app)
 		{

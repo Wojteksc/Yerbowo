@@ -9,7 +9,7 @@ using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Api
 {
-	public class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {

@@ -2,7 +2,7 @@
 
 namespace Yerbowo.Api.Helpers
 {
-	public static class AppContext
+    public static class AppContext
     {
         private static IHttpContextAccessor _httpContextAccessor;
 

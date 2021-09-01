@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Yerbowo.Api.Extensions
 {
-	public static class ConfigurationExtensions
+    public static class ConfigurationExtensions
     {
         public static string GetMySqlConnectionString(this IConfiguration configuration, string connectionString)
 		{

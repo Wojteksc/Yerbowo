@@ -1,6 +1,6 @@
 ﻿namespace Yerbowo.Api.Headers
 {
-	public class PaginationHeader
+    public class PaginationHeader
 	{
 		public int CurrentPage { get; private set; }
 		public int ItemsPerPage { get; private set; }
