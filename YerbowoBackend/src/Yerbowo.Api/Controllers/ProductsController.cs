@@ -74,7 +74,7 @@ namespace Yerbowo.Api.Controllers
         {
             await _mediator.Send(new RemoveProductCommand(id));
 
-            return new NoContentResult(); //204
+            return NoContent();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 			int productId = 1;
 			var response = await PostAsync(productId, quantity: 1);
 
-			Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 		}
 
 		[Fact]
@@ -38,8 +38,8 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 			var responsePost = await PostAsync(productId, quantity: 1);
 			var responseDelete = await DeleteAsync(productId);
 
-			Assert.Equal(HttpStatusCode.NoContent, responsePost.StatusCode);
-			Assert.Equal(HttpStatusCode.NoContent, responseDelete.StatusCode);
+			Assert.Equal(HttpStatusCode.OK, responsePost.StatusCode);
+			Assert.Equal(HttpStatusCode.OK, responseDelete.StatusCode);
 		}
 
 		[Fact]
@@ -105,7 +105,7 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 		public async Task Add_Product_Many_Times_With_Different_Quantities_Should_Return_Correct_Quantity()
 		{
 			int productId = 7;
-			int firstQuantity = 4;
+			int firstQuantity = 3;
 			int secondQuantity = 2;
 			int thirdQuantity = 5;
 			int totalQuantity = firstQuantity + secondQuantity + thirdQuantity;
