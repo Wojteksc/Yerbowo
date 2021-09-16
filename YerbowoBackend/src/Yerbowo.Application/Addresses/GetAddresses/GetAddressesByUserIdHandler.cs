@@ -7,7 +7,7 @@ using Yerbowo.Infrastructure.Data.Addresses;
 
 namespace Yerbowo.Application.Addresses.GetAddresses
 {
-    internal class GetAddressesByUserIdHandler : IRequestHandler<GetAddressesByUserIdQuery, IEnumerable<AddressDto>>
+    public class GetAddressesByUserIdHandler : IRequestHandler<GetAddressesByUserIdQuery, IEnumerable<AddressDto>>
 	{
         private readonly IMapper _mapper;
         private readonly IAddressRepository _addressRepository;

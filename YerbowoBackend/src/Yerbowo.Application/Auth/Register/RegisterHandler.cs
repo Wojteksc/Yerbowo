@@ -9,7 +9,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Auth.Register
 {
-    internal class RegisterHandler : IRequestHandler<RegisterCommand>
+    public class RegisterHandler : IRequestHandler<RegisterCommand>
 	{
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;

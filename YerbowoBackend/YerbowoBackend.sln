@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yerbowo.Domain", "src\Yerbo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yerbowo.Functional.Tests", "tests\Yerbowo.Functional.Tests\Yerbowo.Functional.Tests.csproj", "{50A85505-4F60-452A-A7C9-8E0150E1C634}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yerbowo.Unit.Tests", "Yerbowo.Unit.Tests\Yerbowo.Unit.Tests.csproj", "{83742A9B-94EB-47B4-A19F-E21ED2BB056E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{50A85505-4F60-452A-A7C9-8E0150E1C634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50A85505-4F60-452A-A7C9-8E0150E1C634}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50A85505-4F60-452A-A7C9-8E0150E1C634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83742A9B-94EB-47B4-A19F-E21ED2BB056E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83742A9B-94EB-47B4-A19F-E21ED2BB056E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83742A9B-94EB-47B4-A19F-E21ED2BB056E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83742A9B-94EB-47B4-A19F-E21ED2BB056E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{D8C4D680-8663-48B9-AAE7-1409A69E9316} = {92ED873A-7FB3-49FB-8163-16D532E4E360}
 		{856A1EC9-D95D-4CB1-8FE4-FCA56DEDBACF} = {92ED873A-7FB3-49FB-8163-16D532E4E360}
 		{50A85505-4F60-452A-A7C9-8E0150E1C634} = {2491F28E-78B8-48D3-A144-8A3164F071A4}
+		{83742A9B-94EB-47B4-A19F-E21ED2BB056E} = {2491F28E-78B8-48D3-A144-8A3164F071A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C3953137-F56A-4595-8549-C52AA6B50DA3}

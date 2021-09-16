@@ -8,7 +8,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Auth.Login
 {
-	internal class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
+	public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 	{
 		private readonly IUserRepository _userRepository;
 		private readonly IPasswordValidator _passwordValidator;
@@ -27,11 +27,9 @@ namespace Yerbowo.Application.Auth.Login
 		{
 			var user = await _userRepository.GetAsync(request.Email);
 
-			if (user == null || user.IsRemoved)
-				throw new UnauthorizedAccessException("Konto nie istnieje");
-
-			if (!_passwordValidator.Equals(request.Password, user.PasswordHash, user.PasswordSalt))
-				throw new UnauthorizedAccessException($"Niepoprawne dane logowania");
+			if (user == null || user.IsRemoved ||
+				!_passwordValidator.Equals(request.Password, user.PasswordHash, user.PasswordSalt))
+				throw new UnauthorizedAccessException("Niepoprawne dane logowania");
 
 			return new ResponseToken()
 			{

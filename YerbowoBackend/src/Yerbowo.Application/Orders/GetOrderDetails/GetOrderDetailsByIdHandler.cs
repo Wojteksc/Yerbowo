@@ -6,7 +6,7 @@ using Yerbowo.Infrastructure.Data.Orders;
 
 namespace Yerbowo.Application.Orders.GetOrderDetails
 {
-	internal class GetOrderDetailsByIdHandler : IRequestHandler<GetOrderDetailsByIdQuery, OrderDetailsDto>
+	public class GetOrderDetailsByIdHandler : IRequestHandler<GetOrderDetailsByIdQuery, OrderDetailsDto>
 	{
 		private readonly IOrderRepository _orderRepository;
 		private readonly IMapper _mapper;

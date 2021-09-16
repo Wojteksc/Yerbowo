@@ -11,7 +11,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Auth.SocialLogin
 {
-    internal class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseToken>
+    public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseToken>
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
