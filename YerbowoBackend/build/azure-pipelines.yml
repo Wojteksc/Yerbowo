@@ -9,6 +9,11 @@ variables:
   dotnetSdkVersion: '3.x'
 
 steps:
+- task: FileTransform@1
+  inputs:
+    folderPath: '$(System.DefaultWorkingDirectory)'
+    fileType: 'json'
+    targetFiles: 'azurekeyvault.json'
 - task: CmdLine@2
   inputs:
     script: 'echo test $(KeyVaultConfig--ClientSecret)'
