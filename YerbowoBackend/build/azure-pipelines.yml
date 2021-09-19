@@ -9,10 +9,6 @@ variables:
   dotnetSdkVersion: '3.x'
 
 steps:
-- task: CmdLine@2
-  inputs:
-    script: 'echo $(Authentication--Facebook--ClientId)'
-    
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
