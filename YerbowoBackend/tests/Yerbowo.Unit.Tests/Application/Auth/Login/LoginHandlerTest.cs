@@ -111,34 +111,5 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
             var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
             Assert.Equal("Niepoprawne dane logowania", exception.Message);
         }
-
-        //[Fact]
-        //public async Task Login_When_User_Is_Removed_Should_Return_Correct_Message()
-        //{
-        //    var mockUserRepository = new Mock<IUserRepository>();
-        //    mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
-        //        .Returns(Task.FromResult<User>(null));
-
-        //    var mockPasswordValidator = new Mock<IPasswordValidator>();
-        //    mockPasswordValidator.Setup(x => x.Equals(
-        //        It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
-        //        .Returns(false);
-
-        //    var mockJwtHandler = new Mock<IJwtHandler>();
-
-        //    var loginHandler = new LoginHandler(
-        //        mockUserRepository.Object,
-        //        mockPasswordValidator.Object,
-        //        mockJwtHandler.Object);
-
-        //    var loginCommand = new LoginCommand
-        //    {
-        //        Email = It.IsAny<string>()
-        //    };
-
-        //    Func<Task> act = () => loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
-        //    var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
-        //    Assert.Equal("Niepoprawne dane logowania", exception.Message);
-        //}
     }
 }

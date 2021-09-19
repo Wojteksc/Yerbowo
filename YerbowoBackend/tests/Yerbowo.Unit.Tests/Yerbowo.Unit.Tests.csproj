@@ -21,12 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Web\Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\src\Yerbowo.Application\Yerbowo.Application.csproj" />
-    <ProjectReference Include="..\src\Yerbowo.Infrastructure\Yerbowo.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Yerbowo.Application\Yerbowo.Application.csproj" />
+    <ProjectReference Include="..\..\src\Yerbowo.Infrastructure\Yerbowo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

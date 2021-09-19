@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yerbowo.Domain", "src\Yerbo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yerbowo.Functional.Tests", "tests\Yerbowo.Functional.Tests\Yerbowo.Functional.Tests.csproj", "{50A85505-4F60-452A-A7C9-8E0150E1C634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yerbowo.Unit.Tests", "Yerbowo.Unit.Tests\Yerbowo.Unit.Tests.csproj", "{83742A9B-94EB-47B4-A19F-E21ED2BB056E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yerbowo.Unit.Tests", "tests\Yerbowo.Unit.Tests\Yerbowo.Unit.Tests.csproj", "{83742A9B-94EB-47B4-A19F-E21ED2BB056E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
