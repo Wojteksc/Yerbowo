@@ -9,6 +9,9 @@ variables:
   dotnetSdkVersion: '3.x'
 
 steps:
+- task: CmdLine@2
+  inputs:
+    script: 'echo test $(KeyVaultConfig--ClientSecret)'
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
