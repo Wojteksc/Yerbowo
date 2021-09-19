@@ -9,7 +9,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Users.ChangeUsers
 {
-	internal class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
+	public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
 	{
 		private readonly IMapper _mapper;
 		private readonly IUserRepository _userRepository;

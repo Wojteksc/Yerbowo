@@ -6,7 +6,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Users.GetUserDetails
 {
-	internal class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, UserDetailsDto>
+	public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, UserDetailsDto>
 	{
 		private readonly IUserRepository _userRepository;
 		private readonly IMapper _mapper;
