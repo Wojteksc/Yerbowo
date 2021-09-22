@@ -14,9 +14,7 @@ steps:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
     targetFiles: '**/azurekeyvault.json'
-- task: CmdLine@2
-  inputs:
-    script: 'echo test $(KeyVaultConfig--ClientSecret)'
+
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
@@ -43,4 +41,28 @@ steps:
     publishTestResults: true
     projects: '**/*.Tests.csproj'
 
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    workingDir: YerbowoFrontend
+    verbose: false
+
+- task: Npm@1
+  displayName: 'Build Angular'
+  inputs:
+    command: custom
+    workingDir: YerbowoFrontend
+    verbose: false
+    customCommand: 'run build'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
+  inputs:
+    SourceFolder: 'YerbowoFrontend'
+    Contents: '**'
+    TargetFolder: '$(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
+
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
