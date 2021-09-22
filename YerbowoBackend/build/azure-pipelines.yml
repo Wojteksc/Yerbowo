@@ -53,7 +53,7 @@ steps:
     command: custom
     workingDir: YerbowoFrontend
     verbose: false
-    customCommand: 'run build'
+    customCommand: 'run build:prod'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
