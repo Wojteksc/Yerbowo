@@ -14,9 +14,7 @@ steps:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
     targetFiles: '**/azurekeyvault.json'
-- task: CmdLine@2
-  inputs:
-    script: 'echo test $(KeyVaultConfig--ClientSecret)'
+
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
@@ -32,7 +30,7 @@ steps:
   displayName: 'Build the project - $(buildConfiguration)'
   inputs:
     command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
