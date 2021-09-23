@@ -46,12 +46,12 @@ jobs:
     displayName: 'Publish project'
     inputs:
       command: publish
-      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/backend'
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: drop'
     inputs:
-      PathtoPublish: '$(Build.artifactStagingDirectory)'
+      PathtoPublish: '$(Build.artifactStagingDirectory)/backend'
   
 - job: Frontend
   pool:
@@ -74,4 +74,4 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: drop'
     inputs:
-      PathtoPublish: 'client/.dist/web'
+      PathtoPublish: '$(Build.artifactStagingDirectory)/frontend'
