@@ -34,12 +34,13 @@ steps:
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Run tests $(buildConfiguration)'
+  displayName: 'Run tests - $(buildConfiguration)'
   inputs:
     command: 'test'
     arguments: '--no-build --configuration $(buildConfiguration)'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
+  enabled: false
 
 - task: Npm@1
   displayName: 'npm install'
@@ -56,13 +57,13 @@ steps:
     customCommand: 'run build:prod'
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
     SourceFolder: 'YerbowoBackend/src/Yerbowo.Api/wwwroot'
     Contents: '**'
-    TargetFolder: '$(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
