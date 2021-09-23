@@ -74,4 +74,4 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: drop'
     inputs:
-      PathtoPublish: '$(Build.artifactStagingDirectory)/frontend'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/frontend'
