@@ -58,7 +58,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
   inputs:
-    SourceFolder: 'YerbowoFrontend'
+    SourceFolder: 'YerbowoBackend/src/Yerbowo.Api/wwwroot'
     Contents: '**'
     TargetFolder: '$(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
 
