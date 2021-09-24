@@ -1,68 +1,77 @@
 trigger: none
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   buildConfiguration: 'Release'
-  wwwrootDir: 'src/Yerbowo.Api/wwwroot'
   dotnetSdkVersion: '3.x'
 
-steps:
-- task: FileTransform@1
-  inputs:
-    folderPath: '$(System.DefaultWorkingDirectory)/**/'
-    fileType: 'json'
-    targetFiles: '**/azurekeyvault.json'
+jobs:
+- job: Backend
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: FileTransform@1
+    inputs:
+      folderPath: '$(System.DefaultWorkingDirectory)/**/'
+      fileType: 'json'
+      targetFiles: '**/azurekeyvault.json'
 
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-  inputs:
-    version: '$(dotnetSdkVersion)'
+  - task: UseDotNet@2
+    displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+    inputs:
+      version: '$(dotnetSdkVersion)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore project dependencies'
+    inputs:
+      command: 'restore'
+      projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: 'Build project - $(buildConfiguration)'
+    inputs:
+      command: 'build'
+      arguments: '--no-restore --configuration $(buildConfiguration)'
+      projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests $(buildConfiguration)'
-  inputs:
-    command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration)'
-    publishTestResults: true
-    projects: '**/*.Tests.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: 'Run tests - $(buildConfiguration)'
+    inputs:
+      command: 'test'
+      arguments: '--no-build --configuration $(buildConfiguration)'
+      publishTestResults: true
+      projects: '**/*.Tests.csproj'
+    enabled: false
 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    workingDir: YerbowoFrontend
-    verbose: false
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish project'
+    inputs:
+      command: publish
+      arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)/backend'
 
-- task: Npm@1
-  displayName: 'Build Angular'
-  inputs:
-    command: custom
-    workingDir: YerbowoFrontend
-    verbose: false
-    customCommand: 'run build'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(Build.artifactStagingDirectory)/backend'
+  
+- job: Frontend
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: Npm@1
+    displayName: 'npm install'
+    inputs:
+      workingDir: YerbowoFrontend
+      verbose: false
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
-  inputs:
-    SourceFolder: 'YerbowoFrontend'
-    Contents: '**'
-    TargetFolder: '$(build.artifactstagingdirectory)\_PublishedWebsites\dotnet\YerbowoFrontend'
+  - task: Npm@1
+    displayName: 'Build Angular'
+    inputs:
+      command: custom
+      workingDir: YerbowoFrontend
+      verbose: false
+      customCommand: 'run build:prod'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/frontend'
