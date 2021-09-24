@@ -46,6 +46,7 @@ steps:
   inputs:
     command: publish
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: false
 
 - task: NodeTool@0
   displayName: 'Use Node 12.x'
