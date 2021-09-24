@@ -4,7 +4,6 @@ variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '3.x'
 
-
 pool:
   vmImage: 'windows-latest'
 steps:
@@ -39,7 +38,6 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration)'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
-  enabled: false
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish project'
@@ -67,7 +65,7 @@ steps:
     customCommand: 'run prod-build'
 
 - task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)/wwwroot'
+  displayName: 'Copy angular files to $(build.artifactstagingdirectory)/Yerbowo.Api/wwwroot'
   inputs:
     SourceFolder: YerbowoFrontend/dist/yerbowo
     TargetFolder: '$(build.artifactstagingdirectory)/Yerbowo.Api/wwwroot'
