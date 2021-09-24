@@ -8,6 +8,7 @@ pool:
   vmImage: 'windows-latest'
 steps:
 - task: FileTransform@1
+  displayName: 'Fill azurekeyvault.json'
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
