@@ -64,15 +64,15 @@ jobs:
   - task: Npm@1
     displayName: 'npm install'
     inputs:
-      verbose: false
       workingDir: YerbowoFrontend
+      verbose: false
 
   - task: Npm@1
     displayName: 'Build Angular'
     inputs:
       command: custom
-      verbose: false
       workingDir: YerbowoFrontend
+      verbose: false
       customCommand: 'run prod-build'
 
   - task: CopyPublishBuildArtifacts@1  
