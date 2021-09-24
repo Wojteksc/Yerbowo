@@ -47,7 +47,7 @@ namespace Yerbowo.Api.Extensions
 		public static void UseCorsOptions(this IApplicationBuilder app)
 		{
 			app.UseCors(builder => builder
-			.WithOrigins("http://localhost:4200", "http://yerbowo.woytech.net")
+			.WithOrigins("http://localhost:4200", "http://yerbowo.woytech.net", "https://yerbowoapp.azurewebsites.net/")
 			.AllowAnyMethod()
 			.AllowAnyHeader()
 			.AllowCredentials());
