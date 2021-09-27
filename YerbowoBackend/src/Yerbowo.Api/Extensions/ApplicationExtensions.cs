@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -44,10 +45,10 @@ namespace Yerbowo.Api.Extensions
 			});
 		}
 
-		public static void UseCorsOptions(this IApplicationBuilder app)
+		public static void UseCorsOptions(this IApplicationBuilder app, IConfiguration configuration)
 		{
 			app.UseCors(builder => builder
-			.WithOrigins("http://localhost:4200", "http://yerbowo.woytech.net")
+			.WithOrigins(configuration.GetSection("CorsOrigins").Get<string[]>())
 			.AllowAnyMethod()
 			.AllowAnyHeader()
 			.AllowCredentials());
