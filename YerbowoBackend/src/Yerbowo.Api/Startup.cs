@@ -55,7 +55,7 @@ namespace Yerbowo.Api
                 app.UseHttpsRedirection();
             }
 
-            app.UseCorsOptions();
+            app.UseCorsOptions(Configuration);
             app.UseRouting();
             app.UseSecurityHeaders();
             app.UseAuthentication();
