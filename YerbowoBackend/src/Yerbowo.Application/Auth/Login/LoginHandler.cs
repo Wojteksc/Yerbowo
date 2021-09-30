@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Auth.Login
 {
-	public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
+    public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 	{
 		private readonly IUserRepository _userRepository;
 		private readonly IPasswordValidator _passwordValidator;

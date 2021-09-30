@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
 using System;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Yerbowo.Application.Services;
