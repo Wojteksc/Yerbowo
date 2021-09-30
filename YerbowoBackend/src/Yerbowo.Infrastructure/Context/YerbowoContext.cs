@@ -69,7 +69,7 @@ namespace Yerbowo.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfigurationsFromAssembly();
+            builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
 
     }

@@ -2,7 +2,7 @@ trigger: none
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '3.x'
+  dotnetSdkVersion: '5.x'
 
 pool:
   vmImage: 'windows-latest'
