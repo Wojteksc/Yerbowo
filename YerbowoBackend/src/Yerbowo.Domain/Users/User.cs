@@ -38,7 +38,7 @@ namespace Yerbowo.Domain.Users
 			Email = email;
 			CompanyName = companyName;
 			SetRole(role);
-			PhotoUrl = photoUrl;
+			SetPhotoUrl(photoUrl);
 			Provider = provider;
 			SetPassword(password);
 		}
@@ -63,8 +63,6 @@ namespace Yerbowo.Domain.Users
 
 		public void SetPhotoUrl(string photoUrl)
 		{
-			Guard.Against.NullOrEmpty(photoUrl, nameof(photoUrl));
-
 			PhotoUrl = photoUrl;
 		}
 	}

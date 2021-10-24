@@ -13,34 +13,40 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
 {
     public class LoginHandlerTest
     {
+        private readonly Mock<IUserRepository> _mockUserRepository;
+        private readonly Mock<IPasswordValidator> _mockPasswordValidator;
+        private readonly Mock<IJwtHandler> _mockJwtHandler;
+
         private readonly User user;
+
         public LoginHandlerTest()
         {
             user = new User("firstName", "lastName", "email@email.com", "companyName",
                 "role", "photoUrl", "provider", "password");
+
+            _mockUserRepository = new Mock<IUserRepository>();
+            _mockPasswordValidator = new Mock<IPasswordValidator>();
+            _mockJwtHandler = new Mock<IJwtHandler>();
         }
 
         [Fact]
         public async Task Login_When_Incorrect_Data_Should_Return_Message()
         {
-            var mockUserRepository = new Mock<IUserRepository>();
-            mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
 
-            var mockPasswordValidator = new Mock<IPasswordValidator>();
-            mockPasswordValidator.Setup(x => x.Equals(
+            _mockPasswordValidator.Setup(x => x.Equals(
                 It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
                 .Returns(false);
 
-            var mockJwtHandler = new Mock<IJwtHandler>();
-            mockJwtHandler.Setup(x => x.CreateToken(
+            _mockJwtHandler.Setup(x => x.CreateToken(
                 It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(It.IsAny<TokenDto>());
 
             var loginHandler = new LoginHandler(
-                mockUserRepository.Object,
-                mockPasswordValidator.Object,
-                mockJwtHandler.Object);
+                _mockUserRepository.Object,
+                _mockPasswordValidator.Object,
+                _mockJwtHandler.Object);
 
             var loginCommand = new LoginCommand
             {
@@ -55,24 +61,21 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
         [Fact]
         public async Task Login_When_Correct_Data_Should_Return_Token()
         {
-            var mockUserRepository = new Mock<IUserRepository>();
-            mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
 
-            var mockPasswordValidator = new Mock<IPasswordValidator>();
-            mockPasswordValidator.Setup(x => x.Equals(
+            _mockPasswordValidator.Setup(x => x.Equals(
                 It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
                 .Returns(true);
 
-            var mockJwtHandler = new Mock<IJwtHandler>();
-            mockJwtHandler.Setup(x => x.CreateToken(
+            _mockJwtHandler.Setup(x => x.CreateToken(
                 It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(new TokenDto());
 
             var loginHandler = new LoginHandler(
-                mockUserRepository.Object,
-                mockPasswordValidator.Object,
-                mockJwtHandler.Object);
+                _mockUserRepository.Object,
+                _mockPasswordValidator.Object,
+                _mockJwtHandler.Object);
 
             var loginCommand = new LoginCommand
             {
@@ -86,21 +89,17 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
         [Fact]
         public async Task Login_When_User_Does_Not_Exist_Should_Return_Correct_Message()
         {
-            var mockUserRepository = new Mock<IUserRepository>();
-            mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult<User>(null));
 
-            var mockPasswordValidator = new Mock<IPasswordValidator>();
-            mockPasswordValidator.Setup(x => x.Equals(
+            _mockPasswordValidator.Setup(x => x.Equals(
                 It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
                 .Returns(false);
 
-            var mockJwtHandler = new Mock<IJwtHandler>();
-
             var loginHandler = new LoginHandler(
-                mockUserRepository.Object,
-                mockPasswordValidator.Object,
-                mockJwtHandler.Object);
+                _mockUserRepository.Object,
+                _mockPasswordValidator.Object,
+                _mockJwtHandler.Object);
 
             var loginCommand = new LoginCommand
             {

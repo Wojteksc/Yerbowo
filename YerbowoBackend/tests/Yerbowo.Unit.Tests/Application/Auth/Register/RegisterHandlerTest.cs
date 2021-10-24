@@ -12,55 +12,57 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Register
 {
     public class RegisterHandlerTest
     {
+        private readonly Mock<IUserRepository> _mockUserRepository;
+        private readonly Mock<IMapper> _mockMapper;
+
         private readonly User user;
         private readonly RegisterCommand registerCommand;
 
         public RegisterHandlerTest()
         {
+            _mockUserRepository = new Mock<IUserRepository>();
+            _mockMapper = new Mock<IMapper>();
+
             user = new User("firstName", "lastName", "email@email.com", "companyName",
                 "role", "photoUrl", "provider", "password");
-            registerCommand = new RegisterCommand() { Email = user.Email, Password = "password" };
+            registerCommand = new RegisterCommand() { Email = "email@email.com", Password = "password" };
         }
 
         [Fact]
         public async Task Reigster_should_add_user_correctly()
         {
-            var mockUserRepository = new Mock<IUserRepository>();
-            mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
+            _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
                 .ReturnsAsync(false);
-            mockUserRepository.Setup(x => x.AddAsync(user));
 
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
+            _mockUserRepository.Setup(x => x.AddAsync(user));
+
+            _mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
                 .Returns(user);
 
-            var handler = new RegisterHandler(mockUserRepository.Object, mockMapper.Object);
+            var handler = new RegisterHandler(_mockUserRepository.Object, _mockMapper.Object);
             await handler.Handle(registerCommand, 
                 It.IsAny<CancellationToken>());
 
-            mockUserRepository.Verify(x => x.AddAsync(user), Times.Once());
+            _mockUserRepository.Verify(x => x.AddAsync(user), Times.Once());
         }
 
         [Fact]
         public async Task Reigster_should_throw_exception_when_add_user_by_the_same_user_mail()
         {
-            var mockUserRepository = new Mock<IUserRepository>();
-            mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
+            _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
                 .ReturnsAsync(true);
-            mockUserRepository.Setup(x => x.AddAsync(user));
 
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
+            _mockUserRepository.Setup(x => x.AddAsync(user));
+
+            _mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
                 .Returns(user);
 
-            var handler = new RegisterHandler(mockUserRepository.Object, mockMapper.Object);
-            Func<Task> act = () => handler.Handle(
-                new RegisterCommand() { Email = user.Email, Password = "password" },
-                It.IsAny<CancellationToken>());
+            var handler = new RegisterHandler(_mockUserRepository.Object, _mockMapper.Object);
+            Func<Task> act = () => handler.Handle(registerCommand, It.IsAny<CancellationToken>());
 
             var exception = await Assert.ThrowsAsync<Exception>(act);
             Assert.Equal("Nazwa użytkownika jest zajęta", exception.Message);
-            mockUserRepository.Verify(x => x.AddAsync(user), Times.Never());
+            _mockUserRepository.Verify(x => x.AddAsync(user), Times.Never());
         }
     }
 }
