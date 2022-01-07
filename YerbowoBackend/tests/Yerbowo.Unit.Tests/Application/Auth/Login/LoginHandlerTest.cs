@@ -30,7 +30,35 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
         }
 
         [Fact]
-        public async Task Login_When_Incorrect_Data_Should_Return_Message()
+        public async Task Should_ReturnToken_When_LoginDetailsAreCorrect()
+        {
+            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+
+            _mockPasswordValidator.Setup(x => x.Equals(
+                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+                .Returns(true);
+
+            _mockJwtHandler.Setup(x => x.CreateToken(
+                It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(new TokenDto());
+
+            var loginHandler = new LoginHandler(
+                _mockUserRepository.Object,
+                _mockPasswordValidator.Object,
+                _mockJwtHandler.Object);
+
+            var loginCommand = new LoginCommand
+            {
+                Email = It.IsAny<string>()
+            };
+
+            var result = await loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_LoginDetailsAreIncorrect()
         {
             _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
@@ -59,35 +87,7 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Login
         }
 
         [Fact]
-        public async Task Login_When_Correct_Data_Should_Return_Token()
-        {
-            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
-
-            _mockPasswordValidator.Setup(x => x.Equals(
-                It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
-                .Returns(true);
-
-            _mockJwtHandler.Setup(x => x.CreateToken(
-                It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new TokenDto());
-
-            var loginHandler = new LoginHandler(
-                _mockUserRepository.Object,
-                _mockPasswordValidator.Object,
-                _mockJwtHandler.Object);
-
-            var loginCommand = new LoginCommand
-            {
-                Email = It.IsAny<string>()
-            };
-
-            var result = await loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
-            Assert.NotNull(result);
-        }
-
-        [Fact]
-        public async Task Login_When_User_Does_Not_Exist_Should_Return_Correct_Message()
+        public async Task Should_ThrowException_When_UserDoesNotExist()
         {
             _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult<User>(null));

@@ -15,7 +15,7 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 		}
 
 		[Fact]
-		public async Task Get_Orders_Should_Return_Unauthroized_When_Anonymous_User()
+		public async Task Should_ReturnUnauthorizedStatusCode_When_UserIsAnonymous()
 		{
 			var response = await _httpClient.GetAsync("api/users/1/orders");
 

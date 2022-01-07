@@ -34,54 +34,7 @@ namespace Yerbowo.Unit.Tests.Application.Auth.SocialLogin
         }
 
         [Fact]
-        public async Task Should_Throw_Exception_When_Email_Is_Null()
-        {
-            var socialLoginCommand = new SocialLoginCommand()
-            {
-                FirstName = "Test",
-                LastName = "Test",
-                Provider = "Facebook"
-            };
-
-            var socialLoginHandler = new SocialLoginHandler(
-                _mockUserRepository.Object,
-                _mockMapper.Object,
-                _mockJwtHandler.Object);
-
-            Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-            var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
-            Assert.Equal($"Na Twoim koncie {(socialLoginCommand.Provider.ToTitle())} nie jest zapisany adres e-mail", exception.Message);
-        }
-
-        [Fact]
-        public async Task Should_Throw_Exception_When_User_Is_Removed()
-        {
-            var socialLoginCommand = new SocialLoginCommand()
-            {
-                FirstName = "Test",
-                LastName = "Test",
-                Provider = "Facebook",
-                Email = "test@gmail.com",
-                PhotoUrl = "http://www.test.pl"
-            };
-
-            user.IsRemoved = true;
-
-            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
-
-            var socialLoginHandler = new SocialLoginHandler(
-              _mockUserRepository.Object,
-              _mockMapper.Object,
-              _mockJwtHandler.Object);
-
-            Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-            var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
-            Assert.Equal($"Konto nie istnieje", exception.Message);
-        }
-
-        [Fact]
-        public async Task Should_Create_New_Account_For_User_That_Does_Not_Exist_In_Database()
+        public async Task Should_CreateNewAccount_When_UserDoesNotExistInDatabase()
         {
             var socialLoginCommand = new SocialLoginCommand()
             {
@@ -120,7 +73,7 @@ namespace Yerbowo.Unit.Tests.Application.Auth.SocialLogin
         }
 
         [Fact]
-        public async Task Should_Set_PhotoUrl_From_Command_When_User_Does_Not_Have_Photo_Url()
+        public async Task Should_SetPhotoUrl_When_UserDoesNotHavePhotoUrl()
         {
             user.SetPhotoUrl(string.Empty);
 
@@ -158,6 +111,53 @@ namespace Yerbowo.Unit.Tests.Application.Auth.SocialLogin
             ResponseToken response = await socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
             response.Token.Role.Should().Be("user");
             response.PhotoUrl.Should().Be(socialLoginCommand.PhotoUrl);
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_EmailIsNull()
+        {
+            var socialLoginCommand = new SocialLoginCommand()
+            {
+                FirstName = "Test",
+                LastName = "Test",
+                Provider = "Facebook"
+            };
+
+            var socialLoginHandler = new SocialLoginHandler(
+                _mockUserRepository.Object,
+                _mockMapper.Object,
+                _mockJwtHandler.Object);
+
+            Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
+            var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
+            Assert.Equal($"Na Twoim koncie {(socialLoginCommand.Provider.ToTitle())} nie jest zapisany adres e-mail", exception.Message);
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_UserIsRemoved()
+        {
+            var socialLoginCommand = new SocialLoginCommand()
+            {
+                FirstName = "Test",
+                LastName = "Test",
+                Provider = "Facebook",
+                Email = "test@gmail.com",
+                PhotoUrl = "http://www.test.pl"
+            };
+
+            user.IsRemoved = true;
+
+            _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+
+            var socialLoginHandler = new SocialLoginHandler(
+              _mockUserRepository.Object,
+              _mockMapper.Object,
+              _mockJwtHandler.Object);
+
+            Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
+            var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
+            Assert.Equal($"Konto nie istnieje", exception.Message);
         }
     }
 }

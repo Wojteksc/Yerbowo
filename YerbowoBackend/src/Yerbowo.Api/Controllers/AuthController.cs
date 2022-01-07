@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 using Yerbowo.Application.Auth.Login;
 using Yerbowo.Application.Auth.Register;
@@ -37,7 +38,7 @@ namespace Yerbowo.Api.Controllers
         public async Task<IActionResult> Register(RegisterCommand command)
         {
             await _mediator.Send(command);
-            return StatusCode(201);
+            return StatusCode((int)HttpStatusCode.Created);
         }
     }
 }

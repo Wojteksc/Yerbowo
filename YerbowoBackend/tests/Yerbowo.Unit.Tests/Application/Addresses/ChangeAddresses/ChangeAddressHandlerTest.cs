@@ -13,25 +13,7 @@ namespace Yerbowo.Unit.Tests.Application.Addresses.ChangeAddresses
     public class ChangeAddressHandlerTest
     {
         [Fact]
-        public async Task Throw_Exception_When_Address_Does_Not_Exist()
-        {
-            var mockAddressRepository = new Mock<IAddressRepository>();
-            mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-                .Returns(Task.FromResult<Address>(null));
-
-            var mockMapper = new Mock<IMapper>();
-
-            var changeAddresHandler = new ChangeAddressHandler(
-                mockAddressRepository.Object, 
-                mockMapper.Object);
-
-            Func<Task> act = () => changeAddresHandler.Handle(new ChangeAddressCommand(), It.IsAny<CancellationToken>());
-            var exception = await Assert.ThrowsAsync<Exception>(act);
-            Assert.Equal("Nie znaleziono adresu", exception.Message);
-        }
-
-        [Fact]
-        public async Task Change_Address_Should_Modify_Correctly()
+        public async Task Should_ChangeAddress_When_CommandHasCorrectData()
         {
 
             var address = new Address(1,
@@ -51,7 +33,7 @@ namespace Yerbowo.Unit.Tests.Application.Addresses.ChangeAddresses
                Id = 1,
                Alias = "aliastTest",
                FirstName = "firstName",
-               Lastname = "LastName",
+               LastName = "LastName",
                Street = "Street2",
                BuildingNumber = "2",
                ApartmentNumber = "30",
@@ -78,6 +60,24 @@ namespace Yerbowo.Unit.Tests.Application.Addresses.ChangeAddresses
             await changeAddresHandler.Handle(command, It.IsAny<CancellationToken>());
 
             mockAddressRepository.Verify(x => x.UpdateAsync(address), Times.Once());
+        }
+
+        [Fact]
+        public async Task Should_ThrowException_When_AddressDoesNotExist()
+        {
+            var mockAddressRepository = new Mock<IAddressRepository>();
+            mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
+                .Returns(Task.FromResult<Address>(null));
+
+            var mockMapper = new Mock<IMapper>();
+
+            var changeAddresHandler = new ChangeAddressHandler(
+                mockAddressRepository.Object,
+                mockMapper.Object);
+
+            Func<Task> act = () => changeAddresHandler.Handle(new ChangeAddressCommand(), It.IsAny<CancellationToken>());
+            var exception = await Assert.ThrowsAsync<Exception>(act);
+            Assert.Equal("Nie znaleziono adresu", exception.Message);
         }
     }
 }

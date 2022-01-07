@@ -31,6 +31,5 @@ namespace Yerbowo.Api.Controllers
 
             return Ok(products);
         }
-
     }
 }

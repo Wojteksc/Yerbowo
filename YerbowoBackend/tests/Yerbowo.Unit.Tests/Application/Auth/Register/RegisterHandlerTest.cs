@@ -29,7 +29,7 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Register
         }
 
         [Fact]
-        public async Task Reigster_should_add_user_correctly()
+        public async Task Should_CreateUser_When_DataAreCorrect()
         {
             _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
                 .ReturnsAsync(false);
@@ -46,8 +46,9 @@ namespace Yerbowo.Unit.Tests.Application.Auth.Register
             _mockUserRepository.Verify(x => x.AddAsync(user), Times.Once());
         }
 
+        
         [Fact]
-        public async Task Reigster_should_throw_exception_when_add_user_by_the_same_user_mail()
+        public async Task Should_ThrowException_When_CreateUserWithTheSameEmail()
         {
             _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
                 .ReturnsAsync(true);

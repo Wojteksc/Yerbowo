@@ -13,7 +13,7 @@ namespace Yerbowo.Unit.Tests.Application.Addresses.CreateAddresses
     public class CreateAddressHandlerTest
     {
         [Fact]
-        public async Task Create_Address_Should_Add_Correctly()
+        public async Task Should_CreateAddress_When_CommandHasCorrectData()
         {
             var address = new Address(
             1,
@@ -32,7 +32,7 @@ namespace Yerbowo.Unit.Tests.Application.Addresses.CreateAddresses
             {
                 Alias = "aliastTest",
                 FirstName = "firstName",
-                Lastname = "LastName",
+                LastName = "LastName",
                 Street = "Street2",
                 BuildingNumber = "15A",
                 ApartmentNumber = "3",

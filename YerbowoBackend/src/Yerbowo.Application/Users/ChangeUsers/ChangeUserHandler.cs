@@ -61,7 +61,7 @@ namespace Yerbowo.Application.Users.ChangeUsers
 			}
 			else if (!string.IsNullOrEmpty(command.ConfirmPassword) && command.ConfirmPassword.Length < 6)
 			{
-				throw new Exception("Powtórz hasło musi zawierać co najmniej 6 znaków.");
+				throw new Exception("Powtórz hasło, musi zawierać co najmniej 6 znaków.");
 			}
 		}
 	}

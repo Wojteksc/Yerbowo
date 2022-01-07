@@ -17,7 +17,7 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 		}
 
 		[Fact]
-		private async Task Get_Products_By_Paging_Shoould_Return_The_Same_Quantity()
+		private async Task GetProductsByPaging_Shoould_ReturnTheSameQuantity()
 		{
 			const int Quantity = 3;
 			var products = await _httpClient.GetAsync<List<ProductCardDto>>($"api/products?category=yerba-mate&subcategory=klasyczne&pageNumber=1&pageSize={Quantity}");

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore.Internal;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -9,11 +9,10 @@ using Yerbowo.Application.Cart;
 using Yerbowo.Application.Cart.AddCartItems;
 using Yerbowo.Application.Cart.ChangeCartItems;
 using Yerbowo.Functional.Tests.Web.Extensions;
-using System.Linq;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers
 {
-	public class CartControllerTest : IClassFixture<WebTestFixture>
+    public class CartControllerTest : IClassFixture<WebTestFixture>
     {
 		private readonly HttpClient _httpClient;
 
@@ -23,27 +22,17 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 		}
 
 		[Fact]
-		public async Task Add_Product_To_Cart_Should_Return_Status_Code_204()
+		public async Task AddProduct_Should_ReturnStatusCodeOk()
 		{
 			int productId = 1;
+			
 			var response = await PostAsync(productId, quantity: 1);
 
-			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+			response.StatusCode.Should().Be(HttpStatusCode.OK);
 		}
 
 		[Fact]
-		public async Task Remove_Product_From_Cart_Should_Return_Status_Code_204()
-		{
-			int productId = 2;
-			var responsePost = await PostAsync(productId, quantity: 1);
-			var responseDelete = await DeleteAsync(productId);
-
-			Assert.Equal(HttpStatusCode.OK, responsePost.StatusCode);
-			Assert.Equal(HttpStatusCode.OK, responseDelete.StatusCode);
-		}
-
-		[Fact]
-		public async Task Add_Two_Products_To_Cart_And_Remove_One_Product_From_Cart_Should_Return_One_Product()
+		public async Task AddTwoProducts_And_RemoveOneProduct_Should_ReturnOneProduct()
 		{
 			int firstProduct = 3;
 			await PostAsync(firstProduct, quantity: 1);
@@ -55,11 +44,11 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var cart = await GetAsync();
 
-			Assert.Single(cart.Items);
+			cart.Items.Should().ContainSingle();
 		}
 
 		[Fact]
-		public async Task Add_Three_The_Same_Products_Should_Return_Three_Quantity()
+		public async Task AddThreeTheSameProducts_Should_ReturnThreeQuantity()
 		{
 			int productId = 5;
 			int quantity = 1;
@@ -70,11 +59,11 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var cart = await GetAsync();
 
-			Assert.Equal(total, cart.Items[0].Quantity);
+			cart.Items[0].Quantity.Should().Be(total);
 		}
 
 		[Fact]
-		public async Task Add_Three_The_Same_Products_And_Delete_It_Should_Return_Empty_Cart()
+		public async Task AddTheSameThreeProducts_And_DeleteThem_Should_ReturnEmptyCart()
 		{
 			int productId = 6;
 			int quantity = 1;
@@ -86,23 +75,11 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var cart = await GetAsync();
 
-			Assert.True(!cart.Items.Any());
+			cart.Items.Should().BeEmpty();
 		}
 
 		[Fact]
-		public async Task Add_Product_With_Custom_Quantity_Should_Return_The_Same_Quantity_Of_The_Product()
-		{
-			int productId = 7;
-			int quantity = 5;
-			await PostAsync(productId, quantity);
-
-			var cart = await GetAsync();
-
-			Assert.Equal(quantity, cart.Items[0].Quantity);
-		}
-
-		[Fact]
-		public async Task Add_Product_Many_Times_With_Different_Quantities_Should_Return_Correct_Quantity()
+		public async Task AddTheSameProductManyTimesWithDifferentQuantities_ShouldReturnCorrectQuantity()
 		{
 			int productId = 7;
 			int firstQuantity = 3;
@@ -115,11 +92,11 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var cart = await GetAsync();
 
-			Assert.Equal(totalQuantity, cart.Items[0].Quantity);
+			cart.Items[0].Quantity.Should().Be(totalQuantity);
 		}
 
 		[Fact]
-		public async Task Update_Cart_Product_Should_Work_Properly()
+		public async Task UpdateProduct_ShouldWorkCorrectly()
 		{
 			int productId = 8;
 			int expectedQuantity = 4;
@@ -128,11 +105,22 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var cart = await GetAsync();
 
-			Assert.Equal(expectedQuantity, cart.Items[0].Quantity);
+			cart.Items[0].Quantity.Should().Be(expectedQuantity);
 		}
 
 		[Fact]
-		public async Task Over_Stock_Will_Result_In_An_Error()
+		public async Task RemoveProduct_Should_ReturnStatusCodeOk()
+		{
+			int productId = 2;
+
+			await PostAsync(productId, quantity: 1);
+			var responseDelete = await DeleteAsync(productId);
+
+			responseDelete.StatusCode.Should().Be(HttpStatusCode.OK);
+		}
+
+		[Fact]
+		public async Task OverStock_Should_ThrowError()
 		{
 			Func<Task> func = async () => await PostAsync(productId: 9, quantity: 9999999);
 			await Assert.ThrowsAsync<Exception>(func);
