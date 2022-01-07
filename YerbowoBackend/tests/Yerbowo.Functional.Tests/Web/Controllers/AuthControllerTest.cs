@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
@@ -26,7 +27,7 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 		}
 
 		[Fact, Priority(0)]
-		public async Task Register_Account_Should_Return_Status_Code_201()
+		public async Task Register_Should_ReturnStatusCodeCreated()
 		{
 			var registerCommand = new RegisterCommand
 			{
@@ -40,11 +41,11 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var response = await AuthHelper.RegisterAsync(_httpClient, registerCommand);
 
-			Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+			response.StatusCode.Should().Be(HttpStatusCode.Created);
 		}
 
 		[Fact]
-		public async Task Login_should_return_not_null_token()
+		public async Task Login_Should_ReturnToken()
 		{
 			var loginCommand = new LoginCommand
 			{
@@ -54,12 +55,12 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 
 			var message = await AuthHelper.LoginAsync(_httpClient, loginCommand);
 
-			Assert.Equal(HttpStatusCode.OK, message.response.StatusCode);
-			Assert.NotNull(message.token);
+			message.response.StatusCode.Should().Be(HttpStatusCode.OK);
+			message.token.Should().NotBe(null);
 		}
 
 		[Fact]
-		public async Task Social_login_should_return_not_null_token()
+		public async Task SocialLogin_Should_ReturnToken()
 		{
 			var socialLoginCommand = new SocialLoginCommand
 			{
@@ -71,8 +72,8 @@ namespace Yerbowo.Functional.Tests.Web.Controllers
 			var stringResponse = await response.Content.ReadAsStringAsync();
 			var tokenDto = JsonConvert.DeserializeObject<ResponseToken>(stringResponse);
 
-			Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-			Assert.NotNull(tokenDto);
+			response.StatusCode.Should().Be(HttpStatusCode.OK);
+			tokenDto.Should().NotBe(null);
 		}
 	}
 }

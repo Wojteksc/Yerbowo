@@ -12,7 +12,7 @@ namespace Yerbowo.Application.Addresses.CreateAddresses
         [Required(ErrorMessage = "Imię jest wymagane")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Nazwisko jest wymagane")]
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
         [Required(ErrorMessage = "Ulica jest wymagana")]
         public string Street { get; set; }
         [Required(ErrorMessage = "Numer budynku jest wymagane")]

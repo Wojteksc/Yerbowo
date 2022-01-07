@@ -19,40 +19,34 @@ namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests
 		Product product1 { get; } = new ProductFaker().UsePrivateConstructor().Generate();
 		Product product2 { get; } = new ProductFaker().UsePrivateConstructor().Generate();
 
-		public ProductRepositoryTests()
-		{
-		}
-
+		
 		[Fact]
-		public async Task Adding_A_Product_Should_Also_Return_The_Same_Product()
+		public async Task Should_ReturnProduct()
 		{
 			IProductRepository repository = new ProductRepository(DbContextHelper.GetInMemory());
 
-			//ACT
 			await repository.AddAsync(product1);
 			await repository.AddAsync(product2);
 			Product exisitingProudct = await repository.GetAsync(product1.Id);
 
-			//ASSERT
 			exisitingProudct.Should().BeEquivalentTo(product1);
 		}
 
+		
 		[Fact]
-		public async Task Adding_Two_Products_Should_Also_Return_Two_Products()
+		public async Task Should_ReturnTwoProducts()
 		{
 			IProductRepository repository = new ProductRepository(DbContextHelper.GetInMemory());
 
-			//ACT
 			await repository.AddAsync(product1);
 			await repository.AddAsync(product2);
 			IEnumerable<Product> products = await repository.GetAllAsync();
 
-			//ASSERT
 			products.Should().NotBeEmpty().And.HaveCount(2);
 		}
 
 		[Fact]
-		public async Task Browse_Async_method_Should_Work_Correctly()
+		public async Task Should_BrowseProducts()
 		{
 			const int ProductQuantity = 100;
 			IProductRepository repository = new ProductRepository(DbContextHelper.GetInMemory());
@@ -71,11 +65,9 @@ namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests
 				PageSize = 30
 			};
 
-			//ACT
 			PagedList<Product> productsFromRepo = await repository.BrowseAsync(@params.PageNumber,
 				@params.PageSize, @params.Category, @params.Subcategory);
 
-			//ASSERT
 			productsFromRepo.Should().HaveCount(@params.PageSize);
 			productsFromRepo.PageSize.Should().Be(@params.PageSize);
 			productsFromRepo.PageNumber.Should().Be(@params.PageNumber);
@@ -83,29 +75,26 @@ namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests
 		}
 
 		[Fact]
-		public async Task When_Updating_Product_Should_Be_Updated_Correctly()
+		public async Task Should_UpdateProduct()
 		{
 			IProductRepository repository = new ProductRepository(DbContextHelper.GetInMemory());
 			string newCode = "9031101";
 
-			//ACT
 			await repository.AddAsync(product1);
 			product1.SetCode(newCode);
 			await repository.UpdateAsync(product1);
 			var existstingProduct = await repository.GetAsync(product1.Id);
 
-			//ASSERT
 			existstingProduct.Should().NotBeNull();
 			existstingProduct.Code.Should().Be(newCode);
 		}
 
 
 		[Fact]
-		public async Task When_Deleting_Product_Should_Be_Deleted_Correctly()
+		public async Task Should_DeleteProduct()
 		{
 			IProductRepository repository = new ProductRepository(DbContextHelper.GetInMemory());
 
-			//ACT
 			await repository.AddAsync(product1);
 			await repository.AddAsync(product2);
 			await repository.RemoveAsync(product1);
@@ -113,11 +102,8 @@ namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests
 			var existstingProduct = await repository.GetAsync(product2.Id);
 			var removedProduct = await repository.GetAsync(product1.Id);
 
-			//ASSERT
 			removedProduct.Should().BeNull();
-
 			existstingProduct.Should().BeEquivalentTo(product2);
 		}
-
 	}
 }

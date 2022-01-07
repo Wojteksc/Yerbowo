@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Yerbowo.Application.Cart.AddCartItems;
@@ -10,7 +9,7 @@ using Yerbowo.Application.Cart.RemoveCartItems;
 
 namespace Yerbowo.Api.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("api/cart")]
 	public class CartController : ApiControllerBase
 	{
@@ -35,19 +34,19 @@ namespace Yerbowo.Api.Controllers
 			return Ok(totalCartItems);
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> Add(AddCartItemCommand command)
+		{
+			var cart = await _mediator.Send(command);
+			return Ok(cart);
+		}
+
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Put(int id, ChangeCartItemCommand command)
 		{
 			if (id != command.Id)
 				return BadRequest();
 
-			var cart = await _mediator.Send(command);
-			return Ok(cart);
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Add(AddCartItemCommand command)
-		{
 			var cart = await _mediator.Send(command);
 			return Ok(cart);
 		}

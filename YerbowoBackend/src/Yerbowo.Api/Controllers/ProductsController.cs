@@ -27,7 +27,7 @@ namespace Yerbowo.Api.Controllers
         {
             var product = await _mediator.Send(new GetProductBySlugQuery(slug));
 
-            return product != null ? (IActionResult)Ok(product) : NotFound();
+            return Ok(product);
         }
 
         [HttpGet]
