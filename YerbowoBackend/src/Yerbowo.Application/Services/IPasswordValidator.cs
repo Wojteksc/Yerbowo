@@ -1,7 +1,6 @@
-﻿namespace Yerbowo.Application.Services
+﻿namespace Yerbowo.Application.Services;
+
+public interface IPasswordValidator
 {
-    public interface IPasswordValidator
-    {
-        bool Equals(string newPassword, byte[] currentPassword, byte[] currentPasswordSalt);
-    }
+    bool Equals(string newPassword, byte[] currentPassword, byte[] currentPasswordSalt);
 }

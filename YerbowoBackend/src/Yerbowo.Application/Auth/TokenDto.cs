@@ -1,9 +1,8 @@
-﻿namespace Yerbowo.Application.Auth
+﻿namespace Yerbowo.Application.Auth;
+
+public class TokenDto
 {
-    public class TokenDto
-    {
-        public string Token { get; set; }
-        public string Role { get; set; }
-        public long Expires { get; set; }
-    }
+    public string Token { get; set; }
+    public string Role { get; set; }
+    public long Expires { get; set; }
 }

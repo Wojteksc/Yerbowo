@@ -1,8 +1,7 @@
-﻿namespace Yerbowo.Application.Auth
+﻿namespace Yerbowo.Application.Auth;
+
+public class ResponseToken
 {
-    public class ResponseToken
-    {
-        public TokenDto Token { get; set; }
-        public string PhotoUrl { get; set; }
-    }
+    public TokenDto Token { get; set; }
+    public string PhotoUrl { get; set; }
 }

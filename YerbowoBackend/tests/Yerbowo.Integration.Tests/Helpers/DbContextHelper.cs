@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Yerbowo.Infrastructure.Context;
+﻿using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Integration.Tests.Helpers
 {

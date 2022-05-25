@@ -1,14 +1,11 @@
-﻿using MediatR;
+﻿namespace Yerbowo.Application.Addresses.GetAddressDetails;
 
-namespace Yerbowo.Application.Addresses.GetAddressDetails
+public class GetAddressByIdQuery : IRequest<AddressDetailsDto>
 {
-    public class GetAddressByIdQuery : IRequest<AddressDetailsDto>
-    {
-        public int Id { get; }
+    public int Id { get; }
 
-        public GetAddressByIdQuery(int id)
-        {
-            Id = id;
-        }
+    public GetAddressByIdQuery(int id)
+    {
+        Id = id;
     }
 }

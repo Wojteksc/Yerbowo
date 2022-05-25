@@ -1,79 +1,70 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Xunit;
-using Xunit.Priority;
-using Yerbowo.Application.Auth;
+﻿using Yerbowo.Application.Auth;
 using Yerbowo.Application.Auth.Login;
 using Yerbowo.Application.Auth.Register;
 using Yerbowo.Application.Auth.SocialLogin;
 using Yerbowo.Functional.Tests.Web.Helpers;
 
-namespace Yerbowo.Functional.Tests.Web.Controllers
+namespace Yerbowo.Functional.Tests.Web.Controllers;
+
+[TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
+public class AuthControllerTest : IClassFixture<WebTestFixture>
 {
-    [TestCaseOrderer(PriorityOrderer.Name, PriorityOrderer.Assembly)]
-	public class AuthControllerTest : IClassFixture<WebTestFixture>
+	private readonly HttpClient _httpClient;
+	private const string PrimaryEmail = "authControllerTest@gmail.com";
+	private const string PrimaryPassword = "secret";
+
+	public AuthControllerTest(WebTestFixture factory)
 	{
-		private readonly HttpClient _httpClient;
-		private const string PrimaryEmail = "authControllerTest@gmail.com";
-		private const string PrimaryPassword = "secret";
+		_httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
+	}
 
-		public AuthControllerTest(WebTestFixture factory)
+	[Fact, Priority(0)]
+	public async Task Register_Should_ReturnStatusCodeCreated()
+	{
+		var registerCommand = new RegisterCommand
 		{
-			_httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
-		}
+			Email = PrimaryEmail,
+			ConfirmEmail = PrimaryEmail,
+			Password = PrimaryPassword,
+			ConfirmPassword = PrimaryPassword,
+			FirstName = "FirstTest",
+			LastName = "LastTest",
+		};
 
-		[Fact, Priority(0)]
-		public async Task Register_Should_ReturnStatusCodeCreated()
+		var response = await AuthHelper.RegisterAsync(_httpClient, registerCommand);
+
+		response.StatusCode.Should().Be(HttpStatusCode.Created);
+	}
+
+	[Fact]
+	public async Task Login_Should_ReturnToken()
+	{
+		var loginCommand = new LoginCommand
 		{
-			var registerCommand = new RegisterCommand
-			{
-				Email = PrimaryEmail,
-				ConfirmEmail = PrimaryEmail,
-				Password = PrimaryPassword,
-				ConfirmPassword = PrimaryPassword,
-				FirstName = "FirstTest",
-				LastName = "LastTest",
-			};
+			Email = PrimaryEmail,
+			Password = PrimaryPassword
+		};
 
-			var response = await AuthHelper.RegisterAsync(_httpClient, registerCommand);
+		var message = await AuthHelper.LoginAsync(_httpClient, loginCommand);
 
-			response.StatusCode.Should().Be(HttpStatusCode.Created);
-		}
+		message.response.StatusCode.Should().Be(HttpStatusCode.OK);
+		message.token.Should().NotBe(null);
+	}
 
-		[Fact]
-		public async Task Login_Should_ReturnToken()
+	[Fact]
+	public async Task SocialLogin_Should_ReturnToken()
+	{
+		var socialLoginCommand = new SocialLoginCommand
 		{
-			var loginCommand = new LoginCommand
-			{
-				Email = PrimaryEmail,
-				Password = PrimaryPassword
-			};
+			Email = "authControllerTestSocialLogin@gmail.com",
+			Provider = "GOOGLE"
+		};
 
-			var message = await AuthHelper.LoginAsync(_httpClient, loginCommand);
+		var response = await AuthHelper.SocialLoginAsync(_httpClient, socialLoginCommand);
+		var stringResponse = await response.Content.ReadAsStringAsync();
+		var tokenDto = JsonConvert.DeserializeObject<ResponseToken>(stringResponse);
 
-			message.response.StatusCode.Should().Be(HttpStatusCode.OK);
-			message.token.Should().NotBe(null);
-		}
-
-		[Fact]
-		public async Task SocialLogin_Should_ReturnToken()
-		{
-			var socialLoginCommand = new SocialLoginCommand
-			{
-				Email = "authControllerTestSocialLogin@gmail.com",
-				Provider = "GOOGLE"
-			};
-
-			var response = await AuthHelper.SocialLoginAsync(_httpClient, socialLoginCommand);
-			var stringResponse = await response.Content.ReadAsStringAsync();
-			var tokenDto = JsonConvert.DeserializeObject<ResponseToken>(stringResponse);
-
-			response.StatusCode.Should().Be(HttpStatusCode.OK);
-			tokenDto.Should().NotBe(null);
-		}
+		response.StatusCode.Should().Be(HttpStatusCode.OK);
+		tokenDto.Should().NotBe(null);
 	}
 }

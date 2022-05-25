@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿namespace Yerbowo.Api.Builders;
 
-namespace Yerbowo.Api.Builders
+public class ConfigBuilder
 {
-    public class ConfigBuilder
-    {
-        public static IConfigurationBuilder CreateConfigBuilder() =>
-            new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("azurekeyvault.json");
-    }
+    public static IConfigurationBuilder CreateConfigBuilder() =>
+        new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile("azurekeyvault.json");
 }

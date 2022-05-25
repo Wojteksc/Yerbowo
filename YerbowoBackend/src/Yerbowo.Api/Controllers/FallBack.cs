@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
+﻿namespace Yerbowo.Api.Controllers;
 
-namespace Yerbowo.Api.Controllers
+public class FallBack : Controller
 {
-    public class FallBack : Controller
+    public IActionResult Index()
     {
-        public IActionResult Index()
-        {
-            return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(),
-                "wwwroot", "index.html"), "text/HTML");
-        }
+        return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(),
+            "wwwroot", "index.html"), "text/HTML");
     }
 }

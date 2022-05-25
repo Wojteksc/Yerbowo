@@ -1,34 +1,28 @@
-﻿
-using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Yerbowo.Application.Products.DeleteProducts;
+﻿using Yerbowo.Application.Products.DeleteProducts;
 using Yerbowo.Infrastructure.Data.Products;
 
-namespace Yerbowo.Application.Products.RemoveProducts
+namespace Yerbowo.Application.Products.RemoveProducts;
+
+public class RemoveProductHandler : IRequestHandler<RemoveProductCommand>
 {
-	public class RemoveProductHandler : IRequestHandler<RemoveProductCommand>
+	private readonly IProductRepository _productRepository;
+
+	public RemoveProductHandler(IProductRepository productRepository)
 	{
-		private readonly IProductRepository _productRepository;
+		_productRepository = productRepository;
+	}
 
-		public RemoveProductHandler(IProductRepository productRepository)
+	public async Task<Unit> Handle(RemoveProductCommand request, CancellationToken cancellationToken)
+	{
+		var product = await _productRepository.GetAsync(request.Id);
+
+		if (product == null || product.IsRemoved)
 		{
-			_productRepository = productRepository;
+			throw new Exception("Produkt nie istnieje");
 		}
 
-		public async Task<Unit> Handle(RemoveProductCommand request, CancellationToken cancellationToken)
-		{
-			var product = await _productRepository.GetAsync(request.Id);
+		await _productRepository.RemoveAsync(product);
 
-			if (product == null || product.IsRemoved)
-			{
-				throw new Exception("Produkt nie istnieje");
-			}
-
-			await _productRepository.RemoveAsync(product);
-
-			return Unit.Value;
-		}
+		return Unit.Value;
 	}
 }

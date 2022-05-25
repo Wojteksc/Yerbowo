@@ -1,15 +1,12 @@
-﻿using MediatR;
+﻿namespace Yerbowo.Application.Users.GetUserDetails;
 
-namespace Yerbowo.Application.Users.GetUserDetails
+public class GetUserByEmailQuery : IRequest<UserDetailsDto>
 {
-    public class GetUserByEmailQuery : IRequest<UserDetailsDto>
+    public string Email { get; }
+
+    public GetUserByEmailQuery(string email)
     {
-        public string Email { get; }
-
-        public GetUserByEmailQuery(string email)
-        {
-            Email = email;
-        }
-
+        Email = email;
     }
+
 }

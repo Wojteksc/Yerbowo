@@ -1,29 +1,23 @@
-﻿using AutoMapper;
-using MediatR;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Yerbowo.Infrastructure.Data.Orders;
+﻿using Yerbowo.Infrastructure.Data.Orders;
 
-namespace Yerbowo.Application.Orders.GetOrders
+namespace Yerbowo.Application.Orders.GetOrders;
+
+public class GetOrdersByUserIdHandler : IRequestHandler<GetOrdersByUserIdQuery, IEnumerable<OrderDto>>
 {
-	public class GetOrdersByUserIdHandler : IRequestHandler<GetOrdersByUserIdQuery, IEnumerable<OrderDto>>
+	private readonly IOrderRepository _orderRepository;
+	private readonly IMapper _mapper;
+
+	public GetOrdersByUserIdHandler(IOrderRepository orderRepository,
+		IMapper mapper)
 	{
-		private readonly IOrderRepository _orderRepository;
-		private readonly IMapper _mapper;
+		_orderRepository = orderRepository;
+		_mapper = mapper;
+	}
 
-		public GetOrdersByUserIdHandler(IOrderRepository orderRepository,
-			IMapper mapper)
-		{
-			_orderRepository = orderRepository;
-			_mapper = mapper;
-		}
+	public async Task<IEnumerable<OrderDto>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
+	{
+		var orders = await _orderRepository.GetByUserAsync(request.UserId);
 
-		public async Task<IEnumerable<OrderDto>> Handle(GetOrdersByUserIdQuery request, CancellationToken cancellationToken)
-		{
-			var orders = await _orderRepository.GetByUserAsync(request.UserId);
-
-			return _mapper.Map<IEnumerable<OrderDto>>(orders);
-		}
+		return _mapper.Map<IEnumerable<OrderDto>>(orders);
 	}
 }

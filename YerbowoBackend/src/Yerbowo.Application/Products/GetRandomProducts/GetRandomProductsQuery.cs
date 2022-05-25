@@ -1,8 +1,5 @@
-﻿using MediatR;
+﻿namespace Yerbowo.Application.Products.GetRandomProducts;
 
-namespace Yerbowo.Application.Products.GetRandomProducts
+public class GetRandomProductsQuery : IRequest<RandomProductsDto>
 {
-	public class GetRandomProductsQuery : IRequest<RandomProductsDto>
-	{
-	}
 }

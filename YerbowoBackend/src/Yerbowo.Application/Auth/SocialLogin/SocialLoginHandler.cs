@@ -1,62 +1,56 @@
-﻿using AutoMapper;
-using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Yerbowo.Application.Services;
+﻿using Yerbowo.Application.Services;
 using Yerbowo.Domain.Extensions;
 using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Data.Users;
 
-namespace Yerbowo.Application.Auth.SocialLogin
+namespace Yerbowo.Application.Auth.SocialLogin;
+
+public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseToken>
 {
-    public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseToken>
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
+    private readonly IJwtHandler _jwtHandler;
+
+    public SocialLoginHandler(IUserRepository userRepository,
+        IMapper mapper,
+        IJwtHandler jwtHandler)
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
-        private readonly IJwtHandler _jwtHandler;
+        _userRepository = userRepository;
+        _mapper = mapper;
+        _jwtHandler = jwtHandler;
+    }
 
-        public SocialLoginHandler(IUserRepository userRepository,
-            IMapper mapper,
-            IJwtHandler jwtHandler)
+    public async Task<ResponseToken> Handle(SocialLoginCommand request, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(request.Email))
+            throw new UnauthorizedAccessException($"Na Twoim koncie {(request.Provider.ToTitle())} nie jest zapisany adres e-mail");
+
+        var user = await _userRepository.GetAsync(request.Email);
+
+        if (IsUserRemoved(user))
+            throw new UnauthorizedAccessException($"Konto nie istnieje");
+
+        if (user == null)
         {
-            _userRepository = userRepository;
-            _mapper = mapper;
-            _jwtHandler = jwtHandler;
+            user = _mapper.Map<User>(request);
+            user.SetRole("user");
+            await _userRepository.AddAsync(user);
+        }
+        else if(string.IsNullOrEmpty(user.PhotoUrl))
+        {
+            user.SetPhotoUrl(request.PhotoUrl);
+            await _userRepository.SaveAllAsync();
         }
 
-        public async Task<ResponseToken> Handle(SocialLoginCommand request, CancellationToken cancellationToken)
+        return new ResponseToken()
         {
-            if (string.IsNullOrEmpty(request.Email))
-                throw new UnauthorizedAccessException($"Na Twoim koncie {(request.Provider.ToTitle())} nie jest zapisany adres e-mail");
+            Token = _jwtHandler.CreateToken(user.Id, user.Email, user.Role),
+            PhotoUrl = user.PhotoUrl
+        };
+    }
 
-            var user = await _userRepository.GetAsync(request.Email);
-
-            if (IsUserRemoved(user))
-                throw new UnauthorizedAccessException($"Konto nie istnieje");
-
-            if (user == null)
-            {
-                user = _mapper.Map<User>(request);
-                user.SetRole("user");
-                await _userRepository.AddAsync(user);
-            }
-            else if(string.IsNullOrEmpty(user.PhotoUrl))
-            {
-                user.SetPhotoUrl(request.PhotoUrl);
-                await _userRepository.SaveAllAsync();
-            }
-
-            return new ResponseToken()
-            {
-                Token = _jwtHandler.CreateToken(user.Id, user.Email, user.Role),
-                PhotoUrl = user.PhotoUrl
-            };
-        }
-
-        private bool IsUserRemoved(User user)
-        {
-            return user != null && user.IsRemoved;
-        }
+    private bool IsUserRemoved(User user)
+    {
+        return user != null && user.IsRemoved;
     }
 }

@@ -1,57 +1,49 @@
-﻿using AutoMapper;
-using FluentAssertions;
-using Moq;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
-using Yerbowo.Application.Addresses.GetAddressDetails;
+﻿using Yerbowo.Application.Addresses.GetAddressDetails;
 using Yerbowo.Domain.Addresses;
 using Yerbowo.Infrastructure.Data.Addresses;
 
-namespace Yerbowo.Unit.Tests.Application.Addresses.GetAddressDetails
+namespace Yerbowo.Unit.Tests.Application.Addresses.GetAddressDetails;
+
+public class GetAddressByIdHandlerTest
 {
-    public class GetAddressByIdHandlerTest
+    [Fact]
+    public async Task Should_ReturnAddress_When_ExistsInDatabase()
     {
-        [Fact]
-        public async Task Should_ReturnAddress_When_ExistsInDatabase()
+        var address = new Address(1,"aliasTest","firstNameTest", "lastNameTest",
+            "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
+            "postCodeTest", "phoneTest", "emailTest");
+
+        var addressQuery = new GetAddressByIdQuery(1);
+
+        var addressDetailsDto = new AddressDetailsDto()
         {
-            var address = new Address(1,"aliasTest","firstNameTest", "lastNameTest",
-                "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
-                "postCodeTest", "phoneTest", "emailTest");
+            UserId = 1,
+            Alias = "aliasTest",
+            FirstName = "firstNameTest",
+            LastName = "lastNameTest",
+            Street = "streetTest",
+            BuildingNumber = "buildingNumberTest",
+            ApartmentNumber = "apartmentNumberTest",
+            Place = "placeTest",
+            PostCode = "postCodeTest",
+            Phone = "phoneTest",
+            Email = "emailTest"
+        };
 
-            var addressQuery = new GetAddressByIdQuery(1);
+        var mockMapper = new Mock<IMapper>();
+        mockMapper.Setup(x => x.Map<AddressDetailsDto>(address))
+            .Returns(addressDetailsDto);
 
-            var addressDetailsDto = new AddressDetailsDto()
-            {
-                UserId = 1,
-                Alias = "aliasTest",
-                FirstName = "firstNameTest",
-                LastName = "lastNameTest",
-                Street = "streetTest",
-                BuildingNumber = "buildingNumberTest",
-                ApartmentNumber = "apartmentNumberTest",
-                Place = "placeTest",
-                PostCode = "postCodeTest",
-                Phone = "phoneTest",
-                Email = "emailTest"
-            };
+        var mockAddressRepository = new Mock<IAddressRepository>();
+        mockAddressRepository.Setup(x => x.GetAsync(addressQuery.Id))
+            .ReturnsAsync(address);
 
-            var mockMapper = new Mock<IMapper>();
-            mockMapper.Setup(x => x.Map<AddressDetailsDto>(address))
-                .Returns(addressDetailsDto);
+        var getAddressByIdHandler = new GetAddressByIdHandler(
+            mockMapper.Object,
+            mockAddressRepository.Object);
 
-            var mockAddressRepository = new Mock<IAddressRepository>();
-            mockAddressRepository.Setup(x => x.GetAsync(addressQuery.Id))
-                .ReturnsAsync(address);
+        var result = await getAddressByIdHandler.Handle(addressQuery, It.IsAny<CancellationToken>());
 
-            var getAddressByIdHandler = new GetAddressByIdHandler(
-                mockMapper.Object,
-                mockAddressRepository.Object);
-
-            var result = await getAddressByIdHandler.Handle(addressQuery, It.IsAny<CancellationToken>());
-
-            result.Should().Be(addressDetailsDto);
-        }
+        result.Should().Be(addressDetailsDto);
     }
 }

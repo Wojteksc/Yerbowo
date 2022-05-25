@@ -1,37 +1,31 @@
-﻿using AutoMapper;
-using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Yerbowo.Domain.Users;
+﻿using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Data.Users;
 
-namespace Yerbowo.Application.Auth.Register
-{
-    public class RegisterHandler : IRequestHandler<RegisterCommand>
-	{
-        private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+namespace Yerbowo.Application.Auth.Register;
 
-        public RegisterHandler(IUserRepository userRepository,
-            IMapper mapper)
-        {
-            _userRepository = userRepository;
-            _mapper = mapper;
-        }
+public class RegisterHandler : IRequestHandler<RegisterCommand>
+	{
+    private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
+
+    public RegisterHandler(IUserRepository userRepository,
+        IMapper mapper)
+    {
+        _userRepository = userRepository;
+        _mapper = mapper;
+    }
 
 		public async Task<Unit> Handle(RegisterCommand request, CancellationToken cancellationToken)
 		{
-            if (await _userRepository.ExistsAsync(request.Email))
-                throw new Exception("Nazwa użytkownika jest zajęta");
+        if (await _userRepository.ExistsAsync(request.Email))
+            throw new Exception("Nazwa użytkownika jest zajęta");
 
-            var user = _mapper.Map<User>(request);
-            user.SetPassword(request.Password);
-            user.SetRole("user");
+        var user = _mapper.Map<User>(request);
+        user.SetPassword(request.Password);
+        user.SetRole("user");
 
-            await _userRepository.AddAsync(user);
+        await _userRepository.AddAsync(user);
 
-            return Unit.Value;
-        }
+        return Unit.Value;
+    }
 	}
-}

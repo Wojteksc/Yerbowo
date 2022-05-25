@@ -1,17 +1,13 @@
-﻿using MediatR;
-using System.Collections.Generic;
+﻿namespace Yerbowo.Application.Cart.ChangeCartItems;
 
-namespace Yerbowo.Application.Cart.ChangeCartItems
+public class ChangeCartItemCommand : IRequest<CartDto>
 {
-	public class ChangeCartItemCommand : IRequest<CartDto>
-	{
-		public int Id { get; }
-		public int Quantity { get; }
+	public int Id { get; }
+	public int Quantity { get; }
 
-		public ChangeCartItemCommand(int id, int quantity)
-		{
-			Id = id;
-			Quantity = quantity;
-		}
+	public ChangeCartItemCommand(int id, int quantity)
+	{
+		Id = id;
+		Quantity = quantity;
 	}
 }

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using Yerbowo.Domain.Products;
+﻿using Yerbowo.Domain.Products;
 using Yerbowo.Fakers;
 using Yerbowo.Fakers.Extensions;
 
 namespace Yerbowo.Integration.Tests.Builders
 {
-	public class ProductGenerator
+    public class ProductGenerator
 	{
 		/// <summary>
 		/// Generates products according to the given quantity with assigned concrete subcategory and category

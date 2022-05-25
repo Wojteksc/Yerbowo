@@ -1,7 +1,6 @@
-﻿namespace Yerbowo.Application.Settings
+﻿namespace Yerbowo.Application.Settings;
+
+public class Consts
 {
-	public class Consts
-    {
-        public const string CartSessionKey = "CartSessionKey";
-    }
+    public const string CartSessionKey = "CartSessionKey";
 }

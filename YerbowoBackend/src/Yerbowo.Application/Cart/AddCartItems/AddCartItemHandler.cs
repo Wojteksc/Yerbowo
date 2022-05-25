@@ -1,85 +1,74 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Yerbowo.Application.Cart.Utils;
+﻿using Yerbowo.Application.Cart.Utils;
 using Yerbowo.Application.Extensions;
 using Yerbowo.Application.Settings;
 using Yerbowo.Infrastructure.Data.Products;
 
-namespace Yerbowo.Application.Cart.AddCartItems
+namespace Yerbowo.Application.Cart.AddCartItems;
+
+public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
 {
-	public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
+	private readonly IHttpContextAccessor _httpContextAccessor;
+	private ISession _session;
+	private readonly IProductRepository _productRepository;
+	private readonly IMapper _mapper;
+
+	public AddCartItemHandler(IHttpContextAccessor httpContextAccessor,
+		IProductRepository productRepository,
+		IMapper mapper)
 	{
-		private readonly IHttpContextAccessor _httpContextAccessor;
-		private ISession _session;
-		private readonly IProductRepository _productRepository;
-		private readonly IMapper _mapper;
+		_httpContextAccessor = httpContextAccessor;
+		_session = _httpContextAccessor.HttpContext.Session;
+		_productRepository = productRepository;
+		_mapper = mapper;
+	}
 
-		public AddCartItemHandler(IHttpContextAccessor httpContextAccessor,
-			IProductRepository productRepository,
-			IMapper mapper)
+	public async Task<CartDto> Handle(AddCartItemCommand request, CancellationToken cancellationToken)
+	{
+		CartHelper.VerifyQuantity(request.Quantity);
+
+		var productDb = await _productRepository.GetAsync(request.Id, x => x
+			.Include(p => p.Subcategory)
+			.ThenInclude(s => s.Category));
+
+		var productDto = _mapper.Map<CartProductItemDto>(productDb);
+		var products = _session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey);
+
+		if (products == null)
 		{
-			_httpContextAccessor = httpContextAccessor;
-			_session = _httpContextAccessor.HttpContext.Session;
-			_productRepository = productRepository;
-			_mapper = mapper;
+			products = new List<CartItemDto>();
+			await AddNewProductToCart(products, productDto, request);
 		}
-
-		public async Task<CartDto> Handle(AddCartItemCommand request, CancellationToken cancellationToken)
+		else
 		{
-			CartHelper.VerifyQuantity(request.Quantity);
+			int productIndex = products.FindIndex(x => x.Product.Id == productDb.Id);
 
-			var productDb = await _productRepository.GetAsync(request.Id, x => x
-				.Include(p => p.Subcategory)
-				.ThenInclude(s => s.Category));
-
-			var productDto = _mapper.Map<CartProductItemDto>(productDb);
-			var products = _session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey);
-
-			if (products == null)
+			if (productIndex != -1)
 			{
-				products = new List<CartItemDto>();
-				await AddNewProductToCart(products, productDto, request);
+				int productQuantity = products[productIndex].Quantity + request.Quantity;
+				await CartHelper.VerifyStock(_productRepository, request.Id, productQuantity);
+
+				products[productIndex].Quantity = productQuantity;
+				_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(products));
 			}
 			else
 			{
-				int productIndex = products.FindIndex(x => x.Product.Id == productDb.Id);
-
-				if (productIndex != -1)
-				{
-					int productQuantity = products[productIndex].Quantity + request.Quantity;
-					await CartHelper.VerifyStock(_productRepository, request.Id, productQuantity);
-
-					products[productIndex].Quantity = productQuantity;
-					_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(products));
-				}
-				else
-				{
-					await AddNewProductToCart(products, productDto, request);
-				}
+				await AddNewProductToCart(products, productDto, request);
 			}
-
-			return _mapper.Map<CartDto>(_session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey));
 		}
 
-		private async Task AddNewProductToCart(List<CartItemDto> cart, CartProductItemDto productDetailsDto, AddCartItemCommand request)
+		return _mapper.Map<CartDto>(_session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey));
+	}
+
+	private async Task AddNewProductToCart(List<CartItemDto> cart, CartProductItemDto productDetailsDto, AddCartItemCommand request)
+	{
+		await CartHelper.VerifyStock(_productRepository, request.Id, request.Quantity);
+
+		cart.Add(new CartItemDto()
 		{
-			await CartHelper.VerifyStock(_productRepository, request.Id, request.Quantity);
+			Product = productDetailsDto,
+			Quantity = request.Quantity
+		});
 
-			cart.Add(new CartItemDto()
-			{
-				Product = productDetailsDto,
-				Quantity = request.Quantity
-			});
-
-			_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(cart));
-		}
+		_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(cart));
 	}
 }

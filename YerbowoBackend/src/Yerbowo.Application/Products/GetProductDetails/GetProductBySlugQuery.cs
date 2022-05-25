@@ -1,14 +1,11 @@
-﻿using MediatR;
+﻿namespace Yerbowo.Application.Products.GetProductDetails;
 
-namespace Yerbowo.Application.Products.GetProductDetails
+public class GetProductBySlugQuery : IRequest<ProductDetailsDto>
 {
-	public class GetProductBySlugQuery : IRequest<ProductDetailsDto>
-	{
-		public string Slug { get; }
+	public string Slug { get; }
 
-		public GetProductBySlugQuery(string slug)
-		{
-			Slug = slug;
-		}
+	public GetProductBySlugQuery(string slug)
+	{
+		Slug = slug;
 	}
 }

@@ -1,8 +1,5 @@
-﻿using MediatR;
+﻿namespace Yerbowo.Application.Cart.GetCartItems;
 
-namespace Yerbowo.Application.Cart.GetCartItems
+public class GetCartItemsQuery : IRequest<CartDto>
 {
-	public class GetCartItemsQuery : IRequest<CartDto>
-    {
-    }
 }
