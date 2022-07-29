@@ -40,7 +40,7 @@ public static class ApplicationExtensions
 	public static void UseCorsOptions(this IApplicationBuilder app, IConfiguration configuration)
 	{
 		app.UseCors(builder => builder
-		.WithOrigins(configuration.GetSection("CorsOrigins").Get<string[]>())
+		.WithOrigins(configuration.GetValue<string>("App:CorsOrigins"))
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials());

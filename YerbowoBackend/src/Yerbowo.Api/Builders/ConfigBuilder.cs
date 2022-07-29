@@ -5,5 +5,5 @@ public class ConfigBuilder
     public static IConfigurationBuilder CreateConfigBuilder() =>
         new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
-            .AddJsonFile("azurekeyvault.json");
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json");
 }

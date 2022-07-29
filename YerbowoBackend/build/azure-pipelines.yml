@@ -2,6 +2,7 @@ trigger:
   - develop
 
 variables:
+  ASPNETCORE_ENVIRONMENT: 'Production'
   buildConfiguration: 'Release'
   dotnetSdkVersion: '6.x'
 
@@ -9,11 +10,11 @@ pool:
   vmImage: 'windows-latest'
 steps:
 - task: FileTransform@1
-  displayName: 'Fill azurekeyvault.json'
+  displayName: 'Fill Azure Key vault'
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
-    targetFiles: '**/azurekeyvault.json'
+    targetFiles: '**/appsettings.Production.json'
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'

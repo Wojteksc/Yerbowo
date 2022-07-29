@@ -25,7 +25,6 @@ public static class ServiceExtensions
 	public static void AddConfigure(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
-		services.Configure<AppSettings>(configuration.GetSection("App"));
 	}
 
 	public static void AddContext(this IServiceCollection services, IConfiguration configuration)
