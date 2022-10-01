@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Api.Extensions;
+﻿using System.Linq;
+
+namespace Yerbowo.Api.Extensions;
 
 public static class ApplicationExtensions
 {
@@ -40,7 +42,7 @@ public static class ApplicationExtensions
 	public static void UseCorsOptions(this IApplicationBuilder app, IConfiguration configuration)
 	{
 		app.UseCors(builder => builder
-		.WithOrigins(configuration.GetValue<string>("App:CorsOrigins"))
+		.WithOrigins(configuration.GetValue<string>("App:CorsOrigins").Split(";"))
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials());

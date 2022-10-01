@@ -1,8 +1,12 @@
-﻿using Yerbowo.Application.Auth;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
+using Yerbowo.Application.Auth;
+using Yerbowo.Application.Auth.ConfirmEmail;
 using Yerbowo.Application.Auth.Login;
 using Yerbowo.Application.Auth.Register;
 using Yerbowo.Application.Auth.SocialLogin;
 using Yerbowo.Functional.Tests.Web.Helpers;
+using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers;
 
@@ -10,16 +14,18 @@ namespace Yerbowo.Functional.Tests.Web.Controllers;
 public class AuthControllerTest : IClassFixture<WebTestFixture>
 {
 	private readonly HttpClient _httpClient;
-	private const string PrimaryEmail = "authControllerTest@gmail.com";
+	private readonly IServiceProvider _serviceProvider;
+	private const string PrimaryEmail = "mailsendersc@testemail.com";
 	private const string PrimaryPassword = "secret";
 
 	public AuthControllerTest(WebTestFixture factory)
 	{
-		_httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
+		_httpClient = factory.CreateClient();
+		_serviceProvider = factory.Services;
 	}
 
 	[Fact, Priority(0)]
-	public async Task Register_Should_ReturnStatusCodeCreated()
+	public async Task Register_Should_ReturnStatusCodeOk()
 	{
 		var registerCommand = new RegisterCommand
 		{
@@ -33,11 +39,29 @@ public class AuthControllerTest : IClassFixture<WebTestFixture>
 
 		var response = await AuthHelper.RegisterAsync(_httpClient, registerCommand);
 
-		response.StatusCode.Should().Be(HttpStatusCode.Created);
+		response.StatusCode.Should().Be(HttpStatusCode.OK);
 	}
 
-	[Fact]
-	public async Task Login_Should_ReturnToken()
+    [Fact, Priority(1)]
+    public async Task ConfirmEmail_Should_ReturnStatusCodeOk()
+	{
+        var userRepository = _serviceProvider.GetService<IUserRepository>();
+
+        var userDb = await userRepository.GetAsync(PrimaryEmail);
+
+        var confirmEmailCommand = new ConfirmEmailCommand()
+		{
+            Email = PrimaryEmail,
+            Token = userDb.VerificationToken
+        };
+
+        var response = await AuthHelper.ConfirmEmailAsync(_httpClient, confirmEmailCommand);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact, Priority(2)]
+    public async Task Login_Should_ReturnToken()
 	{
 		var loginCommand = new LoginCommand
 		{
@@ -56,7 +80,7 @@ public class AuthControllerTest : IClassFixture<WebTestFixture>
 	{
 		var socialLoginCommand = new SocialLoginCommand
 		{
-			Email = "authControllerTestSocialLogin@gmail.com",
+			Email = "authControllerTestSocialLogin@testemail.com",
 			Provider = "GOOGLE"
 		};
 

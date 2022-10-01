@@ -22,6 +22,7 @@ public class YerbowoContextSeed
 
 	public void Seed()
 	{
+		_db.Database.EnsureDeleted();
 		_db.Database.EnsureCreated();
 
 		if (_db.Users.Any())

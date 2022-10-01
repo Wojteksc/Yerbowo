@@ -18,6 +18,7 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Create
 	public async Task<CreateProductCommand> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
 		//TO DO Veryfication by slug or name
+		//ToSlug -> request.Name.TOSlug() 
 		//if (await _productRepository.ExistsAsync(request.Id))
 		//	throw new Exception("Nie znaleziono produktu");
 
@@ -25,6 +26,6 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Create
 
 		await _productRepository.AddAsync(product);
 
-		return _mapper.Map <CreateProductCommand>(product);
+		return _mapper.Map<CreateProductCommand>(product);
 	}
 }

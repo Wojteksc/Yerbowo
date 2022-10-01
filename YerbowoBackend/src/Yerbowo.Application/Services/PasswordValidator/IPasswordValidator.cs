@@ -1,4 +1,4 @@
-﻿namespace Yerbowo.Application.Services;
+﻿namespace Yerbowo.Application.Services.PasswordValidator;
 
 public interface IPasswordValidator
 {

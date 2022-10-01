@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from '../_models/user';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,11 @@ export class AuthService {
   jwtHelper = new JwtHelperService();
   decodedToken: any;
   photoUrl: string;
+  snapshot: ActivatedRouteSnapshot;
 
-constructor(private http: HttpClient) { }
+constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) { 
+  this.snapshot = activatedRoute.snapshot;
+}
 
   login(model: any) {
     return this.http.post(this.baseUrl + 'login', model)
@@ -47,7 +51,6 @@ constructor(private http: HttpClient) { }
 
   setToken(response: any) {
     const user = response.token;
-    
     if (user) {
       localStorage.setItem('token', user.token);
       this.decodedToken = this.jwtHelper.decodeToken(user.token);
@@ -55,11 +58,14 @@ constructor(private http: HttpClient) { }
   }
 
   setPhotoUrl(response: any) {
-    const photoUrl = response.photoUrl;
-    
+    const photoUrl = response.photoUrl; 
     if (photoUrl) {
       localStorage.setItem('photoUrl', photoUrl);
       this.photoUrl = photoUrl;
     }
+  }
+
+  verifyEmail(response: any) {
+    return this.http.post(this.baseUrl + 'confirmEmail', response);
   }
 }

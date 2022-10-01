@@ -13,4 +13,4 @@ public interface IProductRepository : IEntityRepository<Product>
     Task<PagedList<Product>> BrowseAsync(int pageNumber, int pageSize, string category, string subcategory);
 
     Task<IEnumerable<Product>> BrowseRandomAsync(int quantity);
-	}
+}

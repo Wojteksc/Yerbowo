@@ -1,19 +1,24 @@
-﻿using Yerbowo.Application.Addresses.ChangeAddresses;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Yerbowo.Application.Addresses.ChangeAddresses;
 using Yerbowo.Application.Addresses.CreateAddresses;
 using Yerbowo.Application.Addresses.GetAddressDetails;
 using Yerbowo.Application.Auth.Register;
 using Yerbowo.Application.Users.GetUserDetails;
 using Yerbowo.Functional.Tests.Web.Extensions;
 using Yerbowo.Functional.Tests.Web.Helpers;
+using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers;
 
 public class AddressesControllerTest : IClassFixture<WebTestFixture>
 {
     private readonly HttpClient _httpClient;
+    private readonly IServiceProvider _serviceProvider;
     public AddressesControllerTest(WebTestFixture factory)
     {
         _httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
+        _serviceProvider = factory.Services;
     }
 
     [Fact]
@@ -32,13 +37,13 @@ public class AddressesControllerTest : IClassFixture<WebTestFixture>
             FirstName = "FirstNameTest",
             LastName = "LastNameTest",
             CompanyName = "TestCompany",
-            Email = "adressesControllerTest@gmail.com",
-            ConfirmEmail = "adressesControllerTest@gmail.com",
+            Email = "adressesControllerTest@testemail.com",
+            ConfirmEmail = "adressesControllerTest@testemail.com",
             Password = "secret",
             ConfirmPassword = "secret"
         };
 
-        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand);
+        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand, _serviceProvider);
 
         var address = new CreateAddressCommand()
         {
@@ -69,13 +74,13 @@ public class AddressesControllerTest : IClassFixture<WebTestFixture>
             FirstName = "FirstNameTestAddressUpdate",
             LastName = "LastNameTestAddressUpdate",
             CompanyName = "TestCompanyAddressUpdate",
-            Email = "adressesControllerUpdateTest@gmail.com",
-            ConfirmEmail = "adressesControllerUpdateTest@gmail.com",
+            Email = "adressesControllerUpdateTest@testemail.com",
+            ConfirmEmail = "adressesControllerUpdateTest@testemail.com",
             Password = "secret",
             ConfirmPassword = "secret"
         };
 
-        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand);
+        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand, _serviceProvider);
 
         var newAddress = new CreateAddressCommand()
         {
@@ -125,13 +130,13 @@ public class AddressesControllerTest : IClassFixture<WebTestFixture>
             FirstName = "FirstNameTestDelete",
             LastName = "LastNameTestDelete",
             CompanyName = "TestCompanyDelete",
-            Email = "adressesControllerDeleteTest@gmail.com",
-            ConfirmEmail = "adressesControllerDeleteTest@gmail.com",
+            Email = "adressesControllerDeleteTest@testemail.com",
+            ConfirmEmail = "adressesControllerDeleteTest@testemail.com",
             Password = "secret",
             ConfirmPassword = "secret"
         };
 
-        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand);
+        UserDetailsDto user = await AuthHelper.SignUp(_httpClient, registerCommand, _serviceProvider);
 
         var addressCommand = new CreateAddressCommand()
         {

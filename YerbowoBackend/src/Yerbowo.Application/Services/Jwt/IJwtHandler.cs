@@ -1,6 +1,6 @@
 ﻿using Yerbowo.Application.Auth;
 
-namespace Yerbowo.Application.Services;
+namespace Yerbowo.Application.Services.Jwt;
 
 public interface IJwtHandler
 {

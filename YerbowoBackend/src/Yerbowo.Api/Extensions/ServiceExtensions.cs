@@ -1,5 +1,6 @@
-﻿using Yerbowo.Application.Services;
-using Yerbowo.Application.Services.Implementations;
+﻿using Yerbowo.Application.Services.Jwt;
+using Yerbowo.Application.Services.PasswordValidator;
+using Yerbowo.Application.Services.SendGrid;
 using Yerbowo.Application.Settings;
 using Yerbowo.Infrastructure.Context;
 using Yerbowo.Infrastructure.Data.Addresses;
@@ -22,9 +23,10 @@ public static class ServiceExtensions
 			});
 	}
 
-	public static void AddConfigure(this IServiceCollection services, IConfiguration configuration)
+	public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+		services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
 	}
 
 	public static void AddContext(this IServiceCollection services, IConfiguration configuration)
@@ -36,6 +38,7 @@ public static class ServiceExtensions
 	public static void AddServices(this IServiceCollection services)
 	{
 		services.AddTransient<YerbowoContextSeed>();
+
 		services.AddScoped<IProductRepository, ProductRepository>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IOrderRepository, OrderRepository>();
@@ -45,6 +48,7 @@ public static class ServiceExtensions
 		services.AddSingleton<IPasswordValidator, PasswordValidator>();
 		services.AddSingleton(AutoMapperConfig.Initialize());
 		services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+		services.AddSingleton<IVerificationEmailTemplateSender, VerificationEmailTemplateSender>();
 		
 
 		services.AddMediatR(AppDomain.CurrentDomain.Load("Yerbowo.Application"));

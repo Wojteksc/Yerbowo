@@ -22,6 +22,7 @@ import { AddressEditResolver } from './_resolvers/address-edit.resolver';
 import { AccountOptionListComponent } from './components/account/account-option-list/account-option-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
+import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 
 
 export const appRoutes: Routes = [
@@ -31,6 +32,7 @@ export const appRoutes: Routes = [
     { path: 'sklep/:category/:subcategory', component: ProductListComponent, resolve: {products: ProductListResolver} },
     { path: 'sklep/:category/:subcategory/:product', component: ProductDetailComponent, resolve: {product: ProductDetailResolver}},
     { path: 'koszyk', component: CartComponent, resolve: {cart: CartResolver}},
+    { path: 'confirmEmail', component: EmailVerificationComponent },
     {
         path: '',
         runGuardsAndResolvers: 'always',

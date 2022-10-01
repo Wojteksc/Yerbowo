@@ -1,4 +1,6 @@
-﻿using Yerbowo.Api.Extensions;
+﻿using Microsoft.AspNetCore.Identity;
+using Yerbowo.Api.Extensions;
+using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Api;
@@ -15,7 +17,10 @@ public class Startup
     public void ConfigureTestingServices(IServiceCollection services)
     {
         services.AddDbContext<YerbowoContext>(options =>
-            options.UseInMemoryDatabase("DatabaseInMemoryForFunctionalTests"));
+        {
+            options.UseInMemoryDatabase("DatabaseInMemoryForFunctionalTests");
+            options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+        });
         
         ConfigureServices(services);
     }
@@ -25,7 +30,7 @@ public class Startup
     {
         services.AddControllersOptions();
         services.AddMemoryCache();
-        services.AddConfigure(Configuration);
+        services.AddSettings(Configuration);
         services.AddContext(Configuration);
         services.AddServices();
         services.AddAuthentication(Configuration);
@@ -45,9 +50,9 @@ public class Startup
         else
         {
             app.UseForwardedHeadersOptions();
-            app.UseExceptionHandlers();
             app.UseHttpsRedirection();
         }
+            app.UseExceptionHandlers();
 
         app.UseCorsOptions(Configuration);
         app.UseRouting();

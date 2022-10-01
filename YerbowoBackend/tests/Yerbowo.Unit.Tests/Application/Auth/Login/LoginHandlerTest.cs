@@ -1,6 +1,8 @@
-﻿using Yerbowo.Application.Auth;
+﻿using System;
+using Yerbowo.Application.Auth;
 using Yerbowo.Application.Auth.Login;
-using Yerbowo.Application.Services;
+using Yerbowo.Application.Services.Jwt;
+using Yerbowo.Application.Services.PasswordValidator;
 using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Data.Users;
 
@@ -27,6 +29,8 @@ public class LoginHandlerTest
     [Fact]
     public async Task Should_ReturnToken_When_LoginDetailsAreCorrect()
     {
+        user.SetVerificationDate(DateTime.UtcNow);
+
         _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(user);
 
@@ -45,11 +49,11 @@ public class LoginHandlerTest
 
         var loginCommand = new LoginCommand
         {
-            Email = It.IsAny<string>()
+            Email = user.Email
         };
 
         var result = await loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
-        Assert.NotNull(result);
+        result.Should().NotBe(null);
     }
 
     [Fact]
@@ -82,7 +86,7 @@ public class LoginHandlerTest
     }
 
     [Fact]
-    public async Task Should_ThrowException_When_UserDoesNotExist()
+    public async Task Should_ThrowException_When_UserDoesNotExists()
     {
         _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
             .Returns(Task.FromResult<User>(null));
@@ -104,5 +108,34 @@ public class LoginHandlerTest
         Func<Task> act = () => loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
         Assert.Equal("Niepoprawne dane logowania", exception.Message);
+    }
+
+    [Fact]
+    public async Task Should_ThrowException_When_UserDidNotConfirmEmail()
+    {
+        _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(user);
+
+        _mockPasswordValidator.Setup(x => x.Equals(
+            It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+            .Returns(true);
+
+        _mockJwtHandler.Setup(x => x.CreateToken(
+            It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
+            .Returns(new TokenDto());
+
+        var loginHandler = new LoginHandler(
+            _mockUserRepository.Object,
+            _mockPasswordValidator.Object,
+            _mockJwtHandler.Object);
+
+        var loginCommand = new LoginCommand
+        {
+            Email = user.Email
+        };
+
+        Func<Task> act = () => loginHandler.Handle(loginCommand, It.IsAny<CancellationToken>());
+        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
+        Assert.Equal("Rejestracja w sklepie nie została potwierdzona. Odbierz pocztę i kliknij w link potwierdzający.", exception.Message);
     }
 }

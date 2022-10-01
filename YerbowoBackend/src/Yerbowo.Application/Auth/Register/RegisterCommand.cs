@@ -26,8 +26,4 @@ public class RegisterCommand : IRequest
     [StringLength(int.MaxValue, ErrorMessage = "Hasło musi mieć conajmniej 6 znaków", MinimumLength = 6)]
     [Compare("Password", ErrorMessage = "Hasło i potwierdzenie hasła nie są identyczne")]
     public string ConfirmPassword { get; set; }
-
-    public string PhotoUrl { get; set; }
-
-    public string Provider { get; set; }
 }

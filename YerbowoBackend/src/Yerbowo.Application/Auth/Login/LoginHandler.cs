@@ -1,4 +1,5 @@
-﻿using Yerbowo.Application.Services;
+﻿using Yerbowo.Application.Services.Jwt;
+using Yerbowo.Application.Services.PasswordValidator;
 using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Application.Auth.Login;
@@ -25,6 +26,11 @@ public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 		if (user == null || user.IsRemoved ||
 			!_passwordValidator.Equals(request.Password, user.PasswordHash, user.PasswordSalt))
 			throw new UnauthorizedAccessException("Niepoprawne dane logowania");
+
+		if(user.VerifiedAt == null || !user.VerifiedAt.HasValue)
+        {
+			throw new UnauthorizedAccessException("Rejestracja w sklepie nie została potwierdzona. Odbierz pocztę i kliknij w link potwierdzający.");
+        }
 
 		return new ResponseToken()
 		{
