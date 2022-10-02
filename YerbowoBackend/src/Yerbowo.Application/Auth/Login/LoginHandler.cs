@@ -32,9 +32,24 @@ public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 			throw new UnauthorizedAccessException("Rejestracja w sklepie nie została potwierdzona. Odbierz pocztę i kliknij w link potwierdzający.");
         }
 
-		return new ResponseToken()
+		TokenDto tokenDto = _jwtHandler.CreateToken(user.Id, user.Email, user.Role);
+		if(tokenDto == null)
 		{
-			Token = _jwtHandler.CreateToken(user.Id, user.Email, user.Role),
+			try
+			{
+				string tokenstring = tokenDto.Token;
+
+            }
+			catch (Exception)
+			{
+				Console.WriteLine($"UserId: {user.Id}, Email: {user.Email}, Role: {user.Role}");
+				throw;
+			}
+		}
+
+        return new ResponseToken()
+		{
+			Token = token,
 			PhotoUrl = user.PhotoUrl
 		};
 	}
