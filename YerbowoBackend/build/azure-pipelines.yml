@@ -14,7 +14,7 @@ steps:
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
-    targetFiles: '**/appsettings.Production.json'
+    targetFiles: '**/appsettings.Testing.json'
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
