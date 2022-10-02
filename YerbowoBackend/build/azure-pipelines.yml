@@ -2,7 +2,7 @@ trigger:
   - develop
 
 variables:
-  ASPNETCORE_ENVIRONMENT: 'Production'
+  ASPNETCORE_ENVIRONMENT: 'Testing'
   buildConfiguration: 'Release'
   dotnetSdkVersion: '6.x'
 
