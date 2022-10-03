@@ -1,19 +1,19 @@
 ﻿using Yerbowo.Infrastructure.Context;
 
-namespace Yerbowo.Integration.Tests.Helpers
+namespace Yerbowo.Integration.Tests.Helpers;
+
+public static class DbContextHelper
 {
-    public static class DbContextHelper
+    public static YerbowoContext GetInMemory()
     {
-        public static YerbowoContext GetInMemory()
-        {
-            DbContextOptions<YerbowoContext> options;
-            var builder = new DbContextOptionsBuilder<YerbowoContext>();
-            builder.UseInMemoryDatabase("Yerbowo");
-            options = builder.Options;
-            YerbowoContext context = new YerbowoContext(options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            return context;
-        }
+        var options = new DbContextOptionsBuilder<YerbowoContext>()
+        .UseInMemoryDatabase(Guid.NewGuid().ToString())
+        // don't raise the error warning us that the in memory db doesn't support transactions
+        .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+        .Options;
+        var context = new YerbowoContext(options);
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+        return context;
     }
 }

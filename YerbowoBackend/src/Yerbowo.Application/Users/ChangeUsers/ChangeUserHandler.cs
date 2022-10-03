@@ -1,4 +1,4 @@
-﻿using Yerbowo.Application.Services;
+﻿using Yerbowo.Application.Services.PasswordValidator;
 using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Data.Users;
 

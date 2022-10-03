@@ -1,7 +1,7 @@
 ﻿using Yerbowo.Application.Auth;
 using Yerbowo.Application.Auth.SocialLogin;
 using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Services;
+using Yerbowo.Application.Services.Jwt;
 using Yerbowo.Domain.Extensions;
 using Yerbowo.Domain.Users;
 using Yerbowo.Infrastructure.Data.Users;

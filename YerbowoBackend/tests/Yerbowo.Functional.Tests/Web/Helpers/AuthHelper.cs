@@ -1,8 +1,11 @@
-﻿using Yerbowo.Application.Auth;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Yerbowo.Application.Auth;
+using Yerbowo.Application.Auth.ConfirmEmail;
 using Yerbowo.Application.Auth.Login;
 using Yerbowo.Application.Auth.Register;
 using Yerbowo.Application.Auth.SocialLogin;
 using Yerbowo.Application.Users.GetUserDetails;
+using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Functional.Tests.Web.Helpers;
 
@@ -14,8 +17,15 @@ public static class AuthHelper
 		
 		return await httpClient.PostAsync("api/auth/register", request.Content);
 	}
+    
+	public async static Task<HttpResponseMessage> ConfirmEmailAsync(HttpClient httpClient, ConfirmEmailCommand confirmEmailCommand)
+    {
+        HttpRequestMessage request = GetHttpRequestMessage(confirmEmailCommand);
 
-	public async static Task<(HttpResponseMessage response, ResponseToken token)> LoginAsync(HttpClient httpClient, LoginCommand loginCommand)
+        return await httpClient.PostAsync("api/auth/confirmEmail", request.Content);
+    }
+
+    public async static Task<(HttpResponseMessage response, ResponseToken token)> LoginAsync(HttpClient httpClient, LoginCommand loginCommand)
 	{
 		HttpRequestMessage request = GetHttpRequestMessage(loginCommand);
 
@@ -36,28 +46,38 @@ public static class AuthHelper
 		return await httpClient.PostAsync("api/auth/socialLogin", inputMessage.Content);
 	}
 
-	public static async Task<UserDetailsDto> SignUp(HttpClient httpClient, RegisterCommand registerCommand)
+	public async static Task<UserDetailsDto> SignUp(HttpClient httpClient, RegisterCommand registerCommand, IServiceProvider serviceProvider)
 	{
-		await RegisterAsync(httpClient, registerCommand);
+        await RegisterAsync(httpClient, registerCommand);
 
-		var loginCommand = new LoginCommand()
-		{
-			FirstName = registerCommand.FirstName,
-			LastName = registerCommand.LastName,
-			Email = registerCommand.Email,
-			Password = registerCommand.Password,
-			Provider = registerCommand.Provider,
-			PhotoUrl = registerCommand.PhotoUrl
+        var userRepository = serviceProvider.GetService<IUserRepository>();
+
+        var userDb = await userRepository.GetAsync(registerCommand.Email);
+
+        var confirmEmailCommand = new ConfirmEmailCommand()
+        {
+            Email = registerCommand.Email,
+            Token = userDb.VerificationToken
+        };
+
+        await ConfirmEmailAsync(httpClient, confirmEmailCommand);
+
+        var loginCommand = new LoginCommand()
+        {
+            FirstName = registerCommand.FirstName,
+            LastName = registerCommand.LastName,
+            Email = registerCommand.Email,
+			Password = registerCommand.Password
 		};
 
-		await LoginAsync(httpClient, loginCommand);
+        await LoginAsync(httpClient, loginCommand);
 
-		var responseUser = await httpClient.GetAsync($"api/users/{loginCommand.Email}");
-		var responseUserString = await responseUser.Content.ReadAsStringAsync();
-		var user = JsonConvert.DeserializeObject<UserDetailsDto>(responseUserString);
+        var responseUser = await httpClient.GetAsync($"api/users/{loginCommand.Email}");
+        var responseUserString = await responseUser.Content.ReadAsStringAsync();
+        var user = JsonConvert.DeserializeObject<UserDetailsDto>(responseUserString);
 
-		return user;
-	}
+        return user;
+    }
 
 	public static void SetToken(HttpClient httpClient, string token)
 	{

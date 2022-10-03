@@ -49,14 +49,14 @@
           [ngClass]="{ 'is-invalid': f.password.errors && f.password.touched}"
           formControlName="password"
           class="input-text">
-          <div *ngIf="f.password.touched && f.password.errors.required" class="invalid-feedback">Pole 'Hasło' jest wymagane.</div>
+          <!-- <div *ngIf="f.password.touched && f.password.errors?.required" class="invalid-feedback">Pole 'Hasło' jest wymagane.</div> -->
           
           <label class="label" for="confirmPassword">Powtórz hasło: *</label>
           <input type="password"
           [ngClass]="{ 'is-invalid': f.confirmPassword.errors && f.confirmPassword.touched }"
           formControlName="confirmPassword"
           class="input-text">
-          <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors.required" class="invalid-feedback">Pole 'Potwórz hasło' jest wymagane.</div>
+          <!-- <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors?.required" class="invalid-feedback">Pole 'Potwórz hasło' jest wymagane.</div> -->
           <div *ngIf="f.confirmPassword.touched && registerForm.hasError('mismatchPassword')" class="invalid-feedback">Hasła nie są takie same</div>
            
           <div class="right-side">

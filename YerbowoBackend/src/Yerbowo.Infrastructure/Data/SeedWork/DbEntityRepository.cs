@@ -21,17 +21,11 @@ public class DbEntityRepository<TEntity> : IEntityRepository<TEntity> where TEnt
         return await _entitiesNotRemoved.SingleOrDefaultAsync(x => x.Id == id);
     }
 
-    //GetAsync(1, x => x.Include(x => x.Object).ThenInclude(x => x.Object))
     public async Task<TEntity> GetAsync(int id, Func<IQueryable<TEntity>, IQueryable<TEntity>> func)
     {
         IQueryable<TEntity> resultWithEagerLoading = func(_entitiesNotRemoved);
 
         return await resultWithEagerLoading.FirstOrDefaultAsync(e => e.Id == id);
-    }
-
-    public IQueryable<TEntity> GetAll()
-    {
-        return _entitiesNotRemoved.AsNoTracking();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()

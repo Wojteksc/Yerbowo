@@ -16,8 +16,8 @@ confirm(message: string, title: string, okCallBack: () => any ) {
   }).set({title}).set({labels:{ok:'Tak', cancel: 'Nie'}});
 }
 
-success(message: string) {
-  alertify.success(message);
+success(message: string, wait: number = 5) {
+  alertify.success(message, wait);
 }
 
 error(message: string) {

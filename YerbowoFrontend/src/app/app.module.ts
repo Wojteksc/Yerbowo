@@ -47,6 +47,7 @@ import { AccountOptionCardComponent } from './components/account/account-option-
 import { AccountOptionListComponent } from './components/account/account-option-list/account-option-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
+import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 
 export function tokkenGetter() {
   return localStorage.getItem('token');
@@ -92,7 +93,8 @@ export function provideConfig() {
     AddressEditComponent,
     AccountOptionCardComponent,
     AccountOptionListComponent,
-    CartComponent
+    CartComponent,
+    EmailVerificationComponent,
   ],
   imports: [
     BrowserModule,

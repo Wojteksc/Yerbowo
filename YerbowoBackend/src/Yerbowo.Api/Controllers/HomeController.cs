@@ -1,4 +1,5 @@
-﻿using Yerbowo.Application.Products.GetRandomProducts;
+﻿using System.Security.Cryptography;
+using Yerbowo.Application.Products.GetRandomProducts;
 
 namespace Yerbowo.Api.Controllers;
 

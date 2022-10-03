@@ -1,6 +1,7 @@
 ﻿using Yerbowo.Application.Auth.Login;
 using Yerbowo.Application.Auth.Register;
 using Yerbowo.Application.Auth.SocialLogin;
+using Yerbowo.Application.Auth.ConfirmEmail;
 
 namespace Yerbowo.Api.Controllers;
 
@@ -33,6 +34,13 @@ public class AuthController : ApiControllerBase
     public async Task<IActionResult> Register(RegisterCommand command)
     {
         await _mediator.Send(command);
-        return StatusCode((int)HttpStatusCode.Created);
+        return Ok();
+    }
+
+    [HttpPost("confirmEmail")]
+    public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok();
     }
 }

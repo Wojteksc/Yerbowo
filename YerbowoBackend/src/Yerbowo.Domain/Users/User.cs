@@ -14,8 +14,10 @@ public class User : BaseEntity
 	public string Provider { get; protected set; }
 	public byte[] PasswordHash { get; protected set; }
 	public byte[] PasswordSalt { get; protected set; }
+	public string VerificationToken { get; protected set; }
+	public DateTime? VerifiedAt { get; protected set; }
 
-	public List<Address> Addresses { get; protected set; }
+    public List<Address> Addresses { get; protected set; }
 
 	private User() { }
 
@@ -46,7 +48,7 @@ public class User : BaseEntity
 		using (var hmac = new HMACSHA512())
 		{
 			PasswordSalt = hmac.Key;
-			PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(passwordToHash));
+			PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordToHash));
 		}
 	}
 
@@ -60,5 +62,15 @@ public class User : BaseEntity
 	public void SetPhotoUrl(string photoUrl)
 	{
 		PhotoUrl = photoUrl;
+	}
+
+	public void SetVerificationToken(string verificationToken)
+    {
+		VerificationToken = verificationToken;
+    }
+
+	public void SetVerificationDate(DateTime verifiedAt)
+	{
+		VerifiedAt = verifiedAt;
 	}
 }
