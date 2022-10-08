@@ -2,7 +2,6 @@ trigger:
   - develop
 
 variables:
-  # ASPNETCORE_ENVIRONMENT: 'Testing'
   buildConfiguration: 'Release'
   dotnetSdkVersion: '6.x'
 
@@ -14,7 +13,7 @@ steps:
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
-    targetFiles: '**/appsettings.Testing.json'
+    targetFiles: '**/appsettings.Cloud.json'
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'

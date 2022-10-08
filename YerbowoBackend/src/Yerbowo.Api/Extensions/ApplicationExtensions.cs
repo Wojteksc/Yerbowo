@@ -55,4 +55,13 @@ public static class ApplicationExtensions
 			endpoints.MapFallbackToController("Index", "Fallback");
 		});
 	}
+
+	public static void UseSwaggers(this IApplicationBuilder app)
+	{
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Yerbowo API v1");
+        });
+    }
 }

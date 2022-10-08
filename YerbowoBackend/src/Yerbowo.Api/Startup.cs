@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Yerbowo.Api.Extensions;
-using Yerbowo.Domain.Users;
+﻿using Yerbowo.Api.Extensions;
 using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Api;
@@ -28,6 +26,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddSwagger();
         services.AddControllersOptions();
         services.AddMemoryCache();
         services.AddSettings(Configuration);
@@ -46,13 +45,14 @@ public class Startup
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
+            app.UseSwaggers();
         }
         else
         {
             app.UseForwardedHeadersOptions();
+            app.UseExceptionHandlers();
             app.UseHttpsRedirection();
         }
-            app.UseExceptionHandlers();
 
         app.UseCorsOptions(Configuration);
         app.UseRouting();
