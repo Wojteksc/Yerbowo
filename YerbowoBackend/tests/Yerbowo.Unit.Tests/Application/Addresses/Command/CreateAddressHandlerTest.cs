@@ -1,0 +1,55 @@
+﻿using Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
+using Yerbowo.Domain.Addresses;
+using Yerbowo.Infrastructure.Data.Addresses;
+
+namespace Yerbowo.Unit.Tests.Application.Addresses.Command;
+
+public class CreateAddressHandlerTest
+{
+    [Fact]
+    public async Task Should_CreateAddress_When_CommandHasCorrectData()
+    {
+        var address = new Address(
+        1,
+        "aliastTest",
+        "firstName",
+        "LastName",
+        "Street",
+        "15A",
+        "3",
+        "Place",
+        "00-000",
+        "000-000-000",
+        "test@test.com");
+
+        var command = new CreateAddressCommand()
+        {
+            Alias = "aliastTest",
+            FirstName = "firstName",
+            LastName = "LastName",
+            Street = "Street2",
+            BuildingNumber = "15A",
+            ApartmentNumber = "3",
+            Place = "Place2",
+            PostCode = "00-000",
+            Phone = "000-000-000",
+            Email = "test@test.com"
+        };
+
+        var mockAddressRepository = new Mock<IAddressRepository>();
+        mockAddressRepository.Setup(x => x.AddAsync(address));
+
+        var mockMapper = new Mock<IMapper>();
+        mockMapper.Setup(x => x.Map<Address>(command))
+            .Returns(address);
+
+        var createAddresHandler = new CreateAddressHandler(
+            mockMapper.Object,
+            mockAddressRepository.Object);
+
+        var result = await createAddresHandler.Handle(command, It.IsAny<CancellationToken>());
+
+        result.Should().BeEquivalentTo(result);
+        mockAddressRepository.Verify(x => x.AddAsync(address), Times.Once());
+    }
+}

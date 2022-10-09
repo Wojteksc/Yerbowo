@@ -1,5 +1,5 @@
-﻿using Yerbowo.Application.Orders.GetOrderDetails;
-using Yerbowo.Application.Orders.GetOrders;
+﻿using Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
+using Yerbowo.Application.Functions.Orders.Query.GetOrders;
 
 namespace Yerbowo.Api.Controllers;
 

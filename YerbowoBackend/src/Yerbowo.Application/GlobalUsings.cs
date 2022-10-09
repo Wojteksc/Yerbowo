@@ -1,8 +1,10 @@
 ﻿global using AutoMapper;
 global using MediatR;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 global using Newtonsoft.Json;
@@ -14,6 +16,7 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Linq;
+global using System.Reflection;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;

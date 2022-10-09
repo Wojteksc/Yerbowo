@@ -1,5 +1,5 @@
-﻿using Yerbowo.Application.Users.ChangeUsers;
-using Yerbowo.Application.Users.GetUserDetails;
+﻿using Yerbowo.Application.Functions.Users.Command.ChangeUsers;
+using Yerbowo.Application.Functions.Users.Query.GetUserDetails;
 
 namespace Yerbowo.Api.Controllers;
 

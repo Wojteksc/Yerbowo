@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Yerbowo.Application.Auth;
-using Yerbowo.Application.Auth.ConfirmEmail;
-using Yerbowo.Application.Auth.Login;
-using Yerbowo.Application.Auth.Register;
-using Yerbowo.Application.Auth.SocialLogin;
+using Yerbowo.Application.Functions.Auth.Command;
+using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
+using Yerbowo.Application.Functions.Auth.Command.Login;
+using Yerbowo.Application.Functions.Auth.Command.Register;
+using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
 using Yerbowo.Functional.Tests.Web.Helpers;
 using Yerbowo.Infrastructure.Data.Users;
 
