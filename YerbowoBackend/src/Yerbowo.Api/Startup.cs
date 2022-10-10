@@ -50,10 +50,10 @@ public class Startup
         else
         {
             app.UseForwardedHeadersOptions();
-            app.UseExceptionHandlers();
             app.UseHttpsRedirection();
         }
 
+        app.UseExceptionHandlers();
         app.UseCorsOptions(Configuration);
         app.UseRouting();
         app.UseSecurityHeaders();

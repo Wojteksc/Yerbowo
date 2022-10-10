@@ -16,7 +16,6 @@ public class HomeController : ControllerBase
         _memoryCache = memoryCache;
     }
 
-    // GET: api/Home
     [HttpGet]
     public async Task<IActionResult> Get()
     {

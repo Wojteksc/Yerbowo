@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Yerbowo.Application.Functions.Auth.Command;
+﻿using Yerbowo.Application.Functions.Auth.Command;
 using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
 using Yerbowo.Application.Functions.Auth.Command.Login;
 using Yerbowo.Application.Functions.Auth.Command.Register;
@@ -32,7 +31,7 @@ public class AuthControllerTest : IClassFixture<WebTestFixture>
 
         var response = await AuthHelper.SocialLoginAsync(_httpClient, socialLoginCommand);
         var stringResponse = await response.Content.ReadAsStringAsync();
-        var tokenDto = JsonConvert.DeserializeObject<ResponseToken>(stringResponse);
+        var tokenDto = JsonSerializer.Deserialize<ResponseToken>(stringResponse);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         tokenDto.Should().NotBe(null);

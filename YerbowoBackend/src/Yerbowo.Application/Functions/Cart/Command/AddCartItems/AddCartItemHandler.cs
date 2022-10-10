@@ -48,7 +48,7 @@ public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
 				await CartHelper.VerifyStock(_productRepository, request.Id, productQuantity);
 
 				products[productIndex].Quantity = productQuantity;
-				_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(products));
+				_session.SetString(Consts.CartSessionKey, JsonSerializer.Serialize(products));
 			}
 			else
 			{
@@ -69,6 +69,6 @@ public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
 			Quantity = request.Quantity
 		});
 
-		_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(cart));
+		_session.SetString(Consts.CartSessionKey, JsonSerializer.Serialize(cart));
 	}
 }

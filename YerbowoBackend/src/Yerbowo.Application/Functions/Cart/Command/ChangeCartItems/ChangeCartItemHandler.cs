@@ -35,7 +35,7 @@ public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, Cart
 			await CartHelper.VerifyStock(_productRepository, request.Id, request.Quantity);
 
 			products[productIndex].Quantity = request.Quantity;
-			_session.SetString(Consts.CartSessionKey, JsonConvert.SerializeObject(products));
+			_session.SetString(Consts.CartSessionKey, JsonSerializer.Serialize(products));
 		}
 		else
 		{

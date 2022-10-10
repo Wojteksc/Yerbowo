@@ -27,7 +27,7 @@ public class GetCartItemsHandler : IRequestHandler<GetCartItemsQuery, CartDto>
 		else
 		{
 			var value = _session.GetString(Consts.CartSessionKey);
-			cartItems = JsonConvert.DeserializeObject<List<CartItemDto>>(value);
+			cartItems = JsonSerializer.Deserialize<List<CartItemDto>>(value);
 		}
 
 		return Task.FromResult(_mapper.Map<CartDto>(cartItems));

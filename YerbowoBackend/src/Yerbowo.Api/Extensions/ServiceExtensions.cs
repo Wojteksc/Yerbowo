@@ -10,12 +10,13 @@ public static class ServiceExtensions
 	public static void AddControllersOptions(this IServiceCollection services)
 	{
 		services.AddControllers()
-			.AddNewtonsoftJson(opt =>
+			.AddJsonOptions(opt =>
 			{
-				opt.SerializerSettings.Formatting = Formatting.Indented;
-				opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-				opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-			});
+				opt.JsonSerializerOptions.WriteIndented = true;
+				opt.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+				opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+				opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
 	}
 
 	public static void AddSettings(this IServiceCollection services, IConfiguration configuration)

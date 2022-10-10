@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Yerbowo.Application.Functions.Auth.Command;
+﻿using Yerbowo.Application.Functions.Auth.Command;
 using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
 using Yerbowo.Application.Functions.Auth.Command.Login;
 using Yerbowo.Application.Functions.Auth.Command.Register;
@@ -32,7 +31,8 @@ public static class AuthHelper
 		HttpResponseMessage response = await httpClient.PostAsync("api/auth/login", request.Content);
 
 		var stringResponse = await response.Content.ReadAsStringAsync();
-		var tokenDto = JsonConvert.DeserializeObject<ResponseToken>(stringResponse);
+		var tokenDto = JsonSerializer.Deserialize<ResponseToken>(stringResponse, 
+			new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
 		SetToken(httpClient, tokenDto.Token.Token);
 
@@ -74,7 +74,8 @@ public static class AuthHelper
 
         var responseUser = await httpClient.GetAsync($"api/users/{loginCommand.Email}");
         var responseUserString = await responseUser.Content.ReadAsStringAsync();
-        var user = JsonConvert.DeserializeObject<UserDetailsDto>(responseUserString);
+        var user = JsonSerializer.Deserialize<UserDetailsDto>(responseUserString, 
+			new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         return user;
     }
@@ -86,7 +87,7 @@ public static class AuthHelper
 
 	private static HttpRequestMessage GetHttpRequestMessage<T>(T command)
 	{
-		string serializedData = JsonConvert.SerializeObject(command);
+		string serializedData = JsonSerializer.Serialize(command);
 
 		return new HttpRequestMessage
 		{
