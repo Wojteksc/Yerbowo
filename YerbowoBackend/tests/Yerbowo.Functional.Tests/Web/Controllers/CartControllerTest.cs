@@ -1,6 +1,6 @@
-﻿using Yerbowo.Application.Cart;
-using Yerbowo.Application.Cart.AddCartItems;
-using Yerbowo.Application.Cart.ChangeCartItems;
+﻿using Yerbowo.Application.Functions.Cart;
+using Yerbowo.Application.Functions.Cart.Command.AddCartItems;
+using Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
 using Yerbowo.Functional.Tests.Web.Extensions;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers;

@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Yerbowo.Application.Addresses.ChangeAddresses;
-using Yerbowo.Application.Addresses.CreateAddresses;
-using Yerbowo.Application.Addresses.GetAddressDetails;
-using Yerbowo.Application.Auth.Register;
-using Yerbowo.Application.Users.GetUserDetails;
+﻿using Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
+using Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
+using Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
+using Yerbowo.Application.Functions.Auth.Command.Register;
+using Yerbowo.Application.Functions.Users.Query.GetUserDetails;
 using Yerbowo.Functional.Tests.Web.Extensions;
 using Yerbowo.Functional.Tests.Web.Helpers;
-using Yerbowo.Infrastructure.Context;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers;
 

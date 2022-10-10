@@ -1,8 +1,8 @@
-﻿using Yerbowo.Application.Cart.AddCartItems;
-using Yerbowo.Application.Cart.ChangeCartItems;
-using Yerbowo.Application.Cart.GetCartItems;
-using Yerbowo.Application.Cart.GetTotalCartItems;
-using Yerbowo.Application.Cart.RemoveCartItems;
+﻿using Yerbowo.Application.Functions.Cart.Command.AddCartItems;
+using Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
+using Yerbowo.Application.Functions.Cart.Command.RemoveCartItems;
+using Yerbowo.Application.Functions.Cart.Query.GetCartItems;
+using Yerbowo.Application.Functions.Cart.Query.GetTotalCartItems;
 
 namespace Yerbowo.Api.Controllers;
 

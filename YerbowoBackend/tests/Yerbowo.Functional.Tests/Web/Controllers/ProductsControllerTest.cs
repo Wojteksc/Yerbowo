@@ -1,4 +1,4 @@
-﻿using Yerbowo.Application.Products;
+﻿using Yerbowo.Application.Functions.Products;
 using Yerbowo.Functional.Tests.Web.Extensions;
 
 namespace Yerbowo.Functional.Tests.Web.Controllers;

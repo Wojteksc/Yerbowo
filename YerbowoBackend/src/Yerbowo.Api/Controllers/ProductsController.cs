@@ -1,9 +1,9 @@
 ﻿using Yerbowo.Api.Extensions;
-using Yerbowo.Application.Products.ChangeProducts;
-using Yerbowo.Application.Products.CreateProducts;
-using Yerbowo.Application.Products.DeleteProducts;
-using Yerbowo.Application.Products.GetPagedProducts;
-using Yerbowo.Application.Products.GetProductDetails;
+using Yerbowo.Application.Functions.Products.Command.ChangeProducts;
+using Yerbowo.Application.Functions.Products.Command.CreateProducts;
+using Yerbowo.Application.Functions.Products.Command.RemoveProducts;
+using Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
+using Yerbowo.Application.Functions.Products.Query.GetProductDetails;
 
 namespace Yerbowo.Api.Controllers;
 

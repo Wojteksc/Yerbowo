@@ -1,5 +1,5 @@
-﻿using Yerbowo.Application.Auth;
-using Yerbowo.Application.Extensions;
+﻿using Yerbowo.Application.Extensions;
+using Yerbowo.Application.Functions.Auth.Command;
 using Yerbowo.Application.Settings;
 
 namespace Yerbowo.Application.Services.Jwt;

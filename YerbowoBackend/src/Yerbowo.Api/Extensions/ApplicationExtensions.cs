@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Extensions;
 
 public static class ApplicationExtensions
 {
@@ -23,7 +21,7 @@ public static class ApplicationExtensions
 				if (error != null)
 				{
 					context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-					var result = JsonConvert.SerializeObject(new { error = error.Error.Message });
+					var result = JsonSerializer.Serialize(new { error = error.Error.Message });
 					context.Response.ContentType = "application/json";
 					await context.Response.WriteAsync(result);
 				}

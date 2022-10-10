@@ -1,4 +1,4 @@
-﻿using Yerbowo.Application.Auth;
+﻿using Yerbowo.Application.Functions.Auth.Command;
 
 namespace Yerbowo.Application.Services.Jwt;
 

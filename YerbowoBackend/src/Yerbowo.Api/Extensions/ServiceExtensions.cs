@@ -1,12 +1,7 @@
-﻿using Yerbowo.Application.Services.Jwt;
-using Yerbowo.Application.Services.PasswordValidator;
-using Yerbowo.Application.Services.SendGrid;
+﻿using Yerbowo.Application;
 using Yerbowo.Application.Settings;
+using Yerbowo.Infrastructure;
 using Yerbowo.Infrastructure.Context;
-using Yerbowo.Infrastructure.Data.Addresses;
-using Yerbowo.Infrastructure.Data.Orders;
-using Yerbowo.Infrastructure.Data.Products;
-using Yerbowo.Infrastructure.Data.Users;
 
 namespace Yerbowo.Api.Extensions;
 
@@ -15,12 +10,13 @@ public static class ServiceExtensions
 	public static void AddControllersOptions(this IServiceCollection services)
 	{
 		services.AddControllers()
-			.AddNewtonsoftJson(opt =>
+			.AddJsonOptions(opt =>
 			{
-				opt.SerializerSettings.Formatting = Formatting.Indented;
-				opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-				opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-			});
+				opt.JsonSerializerOptions.WriteIndented = true;
+				opt.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+				opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+				opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
 	}
 
 	public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
@@ -37,22 +33,9 @@ public static class ServiceExtensions
 
 	public static void AddServices(this IServiceCollection services)
 	{
-		services.AddTransient<YerbowoContextSeed>();
-
-		services.AddScoped<IProductRepository, ProductRepository>();
-		services.AddScoped<IUserRepository, UserRepository>();
-		services.AddScoped<IOrderRepository, OrderRepository>();
-		services.AddScoped<IAddressRepository, AddressRepository>();
-
-		services.AddSingleton<IJwtHandler, JwtHandler>();
-		services.AddSingleton<IPasswordValidator, PasswordValidator>();
-		services.AddSingleton(AutoMapperConfig.Initialize());
-		services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-		services.AddSingleton<IVerificationEmailTemplateSender, VerificationEmailTemplateSender>();
-		
-
-		services.AddMediatR(AppDomain.CurrentDomain.Load("Yerbowo.Application"));
-	}
+		services.AddYerbowoInfrastructure();
+		services.AddYerbowoApplication();
+    }
 
 	public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
 	{
@@ -129,9 +112,9 @@ public static class ServiceExtensions
             c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtSecurityScheme, Array.Empty<string>() }
-    });
+			{
+				{ jwtSecurityScheme, Array.Empty<string>() }
+			});
         });
     }
 }

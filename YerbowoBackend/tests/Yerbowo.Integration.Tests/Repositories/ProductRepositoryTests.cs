@@ -1,4 +1,4 @@
-﻿using Yerbowo.Application.Products.GetPagedProducts;
+﻿using Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
 using Yerbowo.Domain.Products;
 using Yerbowo.Fakers;
 using Yerbowo.Fakers.Extensions;

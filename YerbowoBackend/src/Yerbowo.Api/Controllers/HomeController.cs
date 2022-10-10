@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Yerbowo.Application.Products.GetRandomProducts;
+﻿using Yerbowo.Application.Functions.Products.Query.GetRandomProducts;
 
 namespace Yerbowo.Api.Controllers;
 
@@ -17,7 +16,6 @@ public class HomeController : ControllerBase
         _memoryCache = memoryCache;
     }
 
-    // GET: api/Home
     [HttpGet]
     public async Task<IActionResult> Get()
     {
