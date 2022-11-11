@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Application.Functions.Addresses.Command.RemoveAddresses;
+﻿namespace Yerbowo.Application.Functions.Addresses.Command.RemoveAddresses;
 
 public class RemoveAddressHandler : IRequestHandler<RemoveAddressComand>
 {

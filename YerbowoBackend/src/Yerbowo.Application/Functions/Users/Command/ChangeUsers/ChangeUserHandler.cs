@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Services.PasswordValidator;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Users.Command.ChangeUsers;
+﻿namespace Yerbowo.Application.Functions.Users.Command.ChangeUsers;
 
 public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
 {

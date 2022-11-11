@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.SeedWork;
-using Yerbowo.Infrastructure.Context;
-
-namespace Yerbowo.Infrastructure.Data.SeedWork;
+﻿namespace Yerbowo.Infrastructure.Data.SeedWork;
 
 public class DbEntityRepository<TEntity> : IEntityRepository<TEntity> where TEntity : BaseEntity
 {

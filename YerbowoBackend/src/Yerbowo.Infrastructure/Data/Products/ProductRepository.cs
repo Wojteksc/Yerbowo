@@ -1,9 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-using Yerbowo.Infrastructure.Context;
-using Yerbowo.Infrastructure.Data.SeedWork;
-using Yerbowo.Infrastructure.Helpers;
-
-namespace Yerbowo.Infrastructure.Data.Products;
+﻿namespace Yerbowo.Infrastructure.Data.Products;
 
 public class ProductRepository : DbEntityRepository<Product>, IProductRepository
 {

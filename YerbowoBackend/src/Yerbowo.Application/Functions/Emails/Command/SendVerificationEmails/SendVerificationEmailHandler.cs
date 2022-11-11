@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Services.SendGrid;
-
-namespace Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
+﻿namespace Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
 
 public class SendVerificationEmailHandler : IRequestHandler<SendVerificationEmailCommand>
 {

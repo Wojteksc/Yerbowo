@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Context;
-
-namespace Yerbowo.Unit.Tests.Helpers;
+﻿namespace Yerbowo.Unit.Tests.Helpers;
 public static class DbContextHelper
 {
     public static YerbowoContext GetInMemory()

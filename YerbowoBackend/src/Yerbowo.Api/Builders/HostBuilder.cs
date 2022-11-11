@@ -1,6 +1,4 @@
-﻿using Yerbowo.Api.Extensions;
-
-namespace Yerbowo.Api.Builders;
+﻿namespace Yerbowo.Api.Builders;
 
 public class HostBuilder
 {

@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.Orders;
-using Yerbowo.Infrastructure.Data.SeedWork;
-
-namespace Yerbowo.Infrastructure.Data.Orders;
+﻿namespace Yerbowo.Infrastructure.Data.Orders;
 
 public interface IOrderRepository : IEntityRepository<Order>
 {

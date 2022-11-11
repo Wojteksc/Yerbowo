@@ -1,7 +1,4 @@
-﻿using Yerbowo.Api.Extensions;
-using Yerbowo.Infrastructure.Context;
-
-namespace Yerbowo.Api;
+﻿namespace Yerbowo.Api;
 
 public class Startup
 {
@@ -12,17 +9,6 @@ public class Startup
 
     public IConfiguration Configuration { get; }
 
-    public void ConfigureTestingServices(IServiceCollection services)
-    {
-        services.AddDbContext<YerbowoContext>(options =>
-        {
-            options.UseInMemoryDatabase("DatabaseInMemoryForFunctionalTests");
-            options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-        });
-        
-        ConfigureServices(services);
-    }
-
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
@@ -30,8 +16,8 @@ public class Startup
         services.AddControllersOptions();
         services.AddMemoryCache();
         services.AddSettings(Configuration);
-        services.AddContext(Configuration);
-        services.AddServices();
+        services.AddYerbowoInfrastructure(Configuration);
+        services.AddYerbowoApplication();
         services.AddAuthentication(Configuration);
         services.AddAuthorization();
         services.AddCors();

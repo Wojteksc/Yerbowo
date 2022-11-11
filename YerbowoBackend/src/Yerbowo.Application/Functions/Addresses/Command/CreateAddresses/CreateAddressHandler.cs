@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
-using Yerbowo.Domain.Addresses;
-using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
+﻿namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
 
 public class CreateAddressHandler : IRequestHandler<CreateAddressCommand, AddressDetailsDto>
 {

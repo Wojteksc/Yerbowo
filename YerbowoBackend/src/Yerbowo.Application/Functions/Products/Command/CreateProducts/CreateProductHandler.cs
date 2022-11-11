@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
+﻿namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
 
 public class CreateProductHandler : IRequestHandler<CreateProductCommand, CreateProductCommand>
 {

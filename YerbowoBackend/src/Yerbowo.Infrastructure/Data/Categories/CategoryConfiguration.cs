@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Categories;
-
-namespace Yerbowo.Infrastructure.Data.Categories;
+﻿namespace Yerbowo.Infrastructure.Data.Categories;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {

@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Functions.Auth.Events;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Auth.Command.Register;
+﻿namespace Yerbowo.Application.Functions.Auth.Command.Register;
 
 public class RegisterHandler : IRequestHandler<RegisterCommand>
 {

@@ -1,10 +1,4 @@
-﻿using Yerbowo.Domain.Orders;
-using Yerbowo.Domain.Products;
-using Yerbowo.Domain.Subcategories;
-using Yerbowo.Infrastructure.Context;
-using Yerbowo.Infrastructure.Data.SeedWork;
-
-namespace Yerbowo.Infrastructure.Data.Orders;
+﻿namespace Yerbowo.Infrastructure.Data.Orders;
 
 public class OrderRepository : DbEntityRepository<Order>, IOrderRepository
 {

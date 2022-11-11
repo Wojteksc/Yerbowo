@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application.Services.SendGrid;
+﻿namespace Yerbowo.Application.Services.SendGrid;
 
 public class VerificationEmailTemplateSender : EmailTemplateSenderBase, IVerificationEmailTemplateSender
 {

@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Products.Query.GetProductDetails;
+﻿namespace Yerbowo.Application.Functions.Products.Query.GetProductDetails;
 
 public class GetProductBySlugHandler : IRequestHandler<GetProductBySlugQuery, ProductDetailsDto>
 {

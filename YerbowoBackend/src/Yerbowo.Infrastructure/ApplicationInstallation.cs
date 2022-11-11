@@ -1,14 +1,8 @@
-﻿using Yerbowo.Infrastructure.Context;
-using Yerbowo.Infrastructure.Data.Addresses;
-using Yerbowo.Infrastructure.Data.Orders;
-using Yerbowo.Infrastructure.Data.Products;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Infrastructure;
+﻿namespace Yerbowo.Infrastructure;
 
 public static class ApplicationInstallation
 {
-    public static void AddYerbowoInfrastructure(this IServiceCollection services)
+    public static void AddYerbowoInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<YerbowoContextSeed>();
 
@@ -16,5 +10,19 @@ public static class ApplicationInstallation
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
+
+        var useInMemoryDb = configuration.GetValue("UseInMemoryDatabase", false);
+        if (!useInMemoryDb)
+        {
+            services.AddDbContextPool<YerbowoContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        }
+        else
+        {
+            services.AddDbContextPool<YerbowoContext>(options =>
+            {
+                options.UseInMemoryDatabase(Guid.NewGuid().ToString());
+            });
+        }
     }
 }

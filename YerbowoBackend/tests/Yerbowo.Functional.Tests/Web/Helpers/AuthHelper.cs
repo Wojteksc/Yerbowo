@@ -1,12 +1,4 @@
-﻿using Yerbowo.Application.Functions.Auth.Command;
-using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
-using Yerbowo.Application.Functions.Auth.Command.Login;
-using Yerbowo.Application.Functions.Auth.Command.Register;
-using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
-using Yerbowo.Application.Functions.Users.Query.GetUserDetails;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Functional.Tests.Web.Helpers;
+﻿namespace Yerbowo.Functional.Tests.Web.Helpers;
 
 public static class AuthHelper
 {
@@ -50,7 +42,8 @@ public static class AuthHelper
 	{
         await RegisterAsync(httpClient, registerCommand);
 
-        var userRepository = serviceProvider.GetService<IUserRepository>();
+        var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
         var userDb = await userRepository.GetAsync(registerCommand.Email);
 

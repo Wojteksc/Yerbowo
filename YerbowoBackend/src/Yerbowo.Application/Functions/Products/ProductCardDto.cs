@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Application.Functions.Products;
+﻿namespace Yerbowo.Application.Functions.Products;
 
 public class ProductCardDto
 {

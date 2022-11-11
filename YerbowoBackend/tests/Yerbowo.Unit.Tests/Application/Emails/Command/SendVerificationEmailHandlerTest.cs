@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
-using Yerbowo.Application.Services.SendGrid;
-using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Unit.Tests.Application.Emails.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Emails.Command;
 
 public class SendVerificationEmailHandlerTest
 {

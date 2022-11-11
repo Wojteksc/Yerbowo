@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application.Functions.Cart.Query.GetCartItems;
+﻿namespace Yerbowo.Application.Functions.Cart.Query.GetCartItems;
 
 public class GetCartItemsHandler : IRequestHandler<GetCartItemsQuery, CartDto>
 {

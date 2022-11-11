@@ -1,5 +1,4 @@
-﻿using Yerbowo.Api.Builders;
-using HostBuilder = Yerbowo.Api.Builders.HostBuilder;
+﻿using HostBuilder = Yerbowo.Api.Builders.HostBuilder;
 
 namespace Yerbowo.Api;
 

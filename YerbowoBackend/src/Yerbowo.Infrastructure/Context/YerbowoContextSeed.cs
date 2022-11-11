@@ -1,11 +1,4 @@
-﻿using Yerbowo.Domain.Addresses;
-using Yerbowo.Domain.Categories;
-using Yerbowo.Domain.Orders;
-using Yerbowo.Domain.Products;
-using Yerbowo.Domain.Subcategories;
-using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Infrastructure.Context;
+﻿namespace Yerbowo.Infrastructure.Context;
 
 public class YerbowoContextSeed
 {
@@ -22,7 +15,7 @@ public class YerbowoContextSeed
 
 	public void Seed()
 	{
-		_db.Database.EnsureCreated();
+        _db.Database.EnsureCreated();
 
 		if (_db.Users.Any())
 			return;
@@ -102,16 +95,20 @@ public class YerbowoContextSeed
 	{
 		var admin = new User("Woytech", "Wojciechowski", "user@example.com", "", "admin", "", "", "Haslo123.");
 		var simpleUser = new User("Adamn", "Nowak", "user2@example.com", "", "user", "", "", "Haslo123.");
+        var testUser = new User("FirstName", "LastName", "yerbowoTestAdmin@functionalTestYerbowo.com", "", "admin", "", "", "Haslo123.");
 
-		admin.SetVerificationToken("token");
+        admin.SetVerificationToken("token");
 		admin.SetVerificationDate(DateTime.Now);
         simpleUser.SetVerificationDate(DateTime.Now);
         simpleUser.SetVerificationToken("Token");
+        testUser.SetVerificationDate(DateTime.Now);
+        testUser.SetVerificationToken("Token");
 
         _db.Users.Add(admin);
 		_db.Users.Add(simpleUser);
+		_db.Users.Add(testUser);
 
-		_db.SaveChanges();
+        _db.SaveChanges();
 	}
 
 	private void SeedCategories()

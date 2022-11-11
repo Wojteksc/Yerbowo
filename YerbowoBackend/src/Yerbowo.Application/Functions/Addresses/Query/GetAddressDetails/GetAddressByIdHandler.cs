@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
+﻿namespace Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
 
 public class GetAddressByIdHandler : IRequestHandler<GetAddressByIdQuery, AddressDetailsDto>
 {

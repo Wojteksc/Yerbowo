@@ -1,7 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application.Functions.Cart.Command.RemoveCartItems;
+﻿namespace Yerbowo.Application.Functions.Cart.Command.RemoveCartItems;
 
 public class RemoveCartItemHandler : IRequestHandler<RemoveCartItemCommand, CartDto>
 {

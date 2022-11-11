@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Products.Query.GetRandomProducts;
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

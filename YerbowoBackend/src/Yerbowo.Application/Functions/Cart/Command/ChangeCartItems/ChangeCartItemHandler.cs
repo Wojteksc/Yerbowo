@@ -1,9 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Functions.Cart.Utils;
-using Yerbowo.Application.Settings;
-using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
+﻿namespace Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
 
 public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, CartDto>
 {

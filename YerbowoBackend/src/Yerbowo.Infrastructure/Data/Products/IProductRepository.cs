@@ -1,8 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-using Yerbowo.Infrastructure.Data.SeedWork;
-using Yerbowo.Infrastructure.Helpers;
-
-namespace Yerbowo.Infrastructure.Data.Products;
+﻿namespace Yerbowo.Infrastructure.Data.Products;
 
 public interface IProductRepository : IEntityRepository<Product>
 {

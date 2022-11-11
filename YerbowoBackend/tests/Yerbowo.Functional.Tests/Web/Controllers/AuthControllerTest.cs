@@ -1,24 +1,16 @@
-﻿using Yerbowo.Application.Functions.Auth.Command;
-using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
-using Yerbowo.Application.Functions.Auth.Command.Login;
-using Yerbowo.Application.Functions.Auth.Command.Register;
-using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
-using Yerbowo.Functional.Tests.Web.Helpers;
-using Yerbowo.Infrastructure.Data.Users;
+﻿namespace Yerbowo.Functional.Tests.Web.Controllers;
 
-namespace Yerbowo.Functional.Tests.Web.Controllers;
-
-public class AuthControllerTest : IClassFixture<WebTestFixture>
+public class AuthControllerTest : ApiTestBase
 {
-	private readonly HttpClient _httpClient;
-	private readonly IServiceProvider _serviceProvider;
-	private const string PrimaryPassword = "secret";
+    private readonly HttpClient _httpClient;
+    private readonly IServiceScopeFactory _scope;
+    private const string PrimaryPassword = "secret";
 
-	public AuthControllerTest(WebTestFixture factory)
-	{
-		_httpClient = factory.CreateClient();
-		_serviceProvider = factory.Services;
-	}
+    public AuthControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
+    {
+        _scope = WebApplicationFactory.Services.GetRequiredService<IServiceScopeFactory>();
+        _httpClient = CreateClient();
+    }
 
     [Fact]
     public async Task SocialLogin_Should_ReturnToken()
@@ -38,33 +30,16 @@ public class AuthControllerTest : IClassFixture<WebTestFixture>
     }
 
     [Fact]
-	public async Task Register_Should_ReturnStatusCodeOk()
-	{
-		string email = "register@testemail.com";
-        await RegisterScenario(email);
-	}
-
-	[Fact]
-    public async Task ConfirmEmail_Should_ReturnStatusCodeOk()
-	{
-        string email = "confirmEmail@testemail.com";
+    public async Task Login_Should_ReturnStatusCodeOk()
+    {
+        string email = "login@testemail.com";
 
         await RegisterScenario(email);
 
-		await ConfirmEmailScenario(email);
-	}
+        await ConfirmEmailScenario(email);
 
-	[Fact]
-    public async Task Login_Should_ReturnToken()
-	{
-		string email = "login@testemail.com";
-
-		await RegisterScenario(email);
-
-		await ConfirmEmailScenario(email);
-
-		await LoginScenario(email);
-	}
+        await LoginScenario(email);
+    }
 
     private async Task RegisterScenario(string email)
     {
@@ -85,19 +60,22 @@ public class AuthControllerTest : IClassFixture<WebTestFixture>
 
     private async Task ConfirmEmailScenario(string email)
     {
-        var userRepository = _serviceProvider.GetService<IUserRepository>();
-
-        var userDb = await userRepository.GetAsync(email);
-
-        var confirmEmailCommand = new ConfirmEmailCommand()
+        using (var scope = _scope.CreateScope())
         {
-            Email = email,
-            Token = userDb.VerificationToken
-        };
+            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-        var response = await AuthHelper.ConfirmEmailAsync(_httpClient, confirmEmailCommand);
+            var userDb = await userRepository.GetAsync(email);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+            var confirmEmailCommand = new ConfirmEmailCommand()
+            {
+                Email = email,
+                Token = userDb.VerificationToken
+            };
+
+            var response = await AuthHelper.ConfirmEmailAsync(_httpClient, confirmEmailCommand);
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
     }
 
     private async Task LoginScenario(string email)

@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Query.GetAddresses;
-using Yerbowo.Domain.Addresses;
-using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
+﻿namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
 
 public class GetAddressesByUserIdHandlerTest
 {

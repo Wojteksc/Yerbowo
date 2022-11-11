@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Cart.Utils;
+﻿namespace Yerbowo.Application.Functions.Cart.Utils;
 
 public static class CartHelper
 {

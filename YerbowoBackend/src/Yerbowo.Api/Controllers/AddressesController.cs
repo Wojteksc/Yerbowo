@@ -1,10 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
-using Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
-using Yerbowo.Application.Functions.Addresses.Command.RemoveAddresses;
-using Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
-using Yerbowo.Application.Functions.Addresses.Query.GetAddresses;
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [ApiController]
 [Authorize]

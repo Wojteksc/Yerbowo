@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Subcategories;
-
-namespace Yerbowo.Infrastructure.Data.Subcategories;
+﻿namespace Yerbowo.Infrastructure.Data.Subcategories;
 
 public class SubcategoryMap : IEntityTypeConfiguration<Subcategory>
 {

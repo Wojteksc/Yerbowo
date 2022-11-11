@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Functions.Auth.Command;
-using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application.Services.Jwt;
+﻿namespace Yerbowo.Application.Services.Jwt;
 
 public class JwtHandler : IJwtHandler
 {

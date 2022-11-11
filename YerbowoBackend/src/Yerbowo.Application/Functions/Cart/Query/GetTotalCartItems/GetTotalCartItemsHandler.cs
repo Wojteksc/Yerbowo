@@ -1,7 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application.Functions.Cart.Query.GetTotalCartItems;
+﻿namespace Yerbowo.Application.Functions.Cart.Query.GetTotalCartItems;
 
 public class GetTotalCartItemsHandler : IRequestHandler<GetTotalCartItemsQuery, int>
 {
