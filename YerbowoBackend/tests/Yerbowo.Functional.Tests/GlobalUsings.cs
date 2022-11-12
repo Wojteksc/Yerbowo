@@ -25,3 +25,5 @@ global using Yerbowo.Domain.Users;
 global using Yerbowo.Functional.Tests.Web.Extensions;
 global using Yerbowo.Functional.Tests.Web.Helpers;
 global using Yerbowo.Infrastructure.Data.Users;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.AspNetCore.Hosting;
