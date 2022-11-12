@@ -1,6 +1,4 @@
-﻿using HostBuilder = Yerbowo.Api.Builders.HostBuilder;
-
-namespace Yerbowo.Api;
+﻿namespace Yerbowo.Api;
 
 public class Program
 {
@@ -18,7 +16,7 @@ public class Program
         try
         {
             Log.Information("Application Starting.");
-            HostBuilder.CreateHostBuilder(args, config).Build().Run();
+            YerbowoHostBuilder.CreateHostBuilder(args, config).Build().Run();
         }
         catch (Exception ex)
         {
