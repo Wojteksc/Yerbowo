@@ -1,4 +1,7 @@
-﻿namespace Yerbowo.Functional.Tests.Web;
+﻿using Microsoft.Extensions.Configuration;
+using Yerbowo.Api.Builders;
+
+namespace Yerbowo.Functional.Tests.Web;
 
 public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
 {
@@ -9,9 +12,14 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
+        var config = ConfigBuilder
+                .CreateConfigBuilder()
+                .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
+                .Build();
+
         _webApplicationFactory = factory.WithWebHostBuilder(
-            builder => builder
-            .ConfigureAppConfiguration(ConfigureAppConfiguration)
+            builder => builder.UseConfiguration(config)
+            //.ConfigureAppConfiguration(ConfigureAppConfiguration)
             .UseEnvironment("Testing"));
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
@@ -30,6 +38,10 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     {
         // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+        
+        //configuration.AddJsonFile("appsettings.json");
+        //configuration.AddJsonFile("appsettings.Development.json", optional: true);
+        //configuration.AddJsonFile("appsettings.Cloud.json", optional: true);
     }
 
     protected virtual HttpClient CreateClient()
