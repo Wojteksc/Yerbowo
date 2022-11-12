@@ -1,4 +1,5 @@
 ﻿namespace Yerbowo.Application.Functions.Cart.Command.AddCartItems;
+using Yerbowo.Application.Functions.Cart.Utils;
 
 public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
 {

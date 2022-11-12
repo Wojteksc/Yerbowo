@@ -1,4 +1,5 @@
-﻿namespace Yerbowo.Api.Extensions;
+﻿using Yerbowo.Infrastructure;
+namespace Yerbowo.Api.Extensions;
 
 public static class ServiceExtensions
 {
