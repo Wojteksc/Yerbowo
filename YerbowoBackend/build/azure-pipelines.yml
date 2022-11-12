@@ -2,7 +2,7 @@ trigger:
   - develop
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
   dotnetSdkVersion: '6.x'
 
 pool:
