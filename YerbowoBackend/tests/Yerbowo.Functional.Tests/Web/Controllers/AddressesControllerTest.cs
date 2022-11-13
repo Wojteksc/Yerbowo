@@ -7,9 +7,7 @@ public class AddressesControllerTest : ApiTestBase
     private readonly HttpClient _httpClient;
     public AddressesControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
     {
-        Log.Information("CreateClient Start");
         _httpClient = CreateClient();
-        Log.Information("CreateClient End");
     }
 
     [Fact]
@@ -23,7 +21,6 @@ public class AddressesControllerTest : ApiTestBase
     [Fact]
     public async Task CreateAddress_Should_CreateCorrectly()
     {
-        Log.Information("CreateAddress_Should_CreateCorrectly Start");
         var address = new CreateAddressCommand()
         {
             UserId = User.Id,

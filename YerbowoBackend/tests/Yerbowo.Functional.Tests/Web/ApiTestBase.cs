@@ -14,21 +14,20 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
         Log.Information("ApiTestBase Start");
-        var config = ConfigBuilder
-                .CreateConfigBuilder()
-                .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
-                .Build();
+        //var config = ConfigBuilder
+        //        .CreateConfigBuilder()
+        //        .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
+        //        .Build();
 
+        //_webApplicationFactory = factory.WithWebHostBuilder(
+        //    builder => builder.UseConfiguration(config)
+        //    .UseEnvironment("Testing"));
         _webApplicationFactory = factory.WithWebHostBuilder(
-            builder => builder.UseConfiguration(config)
-            //.ConfigureAppConfiguration(ConfigureAppConfiguration)
-            .UseEnvironment("Testing"));
-
-        //Porobić logi, sprawdzić w którym miejscu zawiesza się pipeline
-
+        builder => builder
+        .ConfigureAppConfiguration(ConfigureAppConfiguration)
+        .UseEnvironment("Testing"));
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
-        Log.Information("ApiTestBase End");
     }
 
     private User GetUserByEmail(string email)
@@ -52,16 +51,11 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     protected virtual HttpClient CreateClient()
     {
-        Log.Information("_webApplicationFactory.CreateClient() Start");
         var client = _webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
-        Log.Information("_webApplicationFactory.CreateClient() End");
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        Log.Information("AuthHelper.LoginAsync Start");
-        Task.Run(async () => await
-        AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." })).Wait();
-        Log.Information("AuthHelper.LoginAsync End");
-
-        
+        var loginCommand = new LoginCommand() { Email = User.Email, Password = "Haslo123." };
+        Task.Run(async () => await AuthHelper.LoginAsync(client, loginCommand)).Wait();
+     
         return client;
     }
 }
