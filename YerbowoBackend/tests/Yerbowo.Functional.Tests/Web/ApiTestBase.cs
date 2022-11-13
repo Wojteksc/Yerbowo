@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Serilog;
-using Yerbowo.Api.Builders;
-
-namespace Yerbowo.Functional.Tests.Web;
+﻿namespace Yerbowo.Functional.Tests.Web;
 
 public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
 {
@@ -13,19 +9,10 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        Log.Information("ApiTestBase Start");
-        //var config = ConfigBuilder
-        //        .CreateConfigBuilder()
-        //        .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
-        //        .Build();
-
-        //_webApplicationFactory = factory.WithWebHostBuilder(
-        //    builder => builder.UseConfiguration(config)
-        //    .UseEnvironment("Testing"));
         _webApplicationFactory = factory.WithWebHostBuilder(
-        builder => builder
-        .ConfigureAppConfiguration(ConfigureAppConfiguration)
-        .UseEnvironment("Testing"));
+            builder => builder
+            .ConfigureAppConfiguration(ConfigureAppConfiguration)
+            .UseEnvironment("Testing"));
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
     }
@@ -43,10 +30,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     {
         // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
-        
-        //configuration.AddJsonFile("appsettings.json");
-        //configuration.AddJsonFile("appsettings.Development.json", optional: true);
-        //configuration.AddJsonFile("appsettings.Cloud.json", optional: true);
     }
 
     protected virtual HttpClient CreateClient()
@@ -54,6 +37,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         var client = _webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var loginCommand = new LoginCommand() { Email = User.Email, Password = "Haslo123." };
+        
         Task.Run(async () => await AuthHelper.LoginAsync(client, loginCommand)).Wait();
      
         return client;

@@ -8,7 +8,6 @@ public class Program
             .CreateConfigBuilder()
             .Build();
 
-        //Initialize Logger
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(config)
             .CreateLogger();
@@ -17,7 +16,6 @@ public class Program
         {
             Log.Information("Application Starting.");
             YerbowoHostBuilder.CreateHostBuilder(args, config).Build().Run();
-            Log.Information("CreateHostBuilder END");
         }
         catch (Exception ex)
         {

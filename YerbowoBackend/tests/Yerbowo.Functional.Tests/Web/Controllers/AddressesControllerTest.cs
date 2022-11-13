@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace Yerbowo.Functional.Tests.Web.Controllers;
+﻿namespace Yerbowo.Functional.Tests.Web.Controllers;
 
 public class AddressesControllerTest : ApiTestBase
 {
