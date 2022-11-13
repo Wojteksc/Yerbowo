@@ -53,11 +53,12 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     protected virtual HttpClient CreateClient()
     {
         Log.Information("_webApplicationFactory.CreateClient() Start");
-        var client = _webApplicationFactory.CreateClient();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." }).Wait();
-
+        var client = _webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
         Log.Information("_webApplicationFactory.CreateClient() End");
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        Log.Information("AuthHelper.LoginAsync Start");
+        AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." }).Wait();
+        Log.Information("AuthHelper.LoginAsync End");
         return client;
     }
 }
