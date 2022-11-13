@@ -17,6 +17,7 @@ public class Program
         {
             Log.Information("Application Starting.");
             YerbowoHostBuilder.CreateHostBuilder(args, config).Build().Run();
+            Log.Information("CreateHostBuilder END");
         }
         catch (Exception ex)
         {

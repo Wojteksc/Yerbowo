@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Serilog;
 using Yerbowo.Api.Builders;
 
 namespace Yerbowo.Functional.Tests.Web;
@@ -12,6 +13,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
+        Log.Information("ApiTestBase Start");
         var config = ConfigBuilder
                 .CreateConfigBuilder()
                 .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
@@ -22,7 +24,11 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             //.ConfigureAppConfiguration(ConfigureAppConfiguration)
             .UseEnvironment("Testing"));
 
+        //Porobić logi, sprawdzić w którym miejscu zawiesza się pipeline
+
+
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
+        Log.Information("ApiTestBase End");
     }
 
     private User GetUserByEmail(string email)
@@ -46,10 +52,12 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     protected virtual HttpClient CreateClient()
     {
+        Log.Information("_webApplicationFactory.CreateClient() Start");
         var client = _webApplicationFactory.CreateClient();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." }).Wait();
 
+        Log.Information("_webApplicationFactory.CreateClient() End");
         return client;
     }
 }

@@ -11,11 +11,16 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        Log.Information("AddSwagger Start");
         services.AddSwagger();
+        Log.Information("AddSwagger EBD");
+
         services.AddControllersOptions();
         services.AddMemoryCache();
         services.AddSettings(Configuration);
+        Log.Information("AddYerbowoInfrastructure Start");
         services.AddYerbowoInfrastructure(Configuration);
+        Log.Information("AddYerbowoInfrastructure End");
         services.AddYerbowoApplication();
         services.AddAuthentication(Configuration);
         services.AddAuthorization();
@@ -33,7 +38,9 @@ public class Startup
         }
         else
         {
+            Log.Information("UseForwardedHeadersOptions Start");
             app.UseForwardedHeadersOptions();
+            Log.Information("UseForwardedHeadersOptions End");
             app.UseHttpsRedirection();
         }
 
@@ -49,6 +56,8 @@ public class Startup
         app.UseSession();
         app.UseEndpointsOptions();
 
+        Log.Information("Seed Start");
         dbInitializer.Seed();
+        Log.Information("Seed End");
     }
 }
