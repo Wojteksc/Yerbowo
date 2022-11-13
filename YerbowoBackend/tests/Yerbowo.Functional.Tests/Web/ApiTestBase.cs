@@ -58,10 +58,10 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         Log.Information("AuthHelper.LoginAsync Start");
         Task.Run(async () => await
-        AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." }));
+        AuthHelper.LoginAsync(client, new LoginCommand() { Email = User.Email, Password = "Haslo123." })).Wait();
         Log.Information("AuthHelper.LoginAsync End");
 
-        Thread.Sleep(2000);
+        
         return client;
     }
 }
