@@ -1,18 +1,13 @@
-﻿using Yerbowo.Application.Functions.Cart;
-using Yerbowo.Application.Functions.Cart.Command.AddCartItems;
-using Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
-using Yerbowo.Functional.Tests.Web.Extensions;
+﻿namespace Yerbowo.Functional.Tests.Web.Controllers;
 
-namespace Yerbowo.Functional.Tests.Web.Controllers;
-
-public class CartControllerTest : IClassFixture<WebTestFixture>
+public class CartControllerTest : ApiTestBase
 {
 	private readonly HttpClient _httpClient;
 
-	public CartControllerTest(WebTestFixture factory)
-	{
-		_httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
-	}
+	public CartControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
+    {
+        _httpClient = CreateClient();
+    }
 
 	[Fact]
 	public async Task AddProduct_Should_ReturnStatusCodeOk()

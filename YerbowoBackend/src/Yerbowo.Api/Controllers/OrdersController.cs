@@ -1,7 +1,4 @@
-﻿using Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
-using Yerbowo.Application.Functions.Orders.Query.GetOrders;
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [Authorize]
 [Route("api/users/{userId}/orders")]

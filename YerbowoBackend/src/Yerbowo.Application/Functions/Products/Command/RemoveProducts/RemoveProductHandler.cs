@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Products.Command.RemoveProducts;
+﻿namespace Yerbowo.Application.Functions.Products.Command.RemoveProducts;
 
 public class RemoveProductHandler : IRequestHandler<RemoveProductCommand>
 {

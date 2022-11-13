@@ -1,8 +1,4 @@
-﻿using Yerbowo.Domain.Addresses;
-using Yerbowo.Domain.SeedWork;
-using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Domain.Orders;
+﻿namespace Yerbowo.Domain.Orders;
 
 public class Order : BaseEntity
 {

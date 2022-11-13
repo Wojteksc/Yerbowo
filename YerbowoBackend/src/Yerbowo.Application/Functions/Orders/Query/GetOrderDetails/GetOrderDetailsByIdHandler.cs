@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Orders;
-
-namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
+﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
 
 public class GetOrderDetailsByIdHandler : IRequestHandler<GetOrderDetailsByIdQuery, OrderDetailsDto>
 {

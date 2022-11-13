@@ -1,7 +1,4 @@
-﻿using Yerbowo.Api.Extensions;
-using Yerbowo.Infrastructure.Context;
-
-namespace Yerbowo.Api;
+﻿namespace Yerbowo.Api;
 
 public class Startup
 {
@@ -12,26 +9,14 @@ public class Startup
 
     public IConfiguration Configuration { get; }
 
-    public void ConfigureTestingServices(IServiceCollection services)
-    {
-        services.AddDbContext<YerbowoContext>(options =>
-        {
-            options.UseInMemoryDatabase("DatabaseInMemoryForFunctionalTests");
-            options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-        });
-        
-        ConfigureServices(services);
-    }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSwagger();
         services.AddControllersOptions();
         services.AddMemoryCache();
         services.AddSettings(Configuration);
-        services.AddContext(Configuration);
-        services.AddServices();
+        services.AddYerbowoInfrastructure(Configuration);
+        services.AddYerbowoApplication();
         services.AddAuthentication(Configuration);
         services.AddAuthorization();
         services.AddCors();
@@ -39,10 +24,9 @@ public class Startup
         services.AddResponseCaching();
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, YerbowoContextSeed dbInitializer)
     {
-        if (env.IsDevelopment())
+        if (env.IsDevelopment() || env.IsEnvironment("Testing"))
         {
             app.UseDeveloperExceptionPage();
             app.UseSwaggers();

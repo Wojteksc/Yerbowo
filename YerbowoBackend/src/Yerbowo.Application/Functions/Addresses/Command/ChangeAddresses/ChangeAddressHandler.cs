@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
+﻿namespace Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
 
 public class ChangeAddressHandler : IRequestHandler<ChangeAddressCommand>
 {

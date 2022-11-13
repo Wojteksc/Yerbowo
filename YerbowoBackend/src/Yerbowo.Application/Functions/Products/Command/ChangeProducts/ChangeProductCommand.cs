@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Application.Functions.Products.Command.ChangeProducts;
+﻿namespace Yerbowo.Application.Functions.Products.Command.ChangeProducts;
 
 public class ChangeProductCommand : IRequest
 {

@@ -1,11 +1,4 @@
-﻿using Yerbowo.Api.Extensions;
-using Yerbowo.Application.Functions.Products.Command.ChangeProducts;
-using Yerbowo.Application.Functions.Products.Command.CreateProducts;
-using Yerbowo.Application.Functions.Products.Command.RemoveProducts;
-using Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
-using Yerbowo.Application.Functions.Products.Query.GetProductDetails;
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,12 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Functions.Auth.Command;
-using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
-using Yerbowo.Application.Services.Jwt;
-using Yerbowo.Domain.Extensions;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Unit.Tests.Application.Auth.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Auth.Command;
 
 public class SocialLoginHandlerTest
 {

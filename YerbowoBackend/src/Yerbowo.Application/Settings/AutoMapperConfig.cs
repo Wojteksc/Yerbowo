@@ -1,27 +1,4 @@
-﻿using EnumsNET;
-using Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
-using Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
-using Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
-using Yerbowo.Application.Functions.Addresses.Query.GetAddresses;
-using Yerbowo.Application.Functions.Auth.Command.Register;
-using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
-using Yerbowo.Application.Functions.Cart;
-using Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
-using Yerbowo.Application.Functions.Orders.Query.GetOrders;
-using Yerbowo.Application.Functions.Products;
-using Yerbowo.Application.Functions.Products.Command.ChangeProducts;
-using Yerbowo.Application.Functions.Products.Command.CreateProducts;
-using Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
-using Yerbowo.Application.Functions.Products.Query.GetProductDetails;
-using Yerbowo.Application.Functions.Products.Query.GetRandomProducts;
-using Yerbowo.Application.Functions.Users.Command.ChangeUsers;
-using Yerbowo.Domain.Addresses;
-using Yerbowo.Domain.Orders;
-using Yerbowo.Domain.Products;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Helpers;
-
-namespace Yerbowo.Application.Settings;
+﻿namespace Yerbowo.Application.Settings;
 
 public static class AutoMapperConfig
 {

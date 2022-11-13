@@ -1,13 +1,4 @@
-﻿using Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
-using Yerbowo.Domain.Products;
-using Yerbowo.Fakers;
-using Yerbowo.Fakers.Extensions;
-using Yerbowo.Infrastructure.Data.Products;
-using Yerbowo.Infrastructure.Helpers;
-using Yerbowo.Integration.Tests.Builders;
-using Yerbowo.Integration.Tests.Helpers;
-
-namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests;
+﻿namespace Yerbowo.Integration.Tests.Repositories.ProductRepositoryTests;
 
 public class ProductRepositoryTests
 {

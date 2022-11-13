@@ -1,7 +1,4 @@
-﻿using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
-using Yerbowo.Application.Functions.Auth.Command.Login;
-using Yerbowo.Application.Functions.Auth.Command.Register;
-using Yerbowo.Application.Functions.Auth.Command.SocialLogin;
+﻿
 
 namespace Yerbowo.Api.Controllers;
 

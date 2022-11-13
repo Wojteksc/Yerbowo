@@ -1,6 +1,4 @@
-﻿using Yerbowo.Api.Headers;
-
-namespace Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Extensions;
 
 public static class HttpResponseExtensions
 {

@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application;
-using Yerbowo.Application.Settings;
-using Yerbowo.Infrastructure;
-using Yerbowo.Infrastructure.Context;
-
+﻿using Yerbowo.Infrastructure;
 namespace Yerbowo.Api.Extensions;
 
 public static class ServiceExtensions
@@ -24,18 +20,6 @@ public static class ServiceExtensions
 		services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 		services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
 	}
-
-	public static void AddContext(this IServiceCollection services, IConfiguration configuration)
-	{
-		services.AddDbContextPool<YerbowoContext>(options =>
-			options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-	}
-
-	public static void AddServices(this IServiceCollection services)
-	{
-		services.AddYerbowoInfrastructure();
-		services.AddYerbowoApplication();
-    }
 
 	public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
 	{

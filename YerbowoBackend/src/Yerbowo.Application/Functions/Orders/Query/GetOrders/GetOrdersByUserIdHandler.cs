@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Orders;
-
-namespace Yerbowo.Application.Functions.Orders.Query.GetOrders;
+﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrders;
 
 public class GetOrdersByUserIdHandler : IRequestHandler<GetOrdersByUserIdQuery, IEnumerable<OrderDto>>
 {

@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
+﻿namespace Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
 
 public class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
 {

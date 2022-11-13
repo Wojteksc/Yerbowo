@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Addresses;
-
-namespace Yerbowo.Infrastructure.Data.Addresses;
+﻿namespace Yerbowo.Infrastructure.Data.Addresses;
 
 public class AddressConfigure : IEntityTypeConfiguration<Address>
 {

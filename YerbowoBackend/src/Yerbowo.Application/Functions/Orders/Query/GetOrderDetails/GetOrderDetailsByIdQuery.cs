@@ -8,5 +8,4 @@ public class GetOrderDetailsByIdQuery : IRequest<OrderDetailsDto>
 	{
 		Id = id;
 	}
-
 }

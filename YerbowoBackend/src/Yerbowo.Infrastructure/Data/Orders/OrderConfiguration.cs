@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Orders;
-
-namespace Yerbowo.Infrastructure.Data.Orders;
+﻿namespace Yerbowo.Infrastructure.Data.Orders;
 
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {

@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.SeedWork;
-
-namespace Yerbowo.Infrastructure.Data.Users;
+﻿namespace Yerbowo.Infrastructure.Data.Users;
 
 public interface IUserRepository : IEntityRepository<User>
 {

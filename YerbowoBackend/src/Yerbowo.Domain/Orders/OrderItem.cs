@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-using Yerbowo.Domain.SeedWork;
-
-namespace Yerbowo.Domain.Orders;
+﻿namespace Yerbowo.Domain.Orders;
 
 public class OrderItem : BaseEntity
 {

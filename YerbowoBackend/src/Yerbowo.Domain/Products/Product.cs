@@ -1,8 +1,4 @@
-﻿using Yerbowo.Domain.Extensions;
-using Yerbowo.Domain.SeedWork;
-using Yerbowo.Domain.Subcategories;
-
-namespace Yerbowo.Domain.Products;
+﻿namespace Yerbowo.Domain.Products;
 
 public class Product : BaseEntity
 {

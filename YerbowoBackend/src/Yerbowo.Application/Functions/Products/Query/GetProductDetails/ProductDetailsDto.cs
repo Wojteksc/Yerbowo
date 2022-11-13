@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Application.Functions.Products.Query.GetProductDetails;
+﻿namespace Yerbowo.Application.Functions.Products.Query.GetProductDetails;
 
 public class ProductDetailsDto
 {

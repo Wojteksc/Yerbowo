@@ -1,10 +1,4 @@
-﻿using MediatR;
-using Yerbowo.Application.Functions.Auth.Command.Register;
-using Yerbowo.Application.Functions.Auth.Events;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Unit.Tests.Application.Auth.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Auth.Command;
 
 public class RegisterHandlerTest
 {

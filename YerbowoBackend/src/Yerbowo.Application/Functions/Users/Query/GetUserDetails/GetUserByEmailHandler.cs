@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Users.Query.GetUserDetails;
+﻿namespace Yerbowo.Application.Functions.Users.Query.GetUserDetails;
 
 public class GetUserByEmailHandler : IRequestHandler<GetUserByEmailQuery, UserDetailsDto>
 {

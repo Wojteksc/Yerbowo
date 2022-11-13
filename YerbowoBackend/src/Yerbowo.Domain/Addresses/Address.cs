@@ -1,7 +1,4 @@
-﻿using Yerbowo.Domain.SeedWork;
-using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Domain.Addresses;
+﻿namespace Yerbowo.Domain.Addresses;
 
 public class Address : BaseEntity
 {

@@ -1,9 +1,4 @@
-﻿using Yerbowo.Application.Extensions;
-using Yerbowo.Application.Functions.Cart.Utils;
-using Yerbowo.Application.Settings;
-using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Cart.Command.AddCartItems;
+﻿namespace Yerbowo.Application.Functions.Cart.Command.AddCartItems;
 
 public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
 {

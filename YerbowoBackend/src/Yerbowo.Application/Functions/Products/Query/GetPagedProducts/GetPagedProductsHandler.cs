@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Data.Products;
-
-namespace Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
+﻿namespace Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
 
 public class GetPagedProductsHandler : IRequestHandler<PageProductQuery, PagedProductCardDto>
 {

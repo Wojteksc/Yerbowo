@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Query.GetAddresses;
-
-namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
+﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
 
 public class OrderDetailsDto
 {

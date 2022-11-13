@@ -1,15 +1,12 @@
-﻿using Yerbowo.Application.Functions.Products;
-using Yerbowo.Functional.Tests.Web.Extensions;
+﻿namespace Yerbowo.Functional.Tests.Web.Controllers;
 
-namespace Yerbowo.Functional.Tests.Web.Controllers;
-
-public class ProductsControllerTest : IClassFixture<WebTestFixture>
+public class ProductsControllerTest : ApiTestBase
 {
 	private readonly HttpClient _httpClient;
-	public ProductsControllerTest(WebTestFixture factory)
-	{
-		_httpClient = factory.CreateClient(new WebApplicationFactoryClientOptions());
-	}
+	public ProductsControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
+    {
+        _httpClient = CreateClient();
+    }
 
 	[Fact]
 	private async Task GetProductsByPaging_Shoould_ReturnTheSameQuantity()

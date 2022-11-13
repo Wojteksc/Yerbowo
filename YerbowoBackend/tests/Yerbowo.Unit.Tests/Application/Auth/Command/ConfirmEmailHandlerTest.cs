@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Unit.Tests.Application.Auth.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Auth.Command;
 
 public class ConfirmEmailHandlerTest
 {

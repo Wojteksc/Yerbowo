@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Services.Jwt;
-using Yerbowo.Application.Services.PasswordValidator;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Auth.Command.Login;
+﻿namespace Yerbowo.Application.Functions.Auth.Command.Login;
 
 public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 {

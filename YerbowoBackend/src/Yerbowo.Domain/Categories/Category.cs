@@ -1,8 +1,4 @@
-﻿using Yerbowo.Domain.Extensions;
-using Yerbowo.Domain.SeedWork;
-using Yerbowo.Domain.Subcategories;
-
-namespace Yerbowo.Domain.Categories;
+﻿namespace Yerbowo.Domain.Categories;
 
 public class Category : BaseEntity
 {

@@ -1,8 +1,4 @@
-﻿using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Context;
-using Yerbowo.Infrastructure.Data.SeedWork;
-
-namespace Yerbowo.Infrastructure.Data.Users;
+﻿namespace Yerbowo.Infrastructure.Data.Users;
 
 public class UserRepository : DbEntityRepository<User>, IUserRepository
 {

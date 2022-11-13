@@ -1,16 +1,7 @@
-﻿using Yerbowo.Domain.Addresses;
-using Yerbowo.Domain.Categories;
-using Yerbowo.Domain.Orders;
-using Yerbowo.Domain.Products;
-using Yerbowo.Domain.SeedWork;
-using Yerbowo.Domain.Subcategories;
-using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Infrastructure.Context;
+﻿namespace Yerbowo.Infrastructure.Context;
 
 public class YerbowoContext : DbContext
 {
-
     public YerbowoContext(DbContextOptions<YerbowoContext> options) : base(options)
     {
     }
@@ -64,5 +55,4 @@ public class YerbowoContext : DbContext
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
-
 }

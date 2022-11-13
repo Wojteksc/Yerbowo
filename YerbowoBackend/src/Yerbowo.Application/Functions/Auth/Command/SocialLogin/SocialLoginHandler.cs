@@ -1,9 +1,4 @@
-﻿using Yerbowo.Application.Services.Jwt;
-using Yerbowo.Domain.Extensions;
-using Yerbowo.Domain.Users;
-using Yerbowo.Infrastructure.Data.Users;
-
-namespace Yerbowo.Application.Functions.Auth.Command.SocialLogin;
+﻿namespace Yerbowo.Application.Functions.Auth.Command.SocialLogin;
 
 public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseToken>
 {

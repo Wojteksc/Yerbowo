@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Infrastructure.Data.Products;
+﻿namespace Yerbowo.Infrastructure.Data.Products;
 
 public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {

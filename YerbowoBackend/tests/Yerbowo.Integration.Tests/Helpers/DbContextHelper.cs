@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.Context;
-
-namespace Yerbowo.Integration.Tests.Helpers;
+﻿namespace Yerbowo.Integration.Tests.Helpers;
 
 public static class DbContextHelper
 {

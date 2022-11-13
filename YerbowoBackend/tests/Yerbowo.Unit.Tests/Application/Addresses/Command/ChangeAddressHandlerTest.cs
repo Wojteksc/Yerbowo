@@ -1,8 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
-using Yerbowo.Domain.Addresses;
-using Yerbowo.Infrastructure.Data.Addresses;
-
-namespace Yerbowo.Unit.Tests.Application.Addresses.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Addresses.Command;
 
 public class ChangeAddressHandlerTest
 {

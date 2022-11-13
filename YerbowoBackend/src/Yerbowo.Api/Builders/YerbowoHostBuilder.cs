@@ -1,8 +1,6 @@
-﻿using Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Builders;
 
-namespace Yerbowo.Api.Builders;
-
-public class HostBuilder
+public class YerbowoHostBuilder
 {
     public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration config) =>
         Host.CreateDefaultBuilder(args)

@@ -1,9 +1,4 @@
-﻿using Yerbowo.Application.Services.Jwt;
-using Yerbowo.Application.Services.PasswordValidator;
-using Yerbowo.Application.Services.SendGrid;
-using Yerbowo.Application.Settings;
-
-namespace Yerbowo.Application;
+﻿namespace Yerbowo.Application;
 
 public static class ApplicationInstallation
 {

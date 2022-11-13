@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
+﻿namespace Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
 
 public class SendVerificationEmailCommand : IRequest
 {

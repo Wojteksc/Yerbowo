@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Addresses.Query.GetAddressDetails;
-
-namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
+﻿namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
 
 public class CreateAddressCommand : IRequest<AddressDetailsDto>
 {

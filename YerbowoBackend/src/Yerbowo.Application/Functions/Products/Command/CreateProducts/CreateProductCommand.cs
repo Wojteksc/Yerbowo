@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
+﻿namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
 
 public class CreateProductCommand : IRequest<CreateProductCommand>
 {
