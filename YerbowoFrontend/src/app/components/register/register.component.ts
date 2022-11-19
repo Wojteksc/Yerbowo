@@ -15,6 +15,8 @@ export class RegisterComponent implements OnInit {
   user: User;
   registerForm: FormGroup;
 
+  submitted = false;
+
   constructor(private authService: AuthService, private alertify: AlertifyService,
      private fb: FormBuilder, private router: Router) {  }
 
@@ -42,6 +44,7 @@ export class RegisterComponent implements OnInit {
   get f() { return this.registerForm.controls; }
 
   register() {
+    this.submitted = true;
     if(this.registerForm.valid) {
       this.user = Object.assign({}, this.registerForm.value);
 

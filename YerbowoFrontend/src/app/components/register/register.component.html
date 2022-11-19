@@ -4,71 +4,60 @@
       <form [formGroup]="registerForm" (ngSubmit)="register()" class="subgrid-col-2">
           
           <label class="label" for="firstName">Imię: *</label>
-          <input type="text"
-          [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched }"
-          formControlName="firstName"
-          class="input-text">
-          <div *ngIf="f.firstName.touched && f.firstName.errors?.required" class="invalid-feedback">Pole 'Imię' jest wymagane.</div>
+          <input type="text" class="input-text" formControlName="firstName"
+          [ngClass]="{ 'is-invalid': f.firstName.errors && (f.firstName.touched || submitted) }">
+          <div class="text-danger" *ngIf="(f.firstName.touched || submitted) && f.firstName.errors?.required">
+              Pole 'Imię' jest wymagane.
+          </div>
 
           <label class="label" for="lastName">Nazwisko: *</label>
-          <input type="text"
-          [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched }"
-          formControlName="lastName"
-          class="input-text">
-          <div *ngIf="f.lastName.touched && f.lastName?.errors">Pole 'Nazwisko' jest wymagane.</div>
-
+          <input type="text" class="input-text" formControlName="lastName"
+          [ngClass]="{ 'is-invalid': f.lastName.errors && (f.lastName.touched || submitted) }">
+          <div class="text-danger" *ngIf="(f.lastName.touched || submitted) && f.lastName.errors?.required">
+              Pole 'Nazwisko' jest wymagane.
+          </div>    
+          
           <label class="label" for="companyName">Nazwa firmy: </label>
-          <input type="text"
-          formControlName="companyName"
-          class="input-text">
+          <input type="text" class="input-text" formControlName="companyName">
           
           <label class="label" for="email">E-mail: *</label>
-          <input type="email"
-          [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }"
-          formControlName="email"
-          class="input-text">
-          <div *ngIf="f.email.touched && f.email.errors" class="invalid-feedback">
+          <input type="email" class="input-text" formControlName="email"
+          [ngClass]="{ 'is-invalid': f.email.errors && (f.email.touched || submitted) }">
+          <div class="text-danger" *ngIf="f.email.errors && (f.email.touched || submitted) ">
             <div *ngIf="f.email.errors.required">Pole 'E-mail' jest wymagane.</div>
             <div *ngIf="f.email.errors.email">Niepoprawny format adresu e-mail</div>
           </div>
           
           <label class="label" for="confirmEmail">Powtórz e-mail: *</label>
-          <input type="email"
-          [ngClass]="{ 'is-invalid': f.confirmEmail.errors && f.confirmEmail.touched}"
-          formControlName="confirmEmail"
-          class="input-text">
-          <div *ngIf="f.confirmEmail.touched && f.confirmEmail.errors" class="invalid-feedback">
-            <div *ngIf="f.confirmEmail.errors.required">Pole 'Potwórz e-mail' jest wymagane</div>
-            <div *ngIf="f.confirmEmail.errors.email">Nieprawidłowy format adresu e-mail</div>
+          <input type="email" class="input-text" formControlName="confirmEmail"
+          [ngClass]="{ 'is-invalid': f.confirmEmail.errors && (f.confirmEmail.touched || submitted) }">
+          <div class="text-danger" *ngIf="f.confirmEmail.errors && (f.confirmEmail.touched || submitted) ">
+            <div *ngIf="f.confirmEmail.errors.required">Pole 'Powtórz e-mail' jest wymagane.</div>
+            <div *ngIf="f.confirmEmail.errors.email">Niepoprawny format adresu e-mail</div>
           </div>
-          <div *ngIf="f.confirmEmail.touched && registerForm.hasError('mismatchEmail')" class="invalid-feedback">Adresy e-mail nie są takie same.</div>
-          
+          <div class="text-danger" *ngIf="(f.confirmEmail.touched || submitted) && registerForm.hasError('mismatchEmail')">Adresy e-mail nie są takie same.</div>
           
           <label class="label" for="password">Hasło: *</label>
-          <input type="password"
-          [ngClass]="{ 'is-invalid': f.password.errors && f.password.touched}"
-          formControlName="password"
-          class="input-text">
-          <!-- <div *ngIf="f.password.touched && f.password.errors?.required" class="invalid-feedback">Pole 'Hasło' jest wymagane.</div> -->
+          <input type="password" class="input-text" formControlName="password"
+          [ngClass]="{ 'is-invalid': f.password.errors && (f.password.touched || submitted)}">
+          <div class="text-danger" *ngIf="(f.password.touched || submitted) && f.password.errors?.required">Pole 'Hasło' jest wymagane.</div>
           
           <label class="label" for="confirmPassword">Powtórz hasło: *</label>
-          <input type="password"
-          [ngClass]="{ 'is-invalid': f.confirmPassword.errors && f.confirmPassword.touched }"
-          formControlName="confirmPassword"
-          class="input-text">
-          <!-- <div *ngIf="f.confirmPassword.touched && f.confirmPassword.errors?.required" class="invalid-feedback">Pole 'Potwórz hasło' jest wymagane.</div> -->
-          <div *ngIf="f.confirmPassword.touched && registerForm.hasError('mismatchPassword')" class="invalid-feedback">Hasła nie są takie same</div>
-           
+          <input type="password" class="input-text" formControlName="confirmPassword"
+          [ngClass]="{ 'is-invalid': f.confirmPassword.errors && (f.confirmPassword.touched || submitted) }">
+          <div class="text-danger" *ngIf="(f.confirmPassword.touched || submitted) && f.confirmPassword.errors?.required">Pole 'Potwórz hasło' jest wymagane.</div>
+          <div class="text-danger" *ngIf="(f.confirmPassword.touched || submitted) && registerForm.hasError('mismatchPassword')">Hasła nie są takie same</div>
+          
           <div class="right-side">
+            <br>
             <p class="text-danger">Pola oznaczone (*) są wymagane.</p>
           </div>
 
           <div class="full-row">
             <hr>
           </div>
-
-          <input [disabled]="!registerForm.valid" type="submit" class="btn-submit" value="Zapisz">
-        
+          
+          <input type="submit" class="btn-submit" value="Zapisz">
       </form>  
   </div>
 </div>
