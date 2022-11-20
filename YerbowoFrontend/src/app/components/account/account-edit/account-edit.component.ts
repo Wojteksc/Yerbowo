@@ -16,6 +16,8 @@ export class AccountEditComponent implements OnInit {
   user: User;
   accountForm: FormGroup;
 
+  submitted = false;
+
   constructor(private route: ActivatedRoute, private userService: UserService,
     private authService: AuthService, private alertify: AlertifyService,
     private fb: FormBuilder) { }
@@ -49,7 +51,7 @@ export class AccountEditComponent implements OnInit {
   get f() { return this.accountForm.controls; }
 
   updateUser() {
-
+    this.submitted = true;
     if(this.accountForm.valid) {
       this.user = Object.assign({}, this.accountForm.value);
 
