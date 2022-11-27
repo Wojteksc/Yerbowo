@@ -8,89 +8,82 @@
     <form [formGroup]="addressAddForm" (ngSubmit)="createAddress()" class="subgrid-col-2">
 
       <label class="label-small" for="alias">Alias: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.alias.errors && f.alias.touched }"
-      formControlName="alias"  
-      class="input-text-small">
-      <div *ngIf="f.alias.touched && f.alias.errors?.required" class="invalid-feedback">Pole 'Alias' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="alias"  
+      [ngClass]="{ 'is-invalid': f.alias.errors && (f.alias.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.alias.touched || submitted) && f.alias.errors?.required">
+          Pole 'Alias' jest wymagane.
+      </div>
       
       <label class="label-small" for="firstName">Imię: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched }"
-      formControlName="firstName"  
-      class="input-text-small">
-      <div *ngIf="f.firstName.touched && f.firstName.errors?.required" class="invalid-feedback">Pole 'Imię' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="firstName"  
+      [ngClass]="{ 'is-invalid': f.firstName.errors && (f.firstName.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.firstName.touched || submitted) && f.firstName.errors?.required">
+        Pole 'Imię' jest wymagane.
+      </div>
 
       <label class="label-small" for="lastName">Nazwisko: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched }"
-      formControlName="lastName"  
-      class="input-text-small">
-      <div *ngIf="f.lastName.touched && f.lastName.errors?.required" class="invalid-feedback">Pole 'Nazwisko' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="lastName"  
+      [ngClass]="{ 'is-invalid': f.lastName.errors && (f.lastName.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.lastName.touched || submitted) && f.lastName.errors?.required">
+        Pole 'Nazwisko' jest wymagane.
+      </div>
 
       <label class="label-small" for="street">Ulica: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.street.errors && f.street.touched }"
-      formControlName="street"  
-      class="input-text-small">
-      <div *ngIf="f.street.touched && f.street.errors?.required" class="invalid-feedback">Pole 'Ulica' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="street"  
+      [ngClass]="{ 'is-invalid': f.street.errors && (f.street.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.street.touched || submitted) && f.street.errors?.required">
+        Pole 'Ulica' jest wymagane.
+      </div>
 
       <label class="label-small" for="buildingNumber">Numer budynku: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.buildingNumber.errors && f.buildingNumber.touched }"
-      formControlName="buildingNumber"  
-      class="input-text-small">
-      <div *ngIf="f.buildingNumber.touched && f.buildingNumber.errors?.required" class="invalid-feedback">Pole 'Numer budynku' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="buildingNumber"  
+      [ngClass]="{ 'is-invalid': f.buildingNumber.errors && (f.buildingNumber.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.buildingNumber.touched || submitted) && f.buildingNumber.errors?.required">
+        Pole 'Numer budynku' jest wymagane.
+      </div>
 
       <label class="label-small" for="apartmentNumber">Numer lokalu: </label>
-      <input type="text" 
-      formControlName="apartmentNumber"  
-      class="input-text-small">
+      <input type="text" class="input-text-small" formControlName="apartmentNumber">
 
       <label class="label-small" for="place">Miejscowość: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.place.errors && f.place.touched }"
-      formControlName="place"  
-      class="input-text-small">
-      <div *ngIf="f.place.touched && f.place.errors?.required" class="invalid-feedback">Pole 'Miejscowość' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="place"  
+      [ngClass]="{ 'is-invalid': f.place.errors && (f.place.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.place.touched || submitted) && f.place.errors?.required">
+        Pole 'Miejscowość' jest wymagane.
+      </div>
 
       <label class="label-small" for="postCode">Kod pocztowy: *</label>
-      <input type="text" 
-      [ngClass]="{ 'is-invalid': f.postCode.errors && f.postCode.touched }"
-      formControlName="postCode"  
-      class="input-text-small">
-      <div *ngIf="f.postCode.touched && f.postCode.errors?.required" class="invalid-feedback">Pole 'Kod pocztowy' jest wymagane.</div>
+      <input type="text" class="input-text-small" formControlName="postCode"  
+      [ngClass]="{ 'is-invalid': f.postCode.errors && (f.postCode.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.postCode.touched || submitted) && f.postCode.errors?.required">
+        Pole 'Kod pocztowy' jest wymagane.
+      </div>
 
       <label class="label-small" for="phone">Telefon: *</label>
-      <input type="tel" 
-      [ngClass]="{ 'is-invalid': f.phone.errors && f.phone.touched }"
-      formControlName="phone"  
-      class="input-text-small">
-      <div *ngIf="f.phone.touched && f.phone.errors?.required" class="invalid-feedback">Pole 'Telefon' jest wymagane.</div>
+      <input type="tel" class="input-text-small" formControlName="phone"  
+      [ngClass]="{ 'is-invalid': f.phone.errors && (f.phone.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.phone.touched || submitted) && f.phone.errors?.required">
+        Pole 'Telefon' jest wymagane.
+      </div>
       
       <label class="label-small" for="email">E-mail: *</label>
-      <input type="email" 
-      [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }"
-      formControlName="email"  
-      class="input-text-small">
-      <div *ngIf="f.email.touched && f.email.errors?.required" class="invalid-feedback">Pole 'E-mail' jest wymagane.</div>
+      <input type="email" class="input-text-small" formControlName="email"  
+      [ngClass]="{ 'is-invalid': f.email.errors && (f.email.touched || submitted) }">
+      <div class="text-danger" *ngIf="(f.email.touched || submitted) && f.email.errors?.required">
+        Pole 'E-mail' jest wymagane.
+      </div>
       
       <label class="label-small" for="nip">NIP: </label>
-      <input type="text" 
-      formControlName="nip"  
-      class="input-text-small">
+      <input type="text" class="input-text-small" formControlName="nip">
 
       <label class="label-small" for="company">Firma: </label>
-      <input type="text" 
-      formControlName="company"  
-      class="input-text-small">
+      <input type="text" class="input-text-small" formControlName="company">
 
       <div class="full-row">
         <hr>
       </div>
 
-      <input [disabled]='!addressAddForm.valid' type="submit" class="btn-submit" value="Zapisz"/>
-
+      <input type="submit" class="btn-submit" value="Zapisz"/>
     </form>
   </div>
 </div>

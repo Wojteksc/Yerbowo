@@ -9,7 +9,6 @@
 
             <input type="hidden" formControlName="id">
 
-
             <label class="label-small" for="firstName">Imię: *</label>
             <input type="text" class="input-text-small" formControlName="firstName"
             [ngClass]="{ 'is-invalid': f.firstName.errors && (f.firstName.touched || submitted) }">
@@ -31,17 +30,17 @@
             <input type="email" class="input-text-small" formControlName="email"
             [ngClass]="{ 'is-invalid': f.email.errors && (f.email.touched || submitted) }">
             <div class="text-danger" *ngIf="f.email.errors && (f.email.touched || submitted) ">
-              <div *ngIf="f.email.errors.required">Pole 'E-mail' jest wymagane.</div>
-              <div *ngIf="f.email.errors.email">Niepoprawny format adresu e-mail</div>
+                <div *ngIf="f.email.errors.required">Pole 'E-mail' jest wymagane.</div>
+                <div *ngIf="f.email.errors.email">Niepoprawny format adresu e-mail</div>
             </div>
             
             <label class="label-small" for="confirmEmail">Powtórz e-mail: *</label>
             <input type="email" class="input-text-small" formControlName="confirmEmail"
             [ngClass]="{ 'is-invalid': f.confirmEmail.errors && (f.confirmEmail.touched || submitted || accountForm.hasError('mismatchEmail')) }">
             <div class="text-danger" *ngIf="f.confirmEmail.errors && (f.confirmEmail.touched || submitted) ">
-              <div *ngIf="f.confirmEmail.errors.required">Pole 'Powtórz e-mail' jest wymagane.</div>
-              <div *ngIf="f.confirmEmail.errors.email">Niepoprawny format adresu e-mail</div>
-              <div *ngIf="accountForm.hasError('mismatchEmail')">Adresy e-mail nie są takie same.</div>
+                <div *ngIf="f.confirmEmail.errors.required">Pole 'Powtórz e-mail' jest wymagane.</div>
+                <div *ngIf="f.confirmEmail.errors.email">Niepoprawny format adresu e-mail</div>
+                <div *ngIf="accountForm.hasError('mismatchEmail')">Adresy e-mail nie są takie same.</div>
             </div>
             
             <div class="full-row">
@@ -54,7 +53,7 @@
             <div class="text-danger" *ngIf="(f.newPassword.touched || submitted) && f.newPassword.errors?.minlength">
                 Hasło musi mieć co najmniej 4 znaki.
             </div>
-                      
+                        
             <label class="label-small" for="confirmPassword">Powtórz hasło: </label>
             <input type="password" class="input-text-small" formControlName="confirmPassword">
             <div class="text-danger" *ngIf="(f.confirmPassword.touched || submitted)">

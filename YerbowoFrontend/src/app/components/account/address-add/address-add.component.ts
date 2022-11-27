@@ -16,6 +16,8 @@ export class AddressAddComponent implements OnInit {
   address: AddressCreate;
   addressAddForm: FormGroup;
 
+  submitted = false;
+
   constructor(private fb: FormBuilder, private addressService: AddressService,
     private authService: AuthService, private alertify: AlertifyService,
     private router: Router) { }
@@ -41,7 +43,7 @@ export class AddressAddComponent implements OnInit {
   get f() { return this.addressAddForm.controls; }
 
   createAddress() {
-
+    this.submitted = true;
     if(this.addressAddForm.valid) {
       this.address = Object.assign({}, this.addressAddForm.value);
 
