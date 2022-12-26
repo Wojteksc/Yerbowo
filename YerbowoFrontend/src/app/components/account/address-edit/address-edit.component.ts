@@ -16,6 +16,9 @@ export class AddressEditComponent implements OnInit {
   addressId: number;
   address: AddressEdit;
   addressEditForm: FormGroup;
+
+  submitted = false;
+
   constructor(private route: ActivatedRoute,
     private authService: AuthService, 
     private addressService: AddressService, 
@@ -49,7 +52,7 @@ export class AddressEditComponent implements OnInit {
   get f() { return this.addressEditForm.controls; }
 
   updateAddress() {
-
+    this.submitted = true;
     if(this.addressEditForm.valid) {
       this.address = Object.assign({}, this.addressEditForm.value);
 
