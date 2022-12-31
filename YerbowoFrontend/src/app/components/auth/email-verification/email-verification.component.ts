@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { AuthService } from '../../_services/auth.service';
+import { AuthService } from '../../../_services/auth.service';
 
 @Component({
   selector: 'app-email-verification',
-  templateUrl: './../home/home.component.html',
-  styleUrls: ['./../home/home.component.css'],
+  templateUrl: './../../home/home.component.html',
+  styleUrls: ['./../../home/home.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class EmailVerificationComponent implements OnInit {

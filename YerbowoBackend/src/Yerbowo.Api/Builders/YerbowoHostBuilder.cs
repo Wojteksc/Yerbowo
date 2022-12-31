@@ -2,16 +2,17 @@
 
 public class YerbowoHostBuilder
 {
-    public static IHostBuilder CreateHostBuilder(string[] args, IConfiguration config) =>
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-        .UseSerilog() //Uses Serilog instead of default .NET Logger
-        .ConfigureAppConfiguration(builder => builder.AddConfiguration(config))
+        .UseSerilog()
         .ConfigureAppConfiguration((context, config) =>
         {
-            if (context.HostingEnvironment.IsDevelopment())
-                return;
+            config.AddAppSettings(context);
 
-            config.AddAzureKeyVault();
+            if (!context.HostingEnvironment.IsDevelopment())
+            {
+                config.AddAzureKeyVault();
+            }
         })
         .ConfigureWebHostDefaults(webBuilder =>
         {

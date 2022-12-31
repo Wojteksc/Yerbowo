@@ -4,7 +4,7 @@ import { ProductListComponent } from './components/products/product-list/product
 import { ProductListResolver } from './_resolvers/product-list.resolver';
 import { ProductDetailComponent } from './components/products/product-detail/product-detail.component';
 import { ProductDetailResolver } from './_resolvers/product-detail.resolver';
-import { LoginComponent } from './components/login/login.component';
+import { LoginComponent } from './components/auth/login/login.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { AccountEditComponent } from './components/account/account-edit/account-edit.component';
 import { AccountEditResolver } from './_resolvers/account-edit.resolver';
@@ -13,7 +13,7 @@ import { OrderHistoryTableResolver } from './_resolvers/order-history-table.reso
 import { OrderHistoryTableComponent } from './components/account/order-history-table/order-history-table.component';
 import { OrderHistoryDetailComponent } from './components/account/order-history-detail/order-history-detail.component';
 import { OrderHistoryDetailResolver } from './_resolvers/order-history-detail.resolver';
-import { RegisterComponent } from './components/register/register.component';
+import { RegisterComponent } from './components/auth/register/register.component';
 import { AddressListComponent } from './components/account/address-list/address-list.component';
 import { AddressListResolver } from './_resolvers/address-list.resolver';
 import { AddressAddComponent } from './components/account/address-add/address-add.component';
@@ -22,7 +22,7 @@ import { AddressEditResolver } from './_resolvers/address-edit.resolver';
 import { AccountOptionListComponent } from './components/account/account-option-list/account-option-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
-import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
+import { EmailVerificationComponent } from './components/auth/email-verification/email-verification.component';
 
 
 export const appRoutes: Routes = [

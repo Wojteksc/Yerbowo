@@ -7,7 +7,7 @@ import { AuthService as SocialAuthService } from 'angularx-social-login';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['../../styles/form-center.css', './login.component.css'],
+  styleUrls: ['../../../styles/form-center.css', './login.component.css'],
   encapsulation: ViewEncapsulation.None,
 })
 export class LoginComponent implements OnInit {

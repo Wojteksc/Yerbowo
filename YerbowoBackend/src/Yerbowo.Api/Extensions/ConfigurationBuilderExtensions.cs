@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Api.Extensions;
+﻿using Microsoft.Extensions.Hosting.Internal;
+
+namespace Yerbowo.Api.Extensions;
 
 public static class ConfigurationBuilderExtensions
 {
@@ -14,5 +16,14 @@ public static class ConfigurationBuilderExtensions
         var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
         var client = new SecretClient(new Uri(kvURL), credential);
         config.AddAzureKeyVault(client, new AzureKeyVaultConfigurationOptions());
+    }
+
+    public static void AddAppSettings(this IConfigurationBuilder config, HostBuilderContext context)
+    {
+        bool isTesting = context.HostingEnvironment.IsEnvironment("Testing");
+
+        config.AddJsonFile("appsettings.json");
+        config.AddJsonFile("appsettings.Development.json", optional: true);
+        config.AddJsonFile("appsettings.Cloud.json", optional: !isTesting);
     }
 }
