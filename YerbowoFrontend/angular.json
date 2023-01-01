@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/yerbowo",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -31,6 +32,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -128,5 +135,8 @@
       }
     }
   },
-  "defaultProject": "YerbowoFrontend"
+  "defaultProject": "YerbowoFrontend",
+  "cli": {
+    "analytics": "723a47fe-976c-4ff2-9076-7eacbd564708"
+  }
 }
