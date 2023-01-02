@@ -48,6 +48,7 @@ import { AccountOptionListComponent } from './components/account/account-option-
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
 import { EmailVerificationComponent } from './components/auth/email-verification/email-verification.component';
+import { CommonModule } from '@angular/common';
 
 export function tokkenGetter() {
   return localStorage.getItem('token');
@@ -97,11 +98,12 @@ export function provideConfig() {
     EmailVerificationComponent,
   ],
   imports: [
+    RouterModule.forRoot(appRoutes),
     BrowserModule,
+    CommonModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes),
     PaginationModule.forRoot(),
     JwtModule.forRoot({
       config: {
@@ -110,7 +112,7 @@ export function provideConfig() {
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    SocialLoginModule
+    SocialLoginModule,
   ],
   providers: [
     ErrorInterceptorProvider,
