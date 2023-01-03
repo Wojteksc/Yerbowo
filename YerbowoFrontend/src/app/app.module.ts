@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { SocialLoginModule, SocialAuthServiceConfig } from "angularx-social-login";
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 import { AppComponent } from './app.component';
@@ -54,19 +54,25 @@ export function tokkenGetter() {
   return localStorage.getItem('token');
 }
 
-let config = new AuthServiceConfig([
-  {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com")
-  },
-  {
-    id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("721481622017748")
-  }
-]);
+let socialAuthServiceConfig = {
+  provide: "SocialAuthServiceConfig",
+  useValue: {
+    autoLogin: true,
+    providers: [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com")
+      },
+      {
+        id: FacebookLoginProvider.PROVIDER_ID,
+        provider: new FacebookLoginProvider("721481622017748")
+      }
+    ]
+  } as SocialAuthServiceConfig
+}
 
 export function provideConfig() {
-  return config;
+  return socialAuthServiceConfig;
 }
 
 @NgModule({
@@ -98,7 +104,7 @@ export function provideConfig() {
     EmailVerificationComponent,
   ],
   imports: [
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),
     BrowserModule,
     CommonModule,
     HttpClientModule,
@@ -115,6 +121,7 @@ export function provideConfig() {
     SocialLoginModule,
   ],
   providers: [
+    provideConfig(),
     ErrorInterceptorProvider,
     ProductListResolver,
     ProductDetailResolver,
@@ -126,10 +133,6 @@ export function provideConfig() {
     OrderService,
     OrderHistoryTableResolver,
     OrderHistoryDetailResolver,
-    {
-      provide: AuthServiceConfig,
-      useFactory: provideConfig
-    },
     AddressListResolver,
     AddressEditResolver,
     CartResolver

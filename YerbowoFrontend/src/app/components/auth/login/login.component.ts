@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { AuthService as SocialAuthService } from 'angularx-social-login';
+import { SocialAuthService } from 'angularx-social-login';
 
 @Component({
   selector: 'app-login',
