@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { User } from 'src/app/_models/user';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/_services/auth.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Router } from '@angular/router';
@@ -13,12 +13,12 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent implements OnInit {
   user: User;
-  registerForm: FormGroup;
+  registerForm: UntypedFormGroup;
 
   submitted = false;
 
   constructor(private authService: AuthService, private alertify: AlertifyService,
-     private fb: FormBuilder, private router: Router) {  }
+     private fb: UntypedFormBuilder, private router: Router) {  }
 
   ngOnInit() {
 
@@ -33,11 +33,11 @@ export class RegisterComponent implements OnInit {
     }, { validators: [this.emailMatchValidator, this.passwordMatchValidator] });
   }
 
-  emailMatchValidator(g: FormGroup) {
+  emailMatchValidator(g: UntypedFormGroup) {
     return g.get('email').value === g.get('confirmEmail').value ? null : { 'mismatchEmail': true };
   }
 
-  passwordMatchValidator(g: FormGroup) {
+  passwordMatchValidator(g: UntypedFormGroup) {
     return g.get('password').value === g.get('confirmPassword').value ? null : { 'mismatchPassword': true };
   }
 

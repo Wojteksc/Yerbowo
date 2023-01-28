@@ -5,8 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { SocialLoginModule, SocialAuthServiceConfig } from "angularx-social-login";
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-social-login';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -54,14 +54,14 @@ export function tokkenGetter() {
   return localStorage.getItem('token');
 }
 
-let socialAuthServiceConfig = {
+const socialAuthServiceConfig = {
   provide: "SocialAuthServiceConfig",
   useValue: {
-    autoLogin: true,
+    autoLogin: false,
     providers: [
       {
         id: GoogleLoginProvider.PROVIDER_ID,
-        provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com")
+        provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com", { oneTapEnabled: false })
       },
       {
         id: FacebookLoginProvider.PROVIDER_ID,
@@ -71,7 +71,7 @@ let socialAuthServiceConfig = {
   } as SocialAuthServiceConfig
 }
 
-export function provideConfig() {
+export function provideSocialAuthConfig() {
   return socialAuthServiceConfig;
 }
 
@@ -110,18 +110,18 @@ export function provideConfig() {
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    SocialLoginModule,
     PaginationModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokkenGetter,
-        whitelistedDomains: ['localhost:5000'],
-        blacklistedRoutes: ['localhost:5000/api/auth']
+        allowedDomains: ['localhost:5000'],
+        disallowedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    SocialLoginModule,
   ],
   providers: [
-    provideConfig(),
+    provideSocialAuthConfig(),
     ErrorInterceptorProvider,
     ProductListResolver,
     ProductDetailResolver,

@@ -1,7 +1,7 @@
 <div class="grid">
   <div class="grid-area-center">
       <h2 class="text-center">Zaloguj się</h2>
-      <form #loginForm="ngForm" (ngSubmit)="login()" class="subgrid-col-1 grid-items-center">      
+      <form #loginForm="ngForm" (ngSubmit)="signIn()" class="subgrid-col-1 grid-items-center">      
         <input type="text" name="email" placeholder="E-mail" required [(ngModel)]="model.email" class="input-text">
         <input type="password" name="password" placeholder="Hasło" required [(ngModel)]="model.password" class="input-text">
         <input type="submit" class="btn-submit" value="Zaloguj"/>
@@ -12,12 +12,10 @@
       <br>
 
       <div class="subgrid-social-login grid-items-center">
-        <button (click)="loginWithSocial('FACEBOOK')" class="loginBtn loginBtn--facebook grid-item-right">
-          Zaloguj przez Facebook
+        <button (click)="signInWithFB()" class="loginBtn loginBtn--facebook grid-item-right">
+          Zaloguj się przez Facebook
         </button> 
-        <button (click)="loginWithSocial('GOOGLE')" class="loginBtn loginBtn--google grid-item-left">
-          Zaloguj przez Google
-        </button>
+        <asl-google-signin-button class="loginBtn loginBtn--google grid-item-left" type='standard' size='medium' theme="filled_blue"></asl-google-signin-button>
       </div>
   </div>
 </div>

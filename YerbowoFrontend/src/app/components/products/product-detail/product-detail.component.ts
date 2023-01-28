@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@ang
 import { ProductDetail } from 'src/app/_models/productDetail';
 import { ProductService } from 'src/app/_services/product.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { CartService } from 'src/app/_services/cart.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { DataService } from 'src/app/_services/data.service';
@@ -15,7 +15,7 @@ import { DataService } from 'src/app/_services/data.service';
 })
 export class ProductDetailComponent implements OnInit {
   product: ProductDetail;
-  productForm: FormGroup;
+  productForm: UntypedFormGroup;
   @Output() onCountCart = new EventEmitter();
   totalCartProducts: any;
 
@@ -31,9 +31,9 @@ export class ProductDetailComponent implements OnInit {
 
     window.scrollTo(0, 0);
 
-    this.productForm = new FormGroup({
-      id: new FormControl(this.product.id, Validators.required),
-      quantity: new FormControl(1, Validators.required)
+    this.productForm = new UntypedFormGroup({
+      id: new UntypedFormControl(this.product.id, Validators.required),
+      quantity: new UntypedFormControl(1, Validators.required)
     });
 
     this.dataService.currentTotalMessage.subscribe(totalCartProducts => this.totalCartProducts = totalCartProducts)

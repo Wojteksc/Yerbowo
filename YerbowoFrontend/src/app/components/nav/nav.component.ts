@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Router } from '@angular/router';
+import { SocialAuthService } from "@abacritt/angularx-social-login";
 
 @Component({
   selector: 'app-nav',
@@ -10,7 +11,9 @@ import { Router } from '@angular/router';
 })
 export class NavComponent implements OnInit {
 
-  constructor(public authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, 
+    private router: Router,
+    private socialAuthService: SocialAuthService) { }
 
   ngOnInit() {
   }
@@ -24,6 +27,7 @@ export class NavComponent implements OnInit {
     localStorage.removeItem('photoUrl');
     this.authService.decodedToken = null;
     this.authService.photoUrl = null;
-    this.router.navigate(['']);
+    this.socialAuthService.signOut();
+    this.router.navigate(['/']);
   }
 }

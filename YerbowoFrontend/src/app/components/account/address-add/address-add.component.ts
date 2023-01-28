@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AddressCreate } from 'src/app/_models/addressCreate';
 import { AddressService } from 'src/app/_services/address.service';
 import { AuthService } from 'src/app/_services/auth.service';
@@ -14,11 +14,11 @@ import { Router } from '@angular/router';
 })
 export class AddressAddComponent implements OnInit {
   address: AddressCreate;
-  addressAddForm: FormGroup;
+  addressAddForm: UntypedFormGroup;
 
   submitted = false;
 
-  constructor(private fb: FormBuilder, private addressService: AddressService,
+  constructor(private fb: UntypedFormBuilder, private addressService: AddressService,
     private authService: AuthService, private alertify: AlertifyService,
     private router: Router) { }
 
