@@ -104,7 +104,7 @@ export function provideSocialAuthConfig() {
     EmailVerificationComponent,
   ],
   imports: [
-    RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(appRoutes, {}),
     BrowserModule,
     CommonModule,
     HttpClientModule,
