@@ -28,7 +28,7 @@
             "scripts": [
               "node_modules/alertifyjs/build/alertify.min.js"
             ],
-            "aot": false,
+            "aot": true,
             "vendorChunk": true,
             "extractLicenses": false,
             "sourceMap": true,
