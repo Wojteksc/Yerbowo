@@ -8,8 +8,8 @@ public static class ApplicationExtensions
 		app.UseXContentTypeOptions(); // X-Content-Type-Options: nosniff
 		app.UseXfo(options => options.SameOrigin()); // X-Frame-Options: SameOrigin
 		app.UseXXssProtection(options => options.EnabledWithBlockMode()); // X-XSS-Protection: 1; mode=block
-		app.UseReferrerPolicy(options => options.NoReferrer()); // Referrer-Policy: no-referrer
-	}
+		app.UseReferrerPolicy(options => options.StrictOriginWhenCrossOrigin()); // Referrer-Policy: strict-origin-when-cross-origin
+    }
 
 	public static void UseExceptionHandlers(this IApplicationBuilder app)
 	{
