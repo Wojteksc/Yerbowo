@@ -49,9 +49,9 @@ steps:
     zipAfterPublish: false
 
 - task: NodeTool@0
-  displayName: 'Use Node 12.x'
+  displayName: 'Use Node 14.x'
   inputs:
-    versionSpec: 12.x
+    versionSpec: 14.x
 - task: Npm@1
   displayName: 'npm install'
   inputs:
