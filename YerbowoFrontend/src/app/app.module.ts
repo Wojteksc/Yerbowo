@@ -5,8 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-social-login';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
@@ -48,24 +48,31 @@ import { AccountOptionListComponent } from './components/account/account-option-
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
 import { EmailVerificationComponent } from './components/auth/email-verification/email-verification.component';
+import { CommonModule } from '@angular/common';
 
 export function tokkenGetter() {
   return localStorage.getItem('token');
 }
 
-let config = new AuthServiceConfig([
-  {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com")
-  },
-  {
-    id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("721481622017748")
-  }
-]);
+const socialAuthServiceConfig = {
+  provide: "SocialAuthServiceConfig",
+  useValue: {
+    autoLogin: false,
+    providers: [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider("985347060101-sv911mn4704s2h81ldrhdlctnvjkqivj.apps.googleusercontent.com", { oneTapEnabled: false })
+      },
+      {
+        id: FacebookLoginProvider.PROVIDER_ID,
+        provider: new FacebookLoginProvider("721481622017748")
+      }
+    ]
+  } as SocialAuthServiceConfig
+}
 
-export function provideConfig() {
-  return config;
+export function provideSocialAuthConfig() {
+  return socialAuthServiceConfig;
 }
 
 @NgModule({
@@ -97,22 +104,24 @@ export function provideConfig() {
     EmailVerificationComponent,
   ],
   imports: [
+    RouterModule.forRoot(appRoutes, {}),
     BrowserModule,
+    CommonModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(appRoutes),
+    SocialLoginModule,
     PaginationModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokkenGetter,
-        whitelistedDomains: ['localhost:5000'],
-        blacklistedRoutes: ['localhost:5000/api/auth']
+        allowedDomains: ['localhost:5000'],
+        disallowedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    SocialLoginModule
   ],
   providers: [
+    provideSocialAuthConfig(),
     ErrorInterceptorProvider,
     ProductListResolver,
     ProductDetailResolver,
@@ -124,10 +133,6 @@ export function provideConfig() {
     OrderService,
     OrderHistoryTableResolver,
     OrderHistoryDetailResolver,
-    {
-      provide: AuthServiceConfig,
-      useFactory: provideConfig
-    },
     AddressListResolver,
     AddressEditResolver,
     CartResolver

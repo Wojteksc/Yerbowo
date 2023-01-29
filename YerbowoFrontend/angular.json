@@ -27,7 +27,13 @@
             ],
             "scripts": [
               "node_modules/alertifyjs/build/alertify.min.js"
-            ]
+            ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -40,22 +46,18 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true
+              "vendorChunk": false
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "YerbowoFrontend:build",
-            "ssl": false,
-            "sslKey": "./ssl/server.key",
-            "sslCert": "./ssl/server.crt"
+            "browserTarget": "YerbowoFrontend:build"
           },
           "configurations": {
             "production": {
@@ -85,18 +87,6 @@
               "src/assets"
             ]
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     },
@@ -115,18 +105,11 @@
               "devServerTarget": "YerbowoFrontend:serve:production"
             }
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": "e2e/tsconfig.e2e.json",
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     }
   },
-  "defaultProject": "YerbowoFrontend"
+  "cli": {
+    "analytics": "9ef9d7fd-1d6e-410f-a8c2-ec989cccb3a2"
+  }
 }

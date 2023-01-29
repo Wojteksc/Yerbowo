@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AddressEdit } from 'src/app/_models/addressEdit';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { AddressService } from 'src/app/_services/address.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
@@ -15,7 +15,7 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 export class AddressEditComponent implements OnInit {
   addressId: number;
   address: AddressEdit;
-  addressEditForm: FormGroup;
+  addressEditForm: UntypedFormGroup;
 
   submitted = false;
 
@@ -23,7 +23,7 @@ export class AddressEditComponent implements OnInit {
     private authService: AuthService, 
     private addressService: AddressService, 
     private alertify: AlertifyService, 
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private router: Router) { }
 
   ngOnInit() {

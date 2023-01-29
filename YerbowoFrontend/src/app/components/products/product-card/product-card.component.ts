@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import { ProductCard } from 'src/app/_models/productCard';
 import { ProductState } from 'src/app/_enums/productState.enum';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { CartService } from 'src/app/_services/cart.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { DataService } from 'src/app/_services/data.service';
@@ -15,10 +15,10 @@ import { DataService } from 'src/app/_services/data.service';
 export class ProductCardComponent implements OnInit {
   @Input() product: ProductCard;
   productState: any = ProductState;
-  cartForm: FormGroup;
+  cartForm: UntypedFormGroup;
   totalCartProducts: any;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private fb: UntypedFormBuilder, 
     private cartService: CartService,
     private alertify: AlertifyService,
     private dataService: DataService) { }

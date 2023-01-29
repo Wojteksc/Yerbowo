@@ -2,7 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from 'src/app/_services/auth.service';
 import { Router } from '@angular/router';
 import { AlertifyService } from 'src/app/_services/alertify.service';
-import { AuthService as SocialAuthService } from 'angularx-social-login';
+import { FacebookLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+import { filter, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -12,36 +13,53 @@ import { AuthService as SocialAuthService } from 'angularx-social-login';
 })
 export class LoginComponent implements OnInit {
   model: any = {};
-  constructor(private authService: AuthService, private router: Router,
-    private alertify: AlertifyService, private socialAuthService: SocialAuthService) { }
+  user: any;
+  subs: Subscription = new Subscription();
+  
+  constructor(private authService: AuthService, 
+              private router: Router,
+              private alertify: AlertifyService, 
+              private socialAuthService: SocialAuthService) { }
 
   ngOnInit() {
+    this.signInWithGoogle();
   }
 
-  login() {
-    this.authService.login(this.model).subscribe(next => {
-      this.alertify.success('Pomyślnie zalogowano');
-    }, error => {
-      this.alertify.error(error);
-    }, () => {
-      this.router.navigate(['']);
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  signIn() {
+    this.authService.login(this.model).subscribe({
+      next: () => this.alertify.success('Pomyślnie zalogowano'),
+      error: (e) => this.alertify.error(e),
+      complete: () => this.router.navigate([''])
     });
   }
 
-  loginWithSocial(platform: string) {
-    this.socialAuthService.signIn(platform).then(response => {
-      const userData = Object.assign({}, response);
-      this.authService.loginWithSocial(userData).subscribe(next => {
+  signInWithGoogle() {
+    let socialSub = this.socialAuthService.authState
+    .pipe(
+      filter((user) => user != null && user.provider == 'GOOGLE'),
+      switchMap((user) =>
+        this.authService.loginWithSocial(user)
+      )
+    )
+    .subscribe(() => {
         this.alertify.success('Pomyślnie zalogowano');
-      }, error => {
-        this.alertify.error(error);
-      }, () => {
-        this.router.navigate(['']);
-      });
-
-    }, error => {
-      //this.alertify.error(error);
-    },);
+        this.router.navigate(['/']);
+    });
+    this.subs.add(socialSub);
   }
 
+  signInWithFB() {
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then(response => {
+      const userData = Object.assign({}, response);
+      this.authService.loginWithSocial(userData).subscribe({
+        next: () => this.alertify.success('Pomyślnie zalogowano'),
+        error: (e) => this.alertify.error(e),
+        complete: () => this.router.navigate([''])
+      })
+    });
+  }
 }

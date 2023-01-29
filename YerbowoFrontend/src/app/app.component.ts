@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Subscription } from 'rxjs';
 import { AuthService } from './_services/auth.service';
 import { CartService } from './_services/cart.service';
 import { DataService } from './_services/data.service';
@@ -14,7 +13,6 @@ import { DataService } from './_services/data.service';
 })
 export class AppComponent implements OnInit {
   jwtHelper = new JwtHelperService();
-  subscription: Subscription;
   totalCartProducts: any;
 
   constructor(private authService: AuthService, 
@@ -22,7 +20,7 @@ export class AppComponent implements OnInit {
               private dataService: DataService,
               private cartService: CartService) {
 
-    this.subscription = router.events.subscribe((event) => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
          if(!router.navigated) {
             this.cartService.getTotalCartProducts().subscribe(totalCartProducts => {
