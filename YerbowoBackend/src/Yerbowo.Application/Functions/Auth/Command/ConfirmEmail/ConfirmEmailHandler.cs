@@ -12,7 +12,7 @@ public class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
     public async Task<Unit> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetAsync(request.Email);
-        if (user == null || user.Email != request.Email || user.VerificationToken != request.Token)
+        if (user == null || user.VerificationToken != request.Token)
         {
             throw new Exception("Nieprawidłowe żądanie potwierdzenia adresu e-mail.");
         }
@@ -23,7 +23,7 @@ public class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
         }
 
         user.SetVerificationDate(DateTime.UtcNow);
-        await _userRepository.SaveAllAsync();
+        await _userRepository.UpdateAsync(user);
 
         return Unit.Value;
     }

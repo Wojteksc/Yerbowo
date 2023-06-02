@@ -2,8 +2,20 @@
 
 public class GetAddressByIdHandlerTest
 {
+    private readonly Mock<IAddressRepository> _addressRepositoryMock;
+    private readonly GetAddressByIdHandler _handler;
+
+    public GetAddressByIdHandlerTest()
+    {
+        _addressRepositoryMock = new Mock<IAddressRepository>();
+
+        _handler = new GetAddressByIdHandler(
+            AutoMapperConfig.Initialize(),
+            _addressRepositoryMock.Object);
+    }
+
     [Fact]
-    public async Task Should_ReturnAddress_When_ExistsInDatabase()
+    public async Task Should_ReturnAddressCorrectly()
     {
         var address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
@@ -26,20 +38,11 @@ public class GetAddressByIdHandlerTest
             Email = "emailTest"
         };
 
-        var mockMapper = new Mock<IMapper>();
-        mockMapper.Setup(x => x.Map<AddressDetailsDto>(address))
-            .Returns(addressDetailsDto);
-
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(addressQuery.Id))
+        _addressRepositoryMock.Setup(x => x.GetAsync(addressQuery.Id))
             .ReturnsAsync(address);
 
-        var getAddressByIdHandler = new GetAddressByIdHandler(
-            mockMapper.Object,
-            mockAddressRepository.Object);
+        var result = await _handler.Handle(addressQuery, CancellationToken.None);
 
-        var result = await getAddressByIdHandler.Handle(addressQuery, It.IsAny<CancellationToken>());
-
-        result.Should().Be(addressDetailsDto);
+        result.Should().BeEquivalentTo(addressDetailsDto);
     }
 }

@@ -2,126 +2,106 @@
 
 public class SocialLoginHandlerTest
 {
-    private Mock<IUserRepository> _mockUserRepository;
-    private Mock<IMapper> _mockMapper;
-    private Mock<IJwtHandler> _mockJwtHandler;
+    private Mock<IUserRepository> _userRepositoryMock;
+    private Mock<IJwtHandler> _jwtHandlerMock;
 
-    private readonly User user;
+    private readonly SocialLoginHandler _handler;
+    private readonly SocialLoginCommand _request;
+    private readonly User _user;
 
     public SocialLoginHandlerTest()
     {
-        _mockUserRepository = new Mock<IUserRepository>();
-        _mockMapper = new Mock<IMapper>();
-        _mockJwtHandler = new Mock<IJwtHandler>();
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _jwtHandlerMock = new Mock<IJwtHandler>();
 
-        user = new User("firstName", "lastName", "email@email.com", "companyName",
-                "user", "http://www.test.pl", "Facebook", "password");
+        _handler = new SocialLoginHandler(
+          _userRepositoryMock.Object,
+          AutoMapperConfig.Initialize(),
+          _jwtHandlerMock.Object);
+
+        _user = new User("firstName", "lastName", "email@email.com", "password", "user", null, 
+            "http://www.test.pl", "Facebook");
+
+        _request = new SocialLoginCommand()
+        {
+            FirstName = "firstName",
+            LastName = "lastName",
+            Provider = "Facebook",
+            Email = "email@email.com",
+            PhotoUrl = "http://www.test.pl"
+        };
     }
 
     [Fact]
     public async Task Should_CreateNewAccount_When_UserDoesNotExistInDatabase()
     {
-        var socialLoginCommand = new SocialLoginCommand()
-        {
-            FirstName = "firstName",
-            LastName = "lastName",
-            Provider = "Facebook",
-            Email = "email@email.com",
-            PhotoUrl = "http://www.test.pl"
-        };
+        var users = new List<User>();
 
-        _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
-        _mockMapper.Setup(x => x.Map<User>(socialLoginCommand))
-            .Returns(user);
+        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
+            .Callback<User>(user => users.Add(user));
 
-        _mockUserRepository.Setup(x => x.AddAsync(user));
+        _jwtHandlerMock.Setup(x => x.CreateToken(
+            _user.Id, _user.Email, _user.Role))
+            .Returns(new TokenDto());
 
-        _mockJwtHandler.Setup(x => x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(
-                new TokenDto()
-                {
-                    Expires = DateTime.UtcNow.ToTimeStamp(),
-                    Role = "user",
-                    Token = "token"
-                });
-
-        var socialLoginHandler = new SocialLoginHandler(
-          _mockUserRepository.Object,
-          _mockMapper.Object,
-          _mockJwtHandler.Object);
-
-        ResponseToken response = await socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-        response.Token.Role.Should().Be("user");
-        response.PhotoUrl.Should().Be(socialLoginCommand.PhotoUrl);
+        var response = await _handler.Handle(_request, CancellationToken.None);
+        response.Should().NotBeNull();
+        _userRepositoryMock.Verify(x => x.AddAsync(users.First()), Times.Once());
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
+        users.Should().AllBeEquivalentTo(_user,
+            options => options
+            .Excluding(x => x.PasswordHash)
+            .Excluding(x => x.PasswordSalt));
     }
 
     [Fact]
     public async Task Should_SetPhotoUrl_When_UserDoesNotHavePhotoUrl()
     {
-        user.SetPhotoUrl(string.Empty);
+        _user.SetPhotoUrl(null);
 
-        var socialLoginCommand = new SocialLoginCommand()
-        {
-            FirstName = "firstName",
-            LastName = "lastName",
-            Provider = "Facebook",
-            Email = "email@email.com",
-            PhotoUrl = "http://www.test.pl"
-        };
+        var users = new List<User>();
 
-        _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
-            .ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+            .ReturnsAsync(_user);
 
-        _mockMapper.Setup(x => x.Map<User>(socialLoginCommand))
-            .Returns(user);
+        _userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>()))
+            .Callback<User>(user => users.Add(user));
 
-        _mockUserRepository.Setup(x => x.AddAsync(user));
+        _jwtHandlerMock.Setup(x => x.CreateToken(
+            _user.Id, _user.Email, _user.Role))
+            .Returns(new TokenDto());
 
-        _mockJwtHandler.Setup(x => x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()))
-            .Returns(
-                new TokenDto()
-                {
-                    Expires = DateTime.UtcNow.ToTimeStamp(),
-                    Role = "user",
-                    Token = "token"
-                });
-
-        var socialLoginHandler = new SocialLoginHandler(
-          _mockUserRepository.Object,
-          _mockMapper.Object,
-          _mockJwtHandler.Object);
-
-        ResponseToken response = await socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-        response.Token.Role.Should().Be("user");
-        response.PhotoUrl.Should().Be(socialLoginCommand.PhotoUrl);
+        var response = await _handler.Handle(_request, CancellationToken.None);
+        response.Should().NotBeNull();
+        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
+        _userRepositoryMock.Verify(x => x.UpdateAsync(users.First()), Times.Once());
+        users.Should().AllBeEquivalentTo(_user);
     }
 
     [Fact]
     public async Task Should_ThrowException_When_EmailIsNull()
     {
-        var socialLoginCommand = new SocialLoginCommand()
+        var request = new SocialLoginCommand()
         {
             FirstName = "Test",
             LastName = "Test",
             Provider = "Facebook"
         };
 
-        var socialLoginHandler = new SocialLoginHandler(
-            _mockUserRepository.Object,
-            _mockMapper.Object,
-            _mockJwtHandler.Object);
-
-        Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
-        Assert.Equal($"Na Twoim koncie {socialLoginCommand.Provider.ToTitle()} nie jest zapisany adres e-mail", exception.Message);
+        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
+                () => _handler.Handle(request, CancellationToken.None));
+        exception.Message.Should().Be($"Na Twoim koncie {request.Provider.ToTitle()} nie jest zapisany adres e-mail");
+        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Fact]
     public async Task Should_ThrowException_When_UserIsRemoved()
     {
-        var socialLoginCommand = new SocialLoginCommand()
+        var request = new SocialLoginCommand()
         {
             FirstName = "Test",
             LastName = "Test",
@@ -130,18 +110,15 @@ public class SocialLoginHandlerTest
             PhotoUrl = "http://www.test.pl"
         };
 
-        user.IsRemoved = true;
+        _user.IsRemoved = true;
 
-        _mockUserRepository.Setup(x => x.GetAsync(It.IsAny<string>()))
-            .ReturnsAsync(user);
+        _userRepositoryMock.Setup(x => x.GetAsync(request.Email))
+            .ReturnsAsync(_user);
 
-        var socialLoginHandler = new SocialLoginHandler(
-          _mockUserRepository.Object,
-          _mockMapper.Object,
-          _mockJwtHandler.Object);
-
-        Func<Task> act = () => socialLoginHandler.Handle(socialLoginCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(act);
-        Assert.Equal($"Konto nie istnieje", exception.Message);
+        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
+                () => _handler.Handle(request, CancellationToken.None));
+        exception.Message.Should().Be("Konto nie istnieje");
+        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 }

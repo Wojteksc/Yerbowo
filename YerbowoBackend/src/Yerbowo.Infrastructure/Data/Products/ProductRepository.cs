@@ -18,6 +18,11 @@ public class ProductRepository : DbEntityRepository<Product>, IProductRepository
         return await resultWithEagerLoading.SingleOrDefaultAsync(e => e.Slug == slug);
     }
 
+    public async Task<bool> ExistsAsync(string slug)
+    {
+        return await _entitiesNotRemoved.AnyAsync(x => x.Slug == slug);
+    }
+
     public async Task<IEnumerable<Product>> BrowseRandomAsync(int quantity)
     {
         var products = await _entitiesNotRemoved

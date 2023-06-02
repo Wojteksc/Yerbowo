@@ -2,54 +2,62 @@
 
 public class RemoveAddressHandlerTest
 {
+    private readonly Mock<IAddressRepository> _addressRepositoryMock;
+    private readonly RemoveAddressHandler _handler;
+    private readonly Address _address;
+
+    public RemoveAddressHandlerTest()
+    {
+        _addressRepositoryMock = new Mock<IAddressRepository>();
+        _handler = new RemoveAddressHandler(_addressRepositoryMock.Object);
+
+        _address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
+            "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
+            "postCodeTest", "phoneTest", "emailTest");
+    }
+
     [Fact]
     public async Task Should_RemoveProductCorrectly()
     {
-        var address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
-            "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
-            "postCodeTest", "phoneTest", "emailTest");
+        var request = new RemoveAddressCommand(1);
+        var addresses = new List<Address>();
 
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-            .ReturnsAsync(address);
-        mockAddressRepository.Setup(x => x.RemoveAsync(address));
+        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
+            .ReturnsAsync(_address);
+        _addressRepositoryMock.Setup(x => x.RemoveAsync(_address))
+            .Callback<Address>(a => addresses.Add(a));
 
-        var removeAddressHandler = new RemoveAddressHandler(mockAddressRepository.Object);
-        await removeAddressHandler.Handle(new RemoveAddressComand(It.IsAny<int>()), It.IsAny<CancellationToken>());
+        await _handler.Handle(request, CancellationToken.None);
 
-        mockAddressRepository.Verify(x => x.RemoveAsync(address), Times.Once());
+        _addressRepositoryMock.Verify(x => x.RemoveAsync(_address), Times.Once());
+        addresses.Should().AllBeEquivalentTo(_address);
     }
 
     [Fact]
     public async Task Should_ThrowException_WhenProductIsNull()
     {
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
+        var request = new RemoveAddressCommand(999);
+
+        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Address>(null));
 
-        var removeAddressHandler = new RemoveAddressHandler(mockAddressRepository.Object);
-
-        Func<Task> act = () => removeAddressHandler.Handle(new RemoveAddressComand(It.IsAny<int>()), It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(act);
-        Assert.Equal("Adres nie istnieje", exception.Message);
+        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        exception.Message.Should().Be("Adres nie istnieje");
+        _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
 
     [Fact]
     public async Task Should_ThrowException_WhenProductIsRemoved()
     {
-        var address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
-"streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
-"postCodeTest", "phoneTest", "emailTest");
-        address.IsRemoved = true;
+        _address.IsRemoved = true;
 
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-            .ReturnsAsync(address);
+        var request = new RemoveAddressCommand(2);
 
-        var removeAddressHandler = new RemoveAddressHandler(mockAddressRepository.Object);
+        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
+            .ReturnsAsync(_address);
 
-        Func<Task> act = () => removeAddressHandler.Handle(new RemoveAddressComand(It.IsAny<int>()), It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(act);
-        Assert.Equal("Adres nie istnieje", exception.Message);
+        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        exception.Message.Should().Be("Adres nie istnieje");
+        _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
 }

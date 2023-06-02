@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Emails.Command.SendVerificationEmails;
-
-namespace Yerbowo.Application.Functions.Auth.Events;
+﻿namespace Yerbowo.Application.Functions.Auth.Events;
 
 public class RegisterEndedHandler : INotificationHandler<RegisterEndedEvent>
 {

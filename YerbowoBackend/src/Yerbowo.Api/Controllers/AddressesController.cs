@@ -65,7 +65,7 @@ public class AddressesController : ApiControllerBase
         if (userId != UserId)
             return Unauthorized();
 
-        await _mediator.Send(new RemoveAddressComand(id));
+        await _mediator.Send(new RemoveAddressCommand(id));
 
         return NoContent();
     }

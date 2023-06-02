@@ -28,36 +28,30 @@ public class GetRandomProductsHandler : IRequestHandler<GetRandomProductsQuery, 
         return _mapper.Map<RandomProductsDto>(allTypesProducts);
     }
 
-    private IEnumerable<ProductCardDto> GetBestsellers(List<ProductCardDto> productsHomeDto, int amount)
+    private IEnumerable<ProductCardDto> GetBestsellers(List<ProductCardDto> products, int amount)
     {
-        var products = productsHomeDto
-                        .Where(p => p.State == ProductState.Bestseller)
-                        .Take(amount)
-                        .OrderBy(p => Guid.NewGuid())
-                        .AsEnumerable();
-
-        return products;
+        return products
+            .Where(p => p.State == ProductState.Bestseller)
+            .Take(amount)
+            .OrderBy(p => Guid.NewGuid())
+            .AsEnumerable();
     }
 
-    private IEnumerable<ProductCardDto> GetNews(List<ProductCardDto> productsHomeDto, int amount)
+    private IEnumerable<ProductCardDto> GetNews(List<ProductCardDto> products, int amount)
     {
-        var products = productsHomeDto
-                        .Where(p => p.State == ProductState.New)
-                        .Take(amount)
-                        .OrderByDescending(p => p.CreatedAt)
-                        .AsEnumerable();
-
-        return products;
+        return products
+            .Where(p => p.State == ProductState.New)
+            .Take(amount)
+            .OrderByDescending(p => p.CreatedAt)
+            .AsEnumerable();
     }
 
-    private IEnumerable<ProductCardDto> GetPromotions(List<ProductCardDto> productsHomeDto, int amount)
+    private IEnumerable<ProductCardDto> GetPromotions(List<ProductCardDto> products, int amount)
     {
-        var products = productsHomeDto
+        return products
             .Where(p => p.Price != p.OldPrice)
             .Take(amount)
             .OrderBy(p => Guid.NewGuid())
             .AsEnumerable();
-
-        return products;
     }
 }

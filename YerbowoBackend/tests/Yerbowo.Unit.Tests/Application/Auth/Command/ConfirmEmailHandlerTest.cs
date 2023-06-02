@@ -2,98 +2,72 @@
 
 public class ConfirmEmailHandlerTest
 {
-    private readonly Mock<IUserRepository> _mockUserRepository;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly ConfirmEmailHandler _handler;
+    private readonly ConfirmEmailCommand _request;
+    private readonly User _user;
+
     public ConfirmEmailHandlerTest()
     {
-        _mockUserRepository = new Mock<IUserRepository>();
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _handler = new ConfirmEmailHandler(_userRepositoryMock.Object);
+
+        _request = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
+        _user = new User("firstName", "lastName", "email@email.com", "password");
     }
 
     [Fact]
-    public async Task Should_ConfirmEmail_When_DataAreCorrect()
+    public async Task Should_ConfirmEmailCorrectly()
     {
-        var confirmEmailCommand = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-        var user = new User("firstName", "lastName", "email@email.com", "companyName",
-        "role", "photoUrl", "provider", "password");
-        user.SetVerificationToken("1234567890");
-        _mockUserRepository.Setup(x => x.GetAsync(confirmEmailCommand.Email))
-            .ReturnsAsync(user);
+        _user.SetVerificationToken("1234567890");
+        
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+            .ReturnsAsync(_user);
+        
+        var result = await _handler.Handle(_request, CancellationToken.None);
 
-        var handler = new ConfirmEmailHandler(_mockUserRepository.Object);
-
-        var result = await handler.Handle(confirmEmailCommand, It.IsAny<CancellationToken>());
-
-        _mockUserRepository.Verify(x => x.SaveAllAsync(), Times.Once);
+        _userRepositoryMock.Verify(x => x.UpdateAsync(_user), Times.Once);
         result.Should().Be(default);
     }
 
     [Fact]
     public async Task Should_ThrowException_When_TokensDoNotMatch()
     {
-        var confirmEmailCommand = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-        var user = new User("firstName", "lastName", "email@email.com", "companyName",
-        "role", "photoUrl", "provider", "password");
-        user.SetVerificationToken("123456789");
-        _mockUserRepository.Setup(x => x.GetAsync(confirmEmailCommand.Email))
-            .ReturnsAsync(user);
+        _user.SetVerificationToken("123456789");
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+            .ReturnsAsync(_user);
 
-        var handler = new ConfirmEmailHandler(_mockUserRepository.Object);
-
-        Func<Task> func = () => handler.Handle(confirmEmailCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(func);
-        Assert.Equal("Nieprawidłowe żądanie potwierdzenia adresu e-mail.", exception.Message);
-        _mockUserRepository.Verify(x => x.SaveAllAsync(), Times.Never());
-    }
-
-    [Fact]
-    public async Task Should_ThrowException_When_EmailsDoNotMatch()
-    {
-        var confirmEmailCommand = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-        var user = new User("firstName", "lastName", "test@email.com", "companyName",
-        "role", "photoUrl", "provider", "password");
-        user.SetVerificationToken("1234567890");
-        _mockUserRepository.Setup(x => x.GetAsync(confirmEmailCommand.Email))
-            .ReturnsAsync(user);
-
-        var handler = new ConfirmEmailHandler(_mockUserRepository.Object);
-
-        Func<Task> func = () => handler.Handle(confirmEmailCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(func);
-        Assert.Equal("Nieprawidłowe żądanie potwierdzenia adresu e-mail.", exception.Message);
-        _mockUserRepository.Verify(x => x.SaveAllAsync(), Times.Never());
+        var exception = await Assert.ThrowsAsync<Exception>(
+            () => _handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Nieprawidłowe żądanie potwierdzenia adresu e-mail.");
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Fact]
     public async Task Should_ThrowException_When_UserWasNotFound()
     {
-        var confirmEmailCommand = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-
-        _mockUserRepository.Setup(x => x.GetAsync(confirmEmailCommand.Email))
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
-        var handler = new ConfirmEmailHandler(_mockUserRepository.Object);
-
-        Func<Task> func = () => handler.Handle(confirmEmailCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(func);
-        Assert.Equal("Nieprawidłowe żądanie potwierdzenia adresu e-mail.", exception.Message);
-        _mockUserRepository.Verify(x => x.SaveAllAsync(), Times.Never());
+        var exception = await Assert.ThrowsAsync<Exception>(
+            () => _handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Nieprawidłowe żądanie potwierdzenia adresu e-mail.");
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Fact]
     public async Task Should_ThrowException_When_EmailWasVerifiedAgain()
     {
-        var confirmEmailCommand = new ConfirmEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-        var user = new User("firstName", "lastName", "email@email.com", "companyName",
-        "role", "photoUrl", "provider", "password");
-        user.SetVerificationToken("1234567890");
-        user.SetVerificationDate(DateTime.UtcNow);
-        _mockUserRepository.Setup(x => x.GetAsync(confirmEmailCommand.Email))
-            .ReturnsAsync(user);
+        _user.SetVerificationToken("1234567890");
+        _user.SetVerificationDate(DateTime.UtcNow);
+        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+            .ReturnsAsync(_user);
 
-        var handler = new ConfirmEmailHandler(_mockUserRepository.Object);
+        var handler = new ConfirmEmailHandler(_userRepositoryMock.Object);
 
-        Func<Task> func = () => handler.Handle(confirmEmailCommand, It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(func);
-        Assert.Equal("Adres e-mail był już potwierdzony.", exception.Message);
-        _mockUserRepository.Verify(x => x.SaveAllAsync(), Times.Never());
+        var exception = await Assert.ThrowsAsync<Exception>(
+            () => _handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Adres e-mail był już potwierdzony.");
+        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 }

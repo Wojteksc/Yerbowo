@@ -2,11 +2,20 @@
 
 public class ChangeAddressHandlerTest
 {
-    [Fact]
-    public async Task Should_ChangeAddress_When_CommandHasCorrectData()
-    {
+    private readonly ChangeAddressHandler _handler;
+    private readonly Mock<IAddressRepository> _addressRepositoryMock;
+    private readonly Address _address;
+    private readonly ChangeAddressCommand _request;
 
-        var address = new Address(1,
+    public ChangeAddressHandlerTest()
+    {
+        _addressRepositoryMock = new Mock<IAddressRepository>();
+
+        _handler = new ChangeAddressHandler(
+            _addressRepositoryMock.Object, 
+            AutoMapperConfig.Initialize());
+
+        _address = new Address(1,
             "aliastTest",
             "firstName",
             "LastName",
@@ -14,59 +23,47 @@ public class ChangeAddressHandlerTest
             "15A",
             "3",
             "Place",
-            "00-000",
-            "000-000-000",
+            "21-100",
+            "111-222-333",
             "test@test.com");
 
-        var command = new ChangeAddressCommand()
+        _request = new ChangeAddressCommand()
         {
             Id = 1,
-            Alias = "aliastTest",
-            FirstName = "firstName",
-            LastName = "LastName",
-            Street = "Street2",
-            BuildingNumber = "2",
-            ApartmentNumber = "30",
-            Place = "Place2",
-            PostCode = "23-423",
-            Phone = "000-000-000",
-            Email = "test@test.com"
+            Alias = "aliastTest_new",
+            FirstName = "firstName_new",
+            LastName = "LastName_new",
+            Street = "Street_new",
+            BuildingNumber = "15A_new",
+            ApartmentNumber = "3_new",
+            Place = "Place_new",
+            PostCode = "21-100_new",
+            Phone = "111-222-333_new",
+            Email = "test@test.com_new"
         };
+    }
 
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-            .ReturnsAsync(address);
+    [Fact]
+    public async Task Should_UpdateAddressCorrectly()
+    {
+        _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
+           .ReturnsAsync(_address);
+        _addressRepositoryMock.Setup(x => x.UpdateAsync(_address));
 
-        var mockMapper = new Mock<IMapper>();
-        mockMapper.Setup(x => x.Map(command, address))
-            .Returns(address);
+        await _handler.Handle(_request, CancellationToken.None);
 
-        mockAddressRepository.Setup(x => x.UpdateAsync(address));
-
-        var changeAddresHandler = new ChangeAddressHandler(
-            mockAddressRepository.Object,
-            mockMapper.Object);
-
-        await changeAddresHandler.Handle(command, It.IsAny<CancellationToken>());
-
-        mockAddressRepository.Verify(x => x.UpdateAsync(address), Times.Once());
+        _addressRepositoryMock.Verify(x => x.UpdateAsync(_address), Times.Once);
+        _address.Should().BeEquivalentTo(_request, options => options.Excluding(x => x.Id));
     }
 
     [Fact]
     public async Task Should_ThrowException_When_AddressDoesNotExist()
     {
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.GetAsync(It.IsAny<int>()))
-            .Returns(Task.FromResult<Address>(null));
+        _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
+            .ReturnsAsync((Address)null);
 
-        var mockMapper = new Mock<IMapper>();
-
-        var changeAddresHandler = new ChangeAddressHandler(
-            mockAddressRepository.Object,
-            mockMapper.Object);
-
-        Func<Task> act = () => changeAddresHandler.Handle(new ChangeAddressCommand(), It.IsAny<CancellationToken>());
-        var exception = await Assert.ThrowsAsync<Exception>(act);
-        Assert.Equal("Nie znaleziono adresu", exception.Message);
+        var exception = await Assert.ThrowsAsync<Exception>(() =>_handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Nie znaleziono adresu");
+        _addressRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Address>()), Times.Never);
     }
 }

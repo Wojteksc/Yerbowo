@@ -21,7 +21,7 @@ public static class ApplicationExtensions
 				if (error != null)
 				{
 					context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-					var result = JsonSerializer.Serialize(new { error = error.Error.Message });
+					string result = JsonSerializer.Serialize(new { error = error.Error.Message });
 					context.Response.ContentType = "application/json";
 					await context.Response.WriteAsync(result);
 				}

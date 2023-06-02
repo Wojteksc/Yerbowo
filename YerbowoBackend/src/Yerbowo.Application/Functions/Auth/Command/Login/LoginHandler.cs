@@ -21,7 +21,9 @@ public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 
 		if (user == null || user.IsRemoved ||
 			!_passwordValidator.Equals(request.Password, user.PasswordHash, user.PasswordSalt))
+		{
 			throw new UnauthorizedAccessException("Niepoprawne dane logowania");
+		}
 
 		if(user.VerifiedAt == null || !user.VerifiedAt.HasValue)
         {

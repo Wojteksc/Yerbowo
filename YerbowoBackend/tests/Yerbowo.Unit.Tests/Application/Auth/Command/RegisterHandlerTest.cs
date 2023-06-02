@@ -2,92 +2,91 @@
 
 public class RegisterHandlerTest
 {
-    private readonly Mock<IUserRepository> _mockUserRepository;
-    private readonly Mock<IMapper> _mockMapper;
-    private readonly Mock<IMediator> _mediator;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly Mock<IMediator> _mediatorMock;
 
-    private readonly User user;
-    private readonly RegisterCommand registerCommand;
+    private readonly User _user;
+    private readonly RegisterCommand _request;
+    private readonly RegisterHandler _handler;
 
     public RegisterHandlerTest()
     {
-        _mockUserRepository = new Mock<IUserRepository>();
-        _mockMapper = new Mock<IMapper>();
-        _mediator = new Mock<IMediator>();
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _mediatorMock = new Mock<IMediator>();
 
-        user = new User("firstName", "lastName", "email@email.com", "companyName",
-            "role", "photoUrl", "provider", "password");
-        registerCommand = new RegisterCommand() { Email = "email@email.com", Password = "password" };
+        _user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
+        _request = new RegisterCommand() 
+        {
+            FirstName = "firstName",
+            LastName = "lastName",
+            CompanyName = "companyName",
+            Email = "email@email.com", 
+            ConfirmEmail = "email@email.com",
+            Password = "password",
+            ConfirmPassword = "password"
+        };
+
+        _handler = new RegisterHandler(
+            _userRepositoryMock.Object,
+            AutoMapperConfig.Initialize(),
+            _mediatorMock.Object);
     }
 
     [Fact]
-    public async Task Should_CreateUser_When_DataAreCorrect()
+    public async Task Should_CreateUserCorrectly()
     {
-        _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
+        var users = new List<User>();
+
+        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
             .ReturnsAsync(false);
 
-        _mockUserRepository.Setup(x => x.AddAsync(user))
+        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
+            .Callback<User>(user => users.Add(user))
             .ReturnsAsync(true);
 
-        _mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
-            .Returns(user);
+        var result = await _handler.Handle(_request, CancellationToken.None);
 
-        var handler = new RegisterHandler(
-            _mockUserRepository.Object,
-            _mockMapper.Object,
-            _mediator.Object);
-
-        var result = await handler.Handle(registerCommand, It.IsAny<CancellationToken>());
-
-        _mockUserRepository.Verify(x => x.AddAsync(user), Times.Once());
-        _mediator.Verify(x => x.Publish(It.IsAny<RegisterEndedEvent>(), It.IsAny<CancellationToken>()), Times.Once());
         result.Should().Be(default);
+        _userRepositoryMock.Verify(x => x.AddAsync(users.First()), Times.Once());
+        _mediatorMock.Verify(x => 
+            x.Publish(It.IsAny<RegisterEndedEvent>(), It.IsAny<CancellationToken>()), Times.Once());
+       
+        users.Should().AllBeEquivalentTo(_user, 
+            options => options
+            .Excluding(x => x.PasswordHash)
+            .Excluding(x => x.PasswordSalt)
+            .Excluding(x => x.VerificationToken));
+
+        users.First().VerificationToken.Should().NotBeNull();
     }
 
     [Fact]
     public async Task Should_ThrowException_When_CreateUserWithTheSameEmail()
     {
-        _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
+        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
             .ReturnsAsync(true);
 
-        _mockUserRepository.Setup(x => x.AddAsync(user));
+        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
+            .ReturnsAsync(false);
 
-        _mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
-            .Returns(user);
-
-        var handler = new RegisterHandler(
-            _mockUserRepository.Object,
-            _mockMapper.Object,
-            _mediator.Object);
-
-        Func<Task> act = () => handler.Handle(registerCommand, It.IsAny<CancellationToken>());
-
-        var exception = await Assert.ThrowsAsync<Exception>(act);
-        Assert.Equal("Ten adres e-mail jest już używany, proszę wybierz inny albo zaloguj się.", exception.Message);
-        _mockUserRepository.Verify(x => x.AddAsync(user), Times.Never());
+        var exception = await Assert.ThrowsAsync<Exception>(
+            () => _handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Ten adres e-mail jest już używany, proszę wybierz inny albo zaloguj się.");
+        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Fact]
-    public async Task Should_ThrowException_WhenSomethingGoneWrongDuringPublishEvent()
+    public async Task Should_ThrowException_When_CantAddUser()
     {
-        _mockUserRepository.Setup(x => x.ExistsAsync(registerCommand.Email))
+        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
             .ReturnsAsync(false);
 
-        _mockUserRepository.Setup(x => x.AddAsync(user))
+        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
             .ReturnsAsync(false);
 
-        _mockMapper.Setup(x => x.Map<User>(It.IsAny<RegisterCommand>()))
-            .Returns(user);
-
-        var handler = new RegisterHandler(
-            _mockUserRepository.Object,
-            _mockMapper.Object,
-            _mediator.Object);
-
-        Func<Task> act = () => handler.Handle(registerCommand, It.IsAny<CancellationToken>());
-
-        var exception = await Assert.ThrowsAsync<Exception>(act);
-        Assert.Equal("Nieudana próba rejestracji konta. Skontaktuj się z administratorem.", exception.Message);
-        _mockUserRepository.Verify(x => x.AddAsync(user), Times.Once);
+        var exception = await Assert.ThrowsAsync<Exception>(
+            () => _handler.Handle(_request, CancellationToken.None));
+        exception.Message.Should().Be("Nieudana próba rejestracji konta. Skontaktuj się z administratorem.");
+        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
     }
 }

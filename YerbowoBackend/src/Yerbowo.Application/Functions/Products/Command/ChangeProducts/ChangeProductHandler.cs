@@ -11,17 +11,26 @@ public class ChangeProductHandler : IRequestHandler<ChangeProductCommand>
 		_productRepository = productRepository;
 		_mapper = mapper;
 	}
-
+	
 	public async Task<Unit> Handle(ChangeProductCommand request, CancellationToken cancellationToken)
 	{
-		var product = await _productRepository.GetAsync(request.Id);
+		var productDb = await _productRepository.GetAsync(request.Id);
 
-		if (product == null)
+		if (productDb == null)
 			throw new Exception("Nie znaleziono produktu");
 
-		_mapper.Map(request, product);
+		if (request.State == ProductState.Promotion
+			&& request.Price >= productDb.Price
+			&& productDb.OldPrice != default)
+			throw new Exception("Nowe cena produktu objętego promocją musi być mniejsza od aktualnej ceny produktu.");
 
-		await _productRepository.UpdateAsync(product);
+		if(await _productRepository.ExistsAsync(productDb.Slug))
+            throw new Exception($"Produkt o nazwie {request.Name} już istnieje. Zmień nazwę.");
+
+		productDb.SetOldPrice(productDb.Price);
+        _mapper.Map(request, productDb);
+
+		await _productRepository.UpdateAsync(productDb);	
 
 		return Unit.Value;
 	}

@@ -15,6 +15,3 @@ global using Yerbowo.Infrastructure.Data.Products;
 global using Yerbowo.Infrastructure.Helpers;
 global using Yerbowo.Integration.Tests.Builders;
 global using Yerbowo.Integration.Tests.Helpers;
-global using Yerbowo.Domain.Products;
-global using Yerbowo.Fakers;
-global using Yerbowo.Fakers.Extensions;

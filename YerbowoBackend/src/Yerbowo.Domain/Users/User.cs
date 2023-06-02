@@ -18,9 +18,10 @@ public class User : BaseEntity
 
 	private User() { }
 
-	public User(string firstName, string lastName, string email,
-		string companyName, string role, string photoUrl,
-		string provider, string password)
+	public User(string firstName, string lastName, string email, string password,
+        string role = "user",
+        string companyName = null, string photoUrl = null,
+		string provider = null)
 	{
 
 		Guard.Against.NullOrEmpty(firstName, nameof(firstName));
@@ -31,11 +32,11 @@ public class User : BaseEntity
 		FirstName = firstName;
 		LastName = lastName;
 		Email = email;
+		SetPassword(password);
 		CompanyName = companyName;
 		SetRole(role);
 		SetPhotoUrl(photoUrl);
 		Provider = provider;
-		SetPassword(password);
 	}
 
 	public void SetPassword(string passwordToHash)

@@ -1,6 +1,5 @@
 ﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrders;
 
-[DebuggerDisplay("{Id}")]
 public class OrderDto
 {
     public int Id { get; set; }

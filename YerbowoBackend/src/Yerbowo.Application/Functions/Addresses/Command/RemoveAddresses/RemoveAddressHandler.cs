@@ -1,6 +1,6 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Command.RemoveAddresses;
 
-public class RemoveAddressHandler : IRequestHandler<RemoveAddressComand>
+public class RemoveAddressHandler : IRequestHandler<RemoveAddressCommand>
 {
     private readonly IAddressRepository _addressRepository;
 
@@ -9,7 +9,7 @@ public class RemoveAddressHandler : IRequestHandler<RemoveAddressComand>
         _addressRepository = addressRepository;
     }
 
-    public async Task<Unit> Handle(RemoveAddressComand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
     {
         var address = await _addressRepository.GetAsync(request.Id);
 

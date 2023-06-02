@@ -14,7 +14,24 @@ public class Program
         try
         {
             Log.Information("Application Starting.");
-            YerbowoHostBuilder.CreateHostBuilder(args).Build().Run();
+
+            Host.CreateDefaultBuilder(args)
+                .UseSerilog()
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddAppSettings(context);
+
+                    if (!context.HostingEnvironment.IsDevelopment())
+                    {
+                        config.AddAzureKeyVault();
+                    }
+                })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                .Build()
+                .Run();
         }
         catch (Exception ex)
         {

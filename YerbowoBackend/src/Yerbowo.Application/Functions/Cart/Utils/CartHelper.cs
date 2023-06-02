@@ -2,11 +2,19 @@
 
 public static class CartHelper
 {
-	public static async Task VerifyStock(IProductRepository productRepository, int cartItemId, int cartItemQuantity)
+	public static List<CartItemDto> GetCartProducts(ISession session)
 	{
-		var productDb = await productRepository.GetAsync(cartItemId);
+		return session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey) ?? new List<CartItemDto>();
+	}
 
-		if (cartItemQuantity > productDb.Stock)
+    public static void SaveCartProducts(ISession session, List<CartItemDto> products)
+	{
+        session.SetString(Consts.CartSessionKey, JsonSerializer.Serialize(products));
+    }
+
+    public static void VerifyStock(Product product, int cartItemQuantity)
+	{
+		if (cartItemQuantity > product.Stock)
 			throw new Exception("Przekroczono zapas");
 	}
 

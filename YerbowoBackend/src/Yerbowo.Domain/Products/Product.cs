@@ -65,7 +65,7 @@ public class Product : BaseEntity
 		Price = price;
 	}
 
-	private void SetOldPrice(decimal oldPrice)
+	public void SetOldPrice(decimal oldPrice)
 	{
 		Against.Negative(oldPrice, nameof(oldPrice));
 		OldPrice = oldPrice;

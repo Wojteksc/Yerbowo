@@ -93,9 +93,9 @@ public class YerbowoContextSeed
 
 	private void SeedUsers()
 	{
-		var admin = new User("Woytech", "Wojciechowski", "user@example.com", "", "admin", "", "", "Haslo123.");
-		var simpleUser = new User("Adamn", "Nowak", "user2@example.com", "", "user", "", "", "Haslo123.");
-        var testUser = new User("FirstName", "LastName", "yerbowoTestAdmin@functionalTestYerbowo.com", "", "admin", "", "", "Haslo123.");
+		var admin = new User("Woytech", "Wojciechowski", "user@example.com","Haslo123.", "admin");
+		var simpleUser = new User("Adamn", "Nowak", "user2@example.com", "Haslo123.", "user");
+        var testUser = new User("FirstName", "LastName", "yerbowoTestAdmin@functionalTestYerbowo.com", "Haslo123.", "admin");
 
         admin.SetVerificationToken("token");
 		admin.SetVerificationDate(DateTime.Now);

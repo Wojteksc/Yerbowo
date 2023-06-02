@@ -2,22 +2,16 @@
 
 public class GetTotalCartItemsHandler : IRequestHandler<GetTotalCartItemsQuery, int>
 {
-	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly ISession _session;
-	private readonly IMapper _mapper;
 
-	public GetTotalCartItemsHandler(IHttpContextAccessor httpContextAccessor,
-		IMapper mapper)
+	public GetTotalCartItemsHandler(IHttpContextAccessor httpContextAccessor)
 	{
-		_httpContextAccessor = httpContextAccessor;
-		_session = _httpContextAccessor.HttpContext.Session;
-		_mapper = mapper;
+		_session = httpContextAccessor.HttpContext.Session;
 	}
 
-	public Task<int> Handle(GetTotalCartItemsQuery request, CancellationToken cancellationToken)
+	public async Task<int> Handle(GetTotalCartItemsQuery request, CancellationToken cancellationToken)
 	{
-		var cartItems = _session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey);
-		int totalCartItems = cartItems != null ? cartItems.Sum(ci => ci.Quantity) : 0;
-		return Task.FromResult(totalCartItems);
+		var cartItems = CartHelper.GetCartProducts(_session);
+		return await Task.FromResult(cartItems.Sum(ci => ci.Quantity));
 	}
 }

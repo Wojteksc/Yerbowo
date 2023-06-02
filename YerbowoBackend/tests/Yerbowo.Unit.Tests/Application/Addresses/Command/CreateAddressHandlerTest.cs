@@ -2,50 +2,79 @@
 
 public class CreateAddressHandlerTest
 {
-    [Fact]
-    public async Task Should_CreateAddress_When_CommandHasCorrectData()
-    {
-        var address = new Address(
-        1,
-        "aliastTest",
-        "firstName",
-        "LastName",
-        "Street",
-        "15A",
-        "3",
-        "Place",
-        "00-000",
-        "000-000-000",
-        "test@test.com");
+    private readonly Mock<IAddressRepository> _addressRepositoryMock;
+    private readonly CreateAddressHandler _handler;
 
+    public CreateAddressHandlerTest()
+    {
+        _addressRepositoryMock = new Mock<IAddressRepository>();
+
+        _handler = new CreateAddressHandler(
+            AutoMapperConfig.Initialize(),
+            _addressRepositoryMock.Object);
+    }
+
+    [Fact]
+    public async Task Should_CreateAddressCorrectly()
+    {
         var command = new CreateAddressCommand()
         {
+            UserId = 1,
             Alias = "aliastTest",
             FirstName = "firstName",
             LastName = "LastName",
-            Street = "Street2",
+            Street = "Street",
             BuildingNumber = "15A",
             ApartmentNumber = "3",
-            Place = "Place2",
+            Place = "Place",
             PostCode = "00-000",
             Phone = "000-000-000",
-            Email = "test@test.com"
+            Email = "test@test.com",
+            Nip = "1156301130",
+            Company = "Company_1"
         };
 
-        var mockAddressRepository = new Mock<IAddressRepository>();
-        mockAddressRepository.Setup(x => x.AddAsync(address));
+        var expectedInsertedAddress = new Address(
+            1,
+            "aliastTest",
+            "firstName",
+            "LastName",
+            "Street",
+            "15A",
+            "3",
+            "Place",
+            "00-000",
+            "000-000-000",
+            "test@test.com",
+            "1156301130",
+            "Company_1");
 
-        var mockMapper = new Mock<IMapper>();
-        mockMapper.Setup(x => x.Map<Address>(command))
-            .Returns(address);
+        var expectedResult = new AddressDetailsDto
+        {
+            UserId = 1,
+            Alias = "aliastTest",
+            FirstName = "firstName",
+            LastName = "LastName",
+            Street = "Street",
+            BuildingNumber = "15A",
+            ApartmentNumber = "3",
+            Place = "Place",
+            PostCode = "00-000",
+            Phone = "000-000-000",
+            Email = "test@test.com",
+            Nip = "1156301130",
+            Company = "Company_1"
+        };
 
-        var createAddresHandler = new CreateAddressHandler(
-            mockMapper.Object,
-            mockAddressRepository.Object);
+        var addresses = new List<Address>();
 
-        var result = await createAddresHandler.Handle(command, It.IsAny<CancellationToken>());
+        _addressRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Address>()))
+            .Callback<Address>(a => addresses.Add(a));
 
-        result.Should().BeEquivalentTo(result);
-        mockAddressRepository.Verify(x => x.AddAsync(address), Times.Once());
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        _addressRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Address>()), Times.Once());
+        result.Should().BeEquivalentTo(expectedResult);
+        addresses.Should().AllBeEquivalentTo(expectedInsertedAddress);
     }
 }

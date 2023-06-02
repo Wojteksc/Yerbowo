@@ -1,9 +1,7 @@
 ﻿namespace Yerbowo.Application.Functions.Cart.Command.ChangeCartItems;
-using Yerbowo.Application.Functions.Cart.Utils;
 
 public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, CartDto>
 {
-	private readonly IHttpContextAccessor _httpContextAccessor;
 	private readonly ISession _session;
 	private readonly IProductRepository _productRepository;
 	private readonly IMapper _mapper;
@@ -12,8 +10,7 @@ public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, Cart
 		IProductRepository productRepository,
 		IMapper mapper)
 	{
-		_httpContextAccessor = httpContextAccessor;
-		_session = _httpContextAccessor.HttpContext.Session;
+		_session = httpContextAccessor.HttpContext.Session;
 		_productRepository = productRepository;
 		_mapper = mapper;
 	}
@@ -22,23 +19,20 @@ public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, Cart
 	{
 		CartHelper.VerifyQuantity(request.Quantity);
 
-		var products = _session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey);
+		var products = CartHelper.GetCartProducts(_session);
+		var product = products.FirstOrDefault(x => x.Product.Id == request.Id);
 
-		var productIndex = products.FindIndex(x => x.Product.Id == request.Id);
-
-		if (productIndex != -1)
-		{
-			await CartHelper.VerifyStock(_productRepository, request.Id, request.Quantity);
-
-			products[productIndex].Quantity = request.Quantity;
-			_session.SetString(Consts.CartSessionKey, JsonSerializer.Serialize(products));
-		}
-		else
+		if (product is null)
 		{
 			throw new Exception("Nie znaleziono produktu.");
 		}
 
+        var productDb = await _productRepository.GetAsync(request.Id);
 
-		return _mapper.Map<CartDto>(_session.GetObjectFromJson<List<CartItemDto>>(Consts.CartSessionKey));
+        CartHelper.VerifyStock(productDb, request.Quantity);
+        product.Quantity = request.Quantity;
+        CartHelper.SaveCartProducts(_session, products);
+
+		return _mapper.Map<CartDto>(products);
 	}
 }

@@ -1,10 +1,10 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Command.RemoveAddresses;
 
-public class RemoveAddressComand : IRequest
+public class RemoveAddressCommand : IRequest
 {
     public int Id { get; }
 
-    public RemoveAddressComand(int id)
+    public RemoveAddressCommand(int id)
     {
         Id = id;
     }

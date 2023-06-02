@@ -34,7 +34,7 @@ public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseTo
         else if(string.IsNullOrEmpty(user.PhotoUrl))
         {
             user.SetPhotoUrl(request.PhotoUrl);
-            await _userRepository.SaveAllAsync();
+            await _userRepository.UpdateAsync(user);
         }
 
         return new ResponseToken()

@@ -21,9 +21,11 @@ public class ChangeUserCommand : IRequest
     [Compare("Email", ErrorMessage = "Email i potwierdzenie E-Mail nie są identyczne")]
     public string ConfirmEmail { get; set; }
 
+    [StringLength(int.MaxValue, ErrorMessage = "Hasło musi mieć conajmniej 6 znaków", MinimumLength = 6)]
     public string NewPassword { get; set; }
 
     [Compare("NewPassword", ErrorMessage = "Hasło i potwierdzenie hasła nie są identyczne")]
+    [StringLength(int.MaxValue, ErrorMessage = "Hasło musi mieć conajmniej 6 znaków", MinimumLength = 6)]
     public string ConfirmPassword { get; set; }
 
     [Required]

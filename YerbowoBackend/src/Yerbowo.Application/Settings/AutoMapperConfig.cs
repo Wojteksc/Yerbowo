@@ -11,9 +11,10 @@ public static class AutoMapperConfig
             cfg.CreateMap<Product, ProductCardDto>()
             .ForMember(d => d.CategorySlug, s => s.MapFrom(x => x.Subcategory.Category.Slug))
             .ForMember(d => d.SubcategorySlug, s => s.MapFrom(x => x.Subcategory.Slug));
-            cfg.CreateMap<CreateProductCommand, Product>();
-            cfg.CreateMap<ChangeProductCommand, Product>();
-            cfg.CreateMap<Product, CreateProductCommand>();
+            cfg.CreateMap<CreateProductCommand, Product>()
+            .ForMember(d => d.Slug, s => s.MapFrom(x => x.Name.ToSlug()));
+            cfg.CreateMap<ChangeProductCommand, Product>()
+            .ForMember(d => d.Slug, s => s.MapFrom(x => x.Name.ToSlug()));
             cfg.CreateMap<PagedList<Product>, PagedProductCardDto>()
             .ForMember(d => d.Products, s => s.MapFrom(x => x));
             cfg.CreateMap<Product, CartProductItemDto>()
@@ -22,6 +23,8 @@ public static class AutoMapperConfig
             cfg.CreateMap<Product, ProductDetailsDto>()
             .ForMember(d => d.Category, s => s.MapFrom(x => x.Subcategory.Category.Name))
             .ForMember(d => d.Subcategory, s => s.MapFrom(x => x.Subcategory.Name));
+            cfg.CreateMap<Product, ProductDto>()
+            .ForMember(d => d.Slug, s => s.MapFrom(x => x.Name.ToSlug()));
 
             cfg.CreateMap<Order, OrderDto>()
             .ForMember(d => d.Total, s => s.MapFrom(x => x.TotalCost))
@@ -46,7 +49,6 @@ public static class AutoMapperConfig
             cfg.CreateMap<Address, AddressDto>();
             cfg.CreateMap<CreateAddressCommand, Address>();
             cfg.CreateMap<ChangeAddressCommand, Address>();
-            cfg.CreateMap<Address, CreateAddressCommand>();
             cfg.CreateMap<Address, AddressDetailsDto>();
 
             cfg.CreateMap<ChangeUserCommand, User>();

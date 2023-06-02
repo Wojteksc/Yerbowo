@@ -5,7 +5,7 @@ public class SendVerificationEmailHandlerTest
     private readonly Mock<IVerificationEmailTemplateSender> _verificationEmailTemplateSender;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessor;
 
-    private readonly User user;
+    private readonly User _user;
     private readonly SendVerificationEmailCommand sendVerificationEmailCommand;
 
     public SendVerificationEmailHandlerTest()
@@ -13,16 +13,16 @@ public class SendVerificationEmailHandlerTest
         _verificationEmailTemplateSender = new Mock<IVerificationEmailTemplateSender>();
         _httpContextAccessor = new Mock<IHttpContextAccessor>();
 
-        user = new User("firstName", "lastName", "email@email.com", "companyName",
-"role", "photoUrl", "provider", "password");
-        user.SetVerificationToken(WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray()));
-        sendVerificationEmailCommand = new SendVerificationEmailCommand(user);
+        _user = new User("firstName", "lastName", "email@email.com", "companyName",
+            "role", "photoUrl", "provider", "password");
+        _user.SetVerificationToken(WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray()));
+        sendVerificationEmailCommand = new SendVerificationEmailCommand(_user);
     }
 
     [Fact]
-    public async Task Should_SendEmail_When_DataAreCorrect()
+    public async Task Should_SendEmaiCorrectly()
     {
-        var emailAddress = new EmailAddress(user.Email, user.FirstName);
+        var emailAddress = new EmailAddress(_user.Email, _user.FirstName);
 
         _verificationEmailTemplateSender.Setup(
             x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
@@ -45,7 +45,6 @@ public class SendVerificationEmailHandlerTest
     [Fact]
     public async Task Should_ThrowException_When_EmailCouldntBeSent()
     {
-
         _verificationEmailTemplateSender.Setup(
             x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
             .ReturnsAsync(new SendGrid.Response(HttpStatusCode.Conflict, It.IsAny<HttpContent>(), It.IsAny<HttpResponseHeaders>()));

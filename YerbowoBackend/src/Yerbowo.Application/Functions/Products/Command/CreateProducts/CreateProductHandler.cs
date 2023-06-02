@@ -1,6 +1,6 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
 
-public class CreateProductHandler : IRequestHandler<CreateProductCommand, CreateProductCommand>
+public class CreateProductHandler : IRequestHandler<CreateProductCommand, ProductDto>
 {
 	private readonly IProductRepository _productRepository;
 	private readonly IMapper _mapper;
@@ -12,17 +12,15 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Create
 		_mapper = mapper;
 	}
 
-	public async Task<CreateProductCommand> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+	public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
-		//TO DO Veryfication by slug or name
-		//ToSlug -> request.Name.TOSlug() 
-		//if (await _productRepository.ExistsAsync(request.Id))
-		//	throw new Exception("Nie znaleziono produktu");
+		if (await _productRepository.ExistsAsync(request.Name.ToSlug()))
+			throw new Exception($"Produkt o nazwie {request.Name} już istnieje. Zmień nazwę.");
 
 		var product = _mapper.Map<Product>(request);
 
 		await _productRepository.AddAsync(product);
 
-		return _mapper.Map<CreateProductCommand>(product);
+		return _mapper.Map<ProductDto>(product);
 	}
 }

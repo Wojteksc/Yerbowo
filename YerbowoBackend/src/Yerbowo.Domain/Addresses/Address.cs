@@ -22,7 +22,7 @@ public class Address : BaseEntity
 
     public Address(int userId, string alias, string firstName, string lastName, 
         string street, string buildingNumber, string apartmentNumber, string place, 
-        string postCode, string phone, string email, string nip = "", string company = "")
+        string postCode, string phone, string email, string nip = null, string company = null)
     {
         Against.NegativeOrZero(userId, nameof(userId));
         Against.NullOrEmpty(alias, nameof(alias));

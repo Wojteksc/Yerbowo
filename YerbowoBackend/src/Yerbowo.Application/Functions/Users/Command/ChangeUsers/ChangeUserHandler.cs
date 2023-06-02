@@ -5,7 +5,7 @@ public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
 	private readonly IMapper _mapper;
 	private readonly IUserRepository _userRepository;
 	private readonly IPasswordValidator _passwordValidator;
-
+	
 	public ChangeUserHandler(IMapper mapper,
 		IUserRepository userRepository,
 		IPasswordValidator passwordValidator)
@@ -17,42 +17,23 @@ public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
 
 	public async Task<Unit> Handle(ChangeUserCommand request, CancellationToken cancellationToken)
 	{
-		if (!await _userRepository.ExistsAsync(request.Id))
-			throw new Exception("Użytkownik nie istnieje");
+		var userDb = await _userRepository.GetAsync(request.Id);
 
-		var userFromRepo = await _userRepository.GetAsync(request.Id);
+		if (userDb == null)
+            throw new Exception("Nie znaleziono użytkownika.");
 
-		if (userFromRepo == null)
-			throw new Exception("Nie znaleziono użytkownika.");
+        if (!_passwordValidator.Equals(request.CurrentPassword, userDb.PasswordHash, userDb.PasswordSalt))
+            throw new Exception("Podane hasło jest nieprawidłowe.");
 
-		ValidateUpdatedData(request, userFromRepo);
-
-		if (!string.IsNullOrEmpty(request.NewPassword) && !string.IsNullOrEmpty(request.ConfirmPassword))
+        if (!string.IsNullOrEmpty(request.NewPassword) && !string.IsNullOrEmpty(request.ConfirmPassword))
 		{
-			userFromRepo.SetPassword(request.ConfirmPassword);
+			userDb.SetPassword(request.ConfirmPassword);
 		}
 
-		_mapper.Map(request, userFromRepo);
+		_mapper.Map(request, userDb);
 
-		if (!await _userRepository.SaveAllAsync())
-			throw new Exception($"Aktualizacja użytkownika nie powodła się");
+		await _userRepository.UpdateAsync(userDb);
 
 		return Unit.Value;
-	}
-
-	private void ValidateUpdatedData(ChangeUserCommand command, User userFromRepo)
-	{
-		if (!_passwordValidator.Equals(command.CurrentPassword, userFromRepo.PasswordHash, userFromRepo.PasswordSalt))
-		{
-			throw new Exception("Podane hasło jest nieprawidłowe.");
-		}
-		else if (!string.IsNullOrEmpty(command.NewPassword) && command.NewPassword.Length < 6)
-		{
-			throw new Exception("Nowe hasło musi zawierać co najmniej 6 znaków.");
-		}
-		else if (!string.IsNullOrEmpty(command.ConfirmPassword) && command.ConfirmPassword.Length < 6)
-		{
-			throw new Exception("Powtórz hasło, musi zawierać co najmniej 6 znaków.");
-		}
 	}
 }
