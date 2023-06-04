@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="DotNetCore.EntityFrameworkCore" Version="16.35.0" />
     <PackageReference Include="Enums.NET" Version="2.3.2" />
