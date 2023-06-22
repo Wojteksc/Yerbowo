@@ -3,6 +3,7 @@
 /// <summary>
 /// Convert empty to null when read data json
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class EmptyStringToNullConverter : JsonConverter<string>
 {
     /// <summary>

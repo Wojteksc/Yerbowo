@@ -38,6 +38,7 @@ global using Yerbowo.Application.Functions.Products.Command.ChangeProducts;
 global using Yerbowo.Application.Functions.Products.Command.CreateProducts;
 global using Yerbowo.Application.Functions.Products.Command.RemoveProducts;
 global using Yerbowo.Application.Functions.Users.Command.ChangeUsers;
+global using Yerbowo.Application.Functions.Users.Query.GetUserDetails;
 global using Yerbowo.Application.Services.Jwt;
 global using Yerbowo.Application.Services.PasswordValidator;
 global using Yerbowo.Application.Services.SendGrid;

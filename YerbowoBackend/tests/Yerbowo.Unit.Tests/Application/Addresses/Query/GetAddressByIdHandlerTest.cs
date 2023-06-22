@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
+﻿using Yerbowo.Domain.Users;
+
+namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
 
 public class GetAddressByIdHandlerTest
 {
@@ -17,6 +19,7 @@ public class GetAddressByIdHandlerTest
     [Fact]
     public async Task Should_ReturnAddressCorrectly()
     {
+        int addressId = 1;
         var address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
             "postCodeTest", "phoneTest", "emailTest");
@@ -25,6 +28,7 @@ public class GetAddressByIdHandlerTest
 
         var addressDetailsDto = new AddressDetailsDto()
         {
+            Id = addressId,
             UserId = 1,
             Alias = "aliasTest",
             FirstName = "firstNameTest",
@@ -37,6 +41,7 @@ public class GetAddressByIdHandlerTest
             Phone = "phoneTest",
             Email = "emailTest"
         };
+        typeof(Address).GetProperty(nameof(Address.Id)).SetValue(address, addressId, null);
 
         _addressRepositoryMock.Setup(x => x.GetAsync(addressQuery.Id))
             .ReturnsAsync(address);
