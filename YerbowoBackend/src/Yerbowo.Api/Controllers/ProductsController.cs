@@ -5,10 +5,14 @@
 public class ProductsController : ApiControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public ProductsController(IMediator mediator)
+    public ProductsController(
+        IMediator mediator,
+        IStringLocalizer<SharedResource> localizer)
     {
         _mediator = mediator;
+        _localizer = localizer;
     }
 
     [HttpGet("{slug}")]
@@ -36,7 +40,7 @@ public class ProductsController : ApiControllerBase
     public async Task<IActionResult> Create(int userId, CreateProductCommand command)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         var product = await _mediator.Send(command);
 
@@ -49,7 +53,7 @@ public class ProductsController : ApiControllerBase
     public async Task<IActionResult> Update(int id, ChangeProductCommand command)
     {
         if (id != command.Id)
-            return BadRequest();
+            return BadRequest(_localizer["ResponseBadRequest"]);
 
         await _mediator.Send(command);
 

@@ -6,17 +6,21 @@
 public class AddressesController : ApiControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public AddressesController(IMediator mediator)
+    public AddressesController(
+        IMediator mediator,
+        IStringLocalizer<SharedResource> localizer)
     {
         _mediator = mediator;
+        _localizer = localizer;
     }
 
     [HttpGet("{id}", Name = nameof(GetAddress))]
     public async Task<IActionResult> GetAddress(int userId, int id)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         var address = await _mediator.Send(new GetAddressByIdQuery(id));
 
@@ -27,7 +31,7 @@ public class AddressesController : ApiControllerBase
     public async Task<IActionResult> GetAddresses(int userId)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         var addresses = await _mediator.Send(new GetAddressesByUserIdQuery(userId));
 
@@ -38,7 +42,7 @@ public class AddressesController : ApiControllerBase
     public async Task<IActionResult> Create(int userId, CreateAddressCommand command)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         var address = await _mediator.Send(command);
 
@@ -49,10 +53,10 @@ public class AddressesController : ApiControllerBase
     public async Task<IActionResult> Update(int userId, int id, ChangeAddressCommand command)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         if (id != command.Id)
-            return BadRequest();
+            return BadRequest(_localizer["ResponseBadRequest"]);
 
         await _mediator.Send(command);
 
@@ -63,7 +67,7 @@ public class AddressesController : ApiControllerBase
     public async Task<IActionResult> Delete(int userId, int id)
     {
         if (userId != UserId)
-            return Unauthorized();
+            return Unauthorized(_localizer["ResponseUnathorized"]);
 
         await _mediator.Send(new RemoveAddressCommand(id));
 

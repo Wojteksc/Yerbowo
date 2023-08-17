@@ -14,7 +14,8 @@ public class ChangeUserHandlerTest
         _handler = new ChangeUserHandler(
             AutoMapperConfig.Initialize(),
             _userRepositoryMock.Object,
-            _passwordValidatorMock.Object);
+            _passwordValidatorMock.Object,
+            StringLocalizerFactory.Create());
     }
 
     [Fact]
@@ -106,9 +107,13 @@ public class ChangeUserHandlerTest
         users.First().PasswordHash.Should().BeEquivalentTo(user.PasswordHash);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_UserDoesNotExist()
+    [Theory]
+    [InlineData("en-US", "User not found")]
+    [InlineData("pl-PL", "Nie znaleziono użytkownika")]
+    public async Task Should_ThrowException_When_UserDoesNotExist(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new ChangeUserCommand { Id = 1 };
 
         _userRepositoryMock.Setup(x => x.GetAsync(request.Id))
@@ -116,13 +121,17 @@ public class ChangeUserHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
         var exception = await Assert.ThrowsAsync<Exception>(act);
-        exception.Message.Should().Be("Nie znaleziono użytkownika.");
+        exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_PasswordIsInvalid()
+    [Theory]
+    [InlineData("en-US", "The entered password is incorrect")]
+    [InlineData("pl-PL", "Podane hasło jest nieprawidłowe")]
+    public async Task Should_ThrowException_When_PasswordIsInvalid(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
 
         var request = new ChangeUserCommand { Id = 1, CurrentPassword = "password_xyz" };
@@ -132,7 +141,7 @@ public class ChangeUserHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
         var exception = await Assert.ThrowsAsync<Exception>(act);
-        exception.Message.Should().Be("Podane hasło jest nieprawidłowe.");
+        exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
     }
 }

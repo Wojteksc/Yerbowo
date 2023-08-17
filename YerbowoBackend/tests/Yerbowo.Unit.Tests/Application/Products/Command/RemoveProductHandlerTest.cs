@@ -9,7 +9,9 @@ public class RemoveProductHandlerTest
     public RemoveProductHandlerTest()
     {
         _productRepositoryMock = new Mock<IProductRepository>();
-        _handler = new RemoveProductHandler(_productRepositoryMock.Object);
+        _handler = new RemoveProductHandler(
+            _productRepositoryMock.Object,
+            StringLocalizerFactory.Create());
 
         _product = new Product(1,
             "Code",
@@ -39,22 +41,30 @@ public class RemoveProductHandlerTest
         addresses.Should().AllBeEquivalentTo(_product);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_WhenProductIsNull()
+    [Theory]
+    [InlineData("en-US", "The product does not exist")]
+    [InlineData("pl-PL", "Produkt nie istnieje")]
+    public async Task Should_ThrowException_WhenProductIsNull(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new RemoveProductCommand(999);
 
         _productRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Product>(null));
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Produkt nie istnieje");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Product>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_WhenProductIsRemoved()
+    [Theory]
+    [InlineData("en-US", "The product does not exist")]
+    [InlineData("pl-PL", "Produkt nie istnieje")]
+    public async Task Should_ThrowException_WhenProductIsRemoved(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _product.IsRemoved = true;
 
         var request = new RemoveProductCommand(2);
@@ -63,7 +73,7 @@ public class RemoveProductHandlerTest
             .ReturnsAsync(_product);
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Produkt nie istnieje");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Product>()), Times.Never);
     }
 }

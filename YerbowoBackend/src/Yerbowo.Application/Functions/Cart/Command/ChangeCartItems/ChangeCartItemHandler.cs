@@ -5,33 +5,36 @@ public class ChangeCartItemHandler : IRequestHandler<ChangeCartItemCommand, Cart
 	private readonly ISession _session;
 	private readonly IProductRepository _productRepository;
 	private readonly IMapper _mapper;
+	private readonly IStringLocalizer<SharedResource> _localizer;
 
-	public ChangeCartItemHandler(IHttpContextAccessor httpContextAccessor,
-		IProductRepository productRepository,
-		IMapper mapper)
+    public ChangeCartItemHandler(IHttpContextAccessor httpContextAccessor,
+        IProductRepository productRepository,
+        IMapper mapper,
+        IStringLocalizer<SharedResource> localizer)
+    {
+        _session = httpContextAccessor.HttpContext.Session;
+        _productRepository = productRepository;
+        _mapper = mapper;
+        _localizer = localizer;
+    }
+
+    public async Task<CartDto> Handle(ChangeCartItemCommand request, CancellationToken cancellationToken)
 	{
-		_session = httpContextAccessor.HttpContext.Session;
-		_productRepository = productRepository;
-		_mapper = mapper;
-	}
+		CartValidatorHelper.VerifyQuantity(request.Quantity, _localizer);
 
-	public async Task<CartDto> Handle(ChangeCartItemCommand request, CancellationToken cancellationToken)
-	{
-		CartHelper.VerifyQuantity(request.Quantity);
-
-		var products = CartHelper.GetCartProducts(_session);
+		var products = CartSessionHelper.GetCartProducts(_session);
 		var product = products.FirstOrDefault(x => x.Product.Id == request.Id);
 
 		if (product is null)
 		{
-			throw new Exception("Nie znaleziono produktu.");
+			throw new Exception(_localizer["ExceptionProductNotFound"]);
 		}
 
         var productDb = await _productRepository.GetAsync(request.Id);
 
-        CartHelper.VerifyStock(productDb, request.Quantity);
+        CartValidatorHelper.VerifyStock(productDb, request.Quantity, _localizer);
         product.Quantity = request.Quantity;
-        CartHelper.SaveCartProducts(_session, products);
+        CartSessionHelper.SaveCartProducts(_session, products);
 
 		return _mapper.Map<CartDto>(products);
 	}

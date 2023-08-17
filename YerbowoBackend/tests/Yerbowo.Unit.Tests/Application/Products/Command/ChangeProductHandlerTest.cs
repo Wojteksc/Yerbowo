@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Products;
-
-namespace Yerbowo.Unit.Tests.Application.Products.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Products.Command;
 
 public class ChangeProductHandlerTest
 {
@@ -13,7 +11,8 @@ public class ChangeProductHandlerTest
 
         _handler = new ChangeProductHandler(
             _productRepositoryMock.Object,
-            AutoMapperConfig.Initialize());
+            AutoMapperConfig.Initialize(),
+            StringLocalizerFactory.Create());
     }
 
     [Fact]
@@ -56,9 +55,13 @@ public class ChangeProductHandlerTest
         product.Should().BeEquivalentTo(request, options => options.Excluding(x => x.Id));
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductDoesNotExist()
+    [Theory]
+    [InlineData("en-US", "Product not found")]
+    [InlineData("pl-PL", "Nie znaleziono produktu")]
+    public async Task Should_ThrowException_When_ProductDoesNotExist(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new ChangeProductCommand { Id = 1, Name = "Name of the product" };
 
         _productRepositoryMock.Setup(x => x.GetAsync(request.Id))
@@ -66,13 +69,17 @@ public class ChangeProductHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
         var exception = await Assert.ThrowsAsync<Exception>(act);
-        exception.Message.Should().Be("Nie znaleziono produktu");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Product>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductNameAlreadyExists()
+    [Theory]
+    [InlineData("en-US", "The product already exists with that name")]
+    [InlineData("pl-PL", "Produkt o tej nazwie już istnieje")]
+    public async Task Should_ThrowException_When_ProductNameAlreadyExists(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new ChangeProductCommand { Id = 1, Name = "Name of the product" };
 
         var product = new Product(1,
@@ -92,13 +99,17 @@ public class ChangeProductHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
         var exception = await Assert.ThrowsAsync<Exception>(act);
-        exception.Message.Should().Be($"Produkt o nazwie {request.Name} już istnieje. Zmień nazwę.");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Product>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_TheNewPriceOfDiscountedProductIsHigher_Than_PriceOfCurrentProduct()
+    [Theory]
+    [InlineData("en-US", "The new price of the promotional product must be lower than the current price of the product")]
+    [InlineData("pl-PL", "Nowe cena produktu objętego promocją musi być mniejsza od aktualnej ceny produktu")]
+    public async Task Should_ThrowException_When_TheNewPriceOfDiscountedProductIsHigher_Than_PriceOfCurrentProduct(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var product = new Product(1,
             "code",
             "name",
@@ -127,7 +138,7 @@ public class ChangeProductHandlerTest
             .ReturnsAsync(false);
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Nowe cena produktu objętego promocją musi być mniejsza od aktualnej ceny produktu.");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Product>()), Times.Never);
     }
 }

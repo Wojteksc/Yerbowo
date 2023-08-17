@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Api.Extensions;
+﻿using System.Globalization;
+
+namespace Yerbowo.Api.Extensions;
 
 public static class ApplicationExtensions
 {
@@ -61,5 +63,23 @@ public static class ApplicationExtensions
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Yerbowo API v1");
         });
+    }
+
+    public static void UseRequestLocalizations(this IApplicationBuilder app)
+    {
+        var localizationOptions = new RequestLocalizationOptions();
+
+        var supportedCultures = new []
+        {
+            new CultureInfo("pl-PL"),
+            new CultureInfo("en-US")
+        };
+
+        localizationOptions.SupportedCultures = supportedCultures;
+        localizationOptions.SupportedUICultures = supportedCultures;
+        localizationOptions.SetDefaultCulture("en-US");
+        localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+        
+		app.UseRequestLocalization(localizationOptions);
     }
 }

@@ -17,7 +17,8 @@ public class SocialLoginHandlerTest
         _handler = new SocialLoginHandler(
           _userRepositoryMock.Object,
           AutoMapperConfig.Initialize(),
-          _jwtHandlerMock.Object);
+          _jwtHandlerMock.Object,
+          StringLocalizerFactory.Create());
 
         _user = new User("firstName", "lastName", "email@email.com", "password", "user", null, 
             "http://www.test.pl", "Facebook");
@@ -81,9 +82,13 @@ public class SocialLoginHandlerTest
         users.Should().AllBeEquivalentTo(_user);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_EmailIsNull()
+    [Theory]
+    [InlineData("en-US", "Your {0} account does not have an email address")]
+    [InlineData("pl-PL", "Na Twoim koncie {0} nie jest zapisany adres e-mail")]
+    public async Task Should_ThrowException_When_EmailIsNull(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new SocialLoginCommand()
         {
             FirstName = "Test",
@@ -93,14 +98,18 @@ public class SocialLoginHandlerTest
 
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
                 () => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be($"Na Twoim koncie {request.Provider.ToTitle()} nie jest zapisany adres e-mail");
+        exception.Message.Should().Be(string.Format(expectedMessage, request.Provider.ToTitle()));
         _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_UserIsRemoved()
+    [Theory]
+    [InlineData("en-US", "The account does not exist")]
+    [InlineData("pl-PL", "Konto nie istnieje")]
+    public async Task Should_ThrowException_When_UserIsRemoved(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new SocialLoginCommand()
         {
             FirstName = "Test",
@@ -117,7 +126,7 @@ public class SocialLoginHandlerTest
 
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
                 () => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Konto nie istnieje");
+        exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }

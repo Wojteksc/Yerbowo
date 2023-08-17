@@ -23,8 +23,7 @@ public class EmptyStringToNullConverter : JsonConverter<string>
     /// <returns></returns>
     public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        string value = reader.GetString();
-        return value ?? String.Empty;
+        return reader.GetString() ?? string.Empty;
     }
 
     /// <summary>

@@ -5,25 +5,28 @@ public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseTo
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly IJwtHandler _jwtHandler;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public SocialLoginHandler(IUserRepository userRepository,
         IMapper mapper,
-        IJwtHandler jwtHandler)
+        IJwtHandler jwtHandler,
+        IStringLocalizer<SharedResource> localizer)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _jwtHandler = jwtHandler;
+        _localizer = localizer;
     }
 
     public async Task<ResponseToken> Handle(SocialLoginCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.Email))
-            throw new UnauthorizedAccessException($"Na Twoim koncie {(request.Provider.ToTitle())} nie jest zapisany adres e-mail");
+            throw new UnauthorizedAccessException(string.Format(_localizer["ExceptionAccountHasNoEmail"], request.Provider.ToTitle()));
 
         var user = await _userRepository.GetAsync(request.Email);
 
         if (IsUserRemoved(user))
-            throw new UnauthorizedAccessException($"Konto nie istnieje");
+            throw new UnauthorizedAccessException(_localizer["ExceptionAccountDoesNotExist"]);
 
         if (user == null)
         {
@@ -44,7 +47,7 @@ public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseTo
         };
     }
 
-    private bool IsUserRemoved(User user)
+    private static bool IsUserRemoved(User user)
     {
         return user != null && user.IsRemoved;
     }

@@ -23,7 +23,8 @@ public class LoginHandlerTest
         _handler = new LoginHandler(
             _userRepositoryMock.Object,
             _passwordValidatorMock.Object,
-            _jwtHandlerMock.Object);
+            _jwtHandlerMock.Object,
+            StringLocalizerFactory.Create());
     }
 
     [Fact]
@@ -46,22 +47,30 @@ public class LoginHandlerTest
         result.Should().NotBe(null);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_UserIsNull()
+    [Theory]
+    [InlineData("en-US", "Invalid login details")]
+    [InlineData("pl-PL", "Niepoprawne dane logowania")]
+    public async Task Should_ThrowException_When_UserDoesNotExist(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
             () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be("Niepoprawne dane logowania");
+        exception.Message.Should().Be(expectedMessage);
         _passwordValidatorMock.Verify(x =>
             x.Equals(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_UserIsRemoved()
+    [Theory]
+    [InlineData("en-US", "Invalid login details")]
+    [InlineData("pl-PL", "Niepoprawne dane logowania")]
+    public async Task Should_ThrowException_When_UserIsRemoved(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _user.IsRemoved = true;
 
         _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
@@ -69,14 +78,18 @@ public class LoginHandlerTest
         
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
             () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be("Niepoprawne dane logowania");
+        exception.Message.Should().Be(expectedMessage);
         _passwordValidatorMock.Verify(x =>
             x.Equals(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_UserDidNotConfirmEmail()
+    [Theory]
+    [InlineData("en-US", "Account registration has not been confirmed. Receive the e-mail and click on the confirmation link.")]
+    [InlineData("pl-PL", "Rejestracja konta nie została potwierdzona. Odbierz wiadomość e-mail i kliknij w link potwierdzający.")]
+    public async Task Should_ThrowException_When_UserDidNotConfirmEmail(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _userRepositoryMock.Setup(x => x.GetAsync(_user.Email))
             .ReturnsAsync(_user);
 
@@ -86,8 +99,7 @@ public class LoginHandlerTest
 
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
             () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be(
-            "Rejestracja w sklepie nie została potwierdzona. Odbierz pocztę i kliknij w link potwierdzający.");
+        exception.Message.Should().Be(expectedMessage);
         _jwtHandlerMock.Verify(x => 
             x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }

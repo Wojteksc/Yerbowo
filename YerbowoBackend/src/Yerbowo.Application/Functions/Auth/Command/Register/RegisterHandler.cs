@@ -5,20 +5,23 @@ public class RegisterHandler : IRequestHandler<RegisterCommand>
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
     private readonly IUserRepository _userRepository;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public RegisterHandler(IUserRepository userRepository,
         IMapper mapper,
-        IMediator mediator)
+        IMediator mediator,
+        IStringLocalizer<SharedResource> localizer)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _mediator = mediator;
+        _localizer = localizer;
     }
 
     public async Task<Unit> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         if (await _userRepository.ExistsAsync(request.Email))
-            throw new Exception("Ten adres e-mail jest już używany, proszę wybierz inny albo zaloguj się.");
+            throw new Exception(_localizer["ExceptionEmailIsAlreadyInUse"]);
 
         string token = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray());
 
@@ -27,11 +30,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand>
         user.SetRole("user");
         user.SetVerificationToken(token);
 
-        bool isSuccess = await _userRepository.AddAsync(user);
-        if (!isSuccess)
-        {
-            throw new Exception("Nieudana próba rejestracji konta. Skontaktuj się z administratorem.");
-        }
+        await _userRepository.AddAsync(user);
 
         await _mediator.Publish(new RegisterEndedEvent(user));
 

@@ -13,7 +13,7 @@ public class GetCartItemsHandler : IRequestHandler<GetCartItemsQuery, CartDto>
 
     public async Task<CartDto> Handle(GetCartItemsQuery request, CancellationToken cancellationToken)
     {
-        var cartItems = CartHelper.GetCartProducts(_session);
+        var cartItems = CartSessionHelper.GetCartProducts(_session);
         return await Task.FromResult(_mapper.Map<CartDto>(cartItems));
     }
 }

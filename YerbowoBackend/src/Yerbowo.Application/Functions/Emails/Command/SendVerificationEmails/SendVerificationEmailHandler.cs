@@ -4,13 +4,16 @@ public class SendVerificationEmailHandler : IRequestHandler<SendVerificationEmai
 {
     private readonly IVerificationEmailTemplateSender _verificationEmailTemplateSender;
     private readonly HttpRequest _httpRequest;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
     public SendVerificationEmailHandler(
         IVerificationEmailTemplateSender verificationEmailTemplateSender,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IStringLocalizer<SharedResource> localizer)
     {
         _verificationEmailTemplateSender = verificationEmailTemplateSender;
         _httpRequest = httpContextAccessor.HttpContext.Request;
+        _localizer = localizer;
     }
 
     public async Task<Unit> Handle(SendVerificationEmailCommand command, CancellationToken cancellationToken)
@@ -31,7 +34,7 @@ public class SendVerificationEmailHandler : IRequestHandler<SendVerificationEmai
 
         if (!responseEmail.IsSuccessStatusCode)
         {
-            throw new Exception("Nieudana próba wysłania e-maila.");
+            throw new Exception(_localizer["ExceptionFailedAttemptToSendEmail"]);
         }
 
         return Unit.Value;

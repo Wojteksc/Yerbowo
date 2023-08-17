@@ -17,7 +17,7 @@ public class GetTotalCartItemsHandlerTest
         result.Items.Sum(ci => ci.Quantity).Should().Be(expectedQuantity);
     }
 
-    private IList<CartItemDto> GetSessionData()
+    private static IList<CartItemDto> GetSessionData()
     {
         return new List<CartItemDto>
         {
@@ -74,7 +74,7 @@ public class GetTotalCartItemsHandlerTest
             }
         };
     }
-    private GetCartItemsHandler CreateHandler(HttpContextAccessor httpContextAccessor)
+    private static GetCartItemsHandler CreateHandler(HttpContextAccessor httpContextAccessor)
     {
         return new GetCartItemsHandler(
             httpContextAccessor,

@@ -1,6 +1,4 @@
-﻿using Yerbowo.Domain.Users;
-
-namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
+﻿namespace Yerbowo.Unit.Tests.Application.Addresses.Query;
 
 public class GetAddressByIdHandlerTest
 {

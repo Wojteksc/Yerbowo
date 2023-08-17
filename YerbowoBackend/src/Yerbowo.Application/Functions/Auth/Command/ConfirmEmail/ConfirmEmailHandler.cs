@@ -3,10 +3,12 @@
 public class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public ConfirmEmailHandler(IUserRepository userRepository)
+    public ConfirmEmailHandler(IUserRepository userRepository, IStringLocalizer<SharedResource> localizer)
     {
         _userRepository = userRepository;
+        _localizer = localizer;
     }
 
     public async Task<Unit> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
@@ -14,12 +16,12 @@ public class ConfirmEmailHandler : IRequestHandler<ConfirmEmailCommand>
         var user = await _userRepository.GetAsync(request.Email);
         if (user == null || user.VerificationToken != request.Token)
         {
-            throw new Exception("Nieprawidłowe żądanie potwierdzenia adresu e-mail.");
+            throw new Exception(_localizer["ResponseBadRequest"]);
         }
         
         if(user.VerifiedAt != null)
         {
-            throw new Exception("Adres e-mail był już potwierdzony.");
+            throw new Exception(_localizer["ExceptionEmailWasConfirmed"]);
         }
 
         user.SetVerificationDate(DateTime.UtcNow);

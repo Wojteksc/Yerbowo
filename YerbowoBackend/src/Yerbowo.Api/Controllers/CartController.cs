@@ -1,19 +1,21 @@
-﻿
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [ApiController]
 [Route("api/cart")]
 public class CartController : ApiControllerBase
 {
 	private readonly IMediator _mediator;
+	private readonly IStringLocalizer<SharedResource> _localizer;
 
-	public CartController(IMediator mediator)
-	{
-		_mediator = mediator;
-	}
+    public CartController(
+		IMediator mediator, 
+		IStringLocalizer<SharedResource> localizer)
+    {
+        _mediator = mediator;
+        _localizer = localizer;
+    }
 
-	[HttpGet]
+    [HttpGet]
 	public async Task<IActionResult> Get()
 	{
 		var cart = await _mediator.Send(new GetCartItemsQuery());
@@ -38,7 +40,7 @@ public class CartController : ApiControllerBase
 	public async Task<IActionResult> Put(int id, ChangeCartItemCommand command)
 	{
 		if (id != command.Id)
-			return BadRequest();
+			return BadRequest(_localizer["ResponseBadRequest"]);
 
 		var cart = await _mediator.Send(command);
 		return Ok(cart);

@@ -62,9 +62,13 @@ public class ChangeCartItemHandlerTest
         sessionMock.Verify(x => x.Set(Consts.CartSessionKey, It.IsAny<byte[]>()), Times.Once);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductDoesNotExistsInCart()
+    [Theory]
+    [InlineData("en-US", "Product not found")]
+    [InlineData("pl-PL", "Nie znaleziono produktu")]
+    public async Task Should_ThrowException_When_ProductDoesNotExistsInCart(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         int productId = 999;
         var request = new ChangeCartItemCommand(productId, _productDb.Stock + 1);
 
@@ -77,16 +81,18 @@ public class ChangeCartItemHandlerTest
         var exception = await Assert.ThrowsAsync<Exception>(
             () => handler.Handle(request, CancellationToken.None));
 
-        exception.Message.Should().Be("Nie znaleziono produktu.");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<int>()), Times.Never());
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public async Task Should_ThrowException_When_RequestQuantityIsZeroOrNegative(int quantity)
+    [InlineData(0, "en-US", "Incorrect quantity")]
+    [InlineData(-1, "pl-PL", "Nieprawidłowa ilość")]
+    public async Task Should_ThrowException_When_RequestQuantityIsZeroOrNegative(int quantity, string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         int productId = 999;
         var request = new ChangeCartItemCommand(productId, quantity);
         var sessionMock = SessionMockHelper.SetupSession();
@@ -96,14 +102,18 @@ public class ChangeCartItemHandlerTest
         var exception = await Assert.ThrowsAsync<Exception>(
             () => handler.Handle(request, CancellationToken.None));
 
-        exception.Message.Should().Be("Niepraidłowa ilość");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<int>()), Times.Never());
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductQuantityIsGreaterThanStock_And_ProductIsInCart()
+    [Theory]
+    [InlineData("en-US", "Stock exceeded")]
+    [InlineData("pl-PL", "Przekroczono zapas")]
+    public async Task Should_ThrowException_When_ProductQuantityIsGreaterThanStock_And_ProductIsInCart(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new ChangeCartItemCommand(_productId, _productDb.Stock + 1);
         var cartProducts = new List<CartItemDto>
         {
@@ -123,7 +133,7 @@ public class ChangeCartItemHandlerTest
         var exception = await Assert.ThrowsAsync<Exception>(
             () => handler.Handle(request, CancellationToken.None));
 
-        exception.Message.Should().Be("Przekroczono zapas");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.GetAsync(_productId), Times.Once);
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
@@ -133,6 +143,7 @@ public class ChangeCartItemHandlerTest
         return new ChangeCartItemHandler(
             httpContextAccessor,
             _productRepositoryMock.Object,
-            AutoMapperConfig.Initialize());
+            AutoMapperConfig.Initialize(),
+            StringLocalizerFactory.Create());
     }
 }

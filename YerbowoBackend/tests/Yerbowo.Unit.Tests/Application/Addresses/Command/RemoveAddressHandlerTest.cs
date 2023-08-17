@@ -9,7 +9,7 @@ public class RemoveAddressHandlerTest
     public RemoveAddressHandlerTest()
     {
         _addressRepositoryMock = new Mock<IAddressRepository>();
-        _handler = new RemoveAddressHandler(_addressRepositoryMock.Object);
+        _handler = new RemoveAddressHandler(_addressRepositoryMock.Object, StringLocalizerFactory.Create());
 
         _address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
@@ -33,22 +33,30 @@ public class RemoveAddressHandlerTest
         addresses.Should().AllBeEquivalentTo(_address);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_WhenProductIsNull()
+    [Theory]
+    [InlineData("en-US", "Address not found")]
+    [InlineData("pl-PL", "Nie znaleziono adresu")]
+    public async Task Should_ThrowException_WhenProductIsNull(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         var request = new RemoveAddressCommand(999);
 
         _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Address>(null));
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Adres nie istnieje");
+        exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_WhenProductIsRemoved()
+    [Theory]
+    [InlineData("en-US", "Address not found")]
+    [InlineData("pl-PL", "Nie znaleziono adresu")]
+    public async Task Should_ThrowException_WhenProductIsRemoved(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _address.IsRemoved = true;
 
         var request = new RemoveAddressCommand(2);
@@ -57,7 +65,7 @@ public class RemoveAddressHandlerTest
             .ReturnsAsync(_address);
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
-        exception.Message.Should().Be("Adres nie istnieje");
+        exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
 }

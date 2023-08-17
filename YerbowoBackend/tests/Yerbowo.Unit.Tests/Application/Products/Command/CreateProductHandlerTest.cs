@@ -12,7 +12,8 @@ public class CreateProductHandlerTest
 
         _handler = new CreateProductHandler(
             _productRepositoryMock.Object,
-            AutoMapperConfig.Initialize());
+            AutoMapperConfig.Initialize(),
+            StringLocalizerFactory.Create());
 
         _request = new CreateProductCommand
         {
@@ -64,14 +65,18 @@ public class CreateProductHandlerTest
         products.Should().AllBeEquivalentTo(expectedInsertedProduct);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductNameAlreadyExists()
+    [Theory]
+    [InlineData("en-US", "The product already exists with that name")]
+    [InlineData("pl-PL", "Produkt o tej nazwie już istnieje")]
+    public async Task Should_ThrowException_When_ProductNameAlreadyExists(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _productRepositoryMock.Setup(x => x.ExistsAsync(_request.Name.ToSlug()))
             .ReturnsAsync(true);
 
         var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be($"Produkt o nazwie {_request.Name} już istnieje. Zmień nazwę.");
+        exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Product>()), Times.Never);
     }
 }

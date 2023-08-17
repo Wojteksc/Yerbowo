@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Hosting.Internal;
-
-namespace Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Extensions;
 
 public static class ConfigurationBuilderExtensions
 {

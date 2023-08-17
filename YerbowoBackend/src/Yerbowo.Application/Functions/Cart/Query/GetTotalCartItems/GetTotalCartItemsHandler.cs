@@ -11,7 +11,7 @@ public class GetTotalCartItemsHandler : IRequestHandler<GetTotalCartItemsQuery, 
 
 	public async Task<int> Handle(GetTotalCartItemsQuery request, CancellationToken cancellationToken)
 	{
-		var cartItems = CartHelper.GetCartProducts(_session);
+		var cartItems = CartSessionHelper.GetCartProducts(_session);
 		return await Task.FromResult(cartItems.Sum(ci => ci.Quantity));
 	}
 }

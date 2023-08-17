@@ -29,7 +29,8 @@ public class RegisterHandlerTest
         _handler = new RegisterHandler(
             _userRepositoryMock.Object,
             AutoMapperConfig.Initialize(),
-            _mediatorMock.Object);
+            _mediatorMock.Object,
+            StringLocalizerFactory.Create());
     }
 
     [Fact]
@@ -60,9 +61,13 @@ public class RegisterHandlerTest
         users.First().VerificationToken.Should().NotBeNull();
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_CreateUserWithTheSameEmail()
+    [Theory]
+    [InlineData("en-US", "The email address you provided is already in use on another account")]
+    [InlineData("pl-PL", "Podany adres e-mail jest już używany na innym koncie")]
+    public async Task Should_ThrowException_When_CreateUserWithTheSameEmail(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
             .ReturnsAsync(true);
 
@@ -71,22 +76,7 @@ public class RegisterHandlerTest
 
         var exception = await Assert.ThrowsAsync<Exception>(
             () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be("Ten adres e-mail jest już używany, proszę wybierz inny albo zaloguj się.");
+        exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
-    }
-
-    [Fact]
-    public async Task Should_ThrowException_When_CantAddUser()
-    {
-        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
-            .ReturnsAsync(false);
-
-        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
-            .ReturnsAsync(false);
-
-        var exception = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be("Nieudana próba rejestracji konta. Skontaktuj się z administratorem.");
-        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
     }
 }

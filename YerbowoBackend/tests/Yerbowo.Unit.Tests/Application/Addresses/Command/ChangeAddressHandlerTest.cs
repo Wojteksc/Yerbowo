@@ -13,7 +13,8 @@ public class ChangeAddressHandlerTest
 
         _handler = new ChangeAddressHandler(
             _addressRepositoryMock.Object, 
-            AutoMapperConfig.Initialize());
+            AutoMapperConfig.Initialize(),
+            StringLocalizerFactory.Create());
 
         _address = new Address(1,
             "aliastTest",
@@ -56,14 +57,18 @@ public class ChangeAddressHandlerTest
         _address.Should().BeEquivalentTo(_request, options => options.Excluding(x => x.Id));
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_AddressDoesNotExist()
+    [Theory]
+    [InlineData("en-US", "Address not found")]
+    [InlineData("pl-PL", "Nie znaleziono adresu")]
+    public async Task Should_ThrowException_When_AddressDoesNotExist(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
             .ReturnsAsync((Address)null);
 
         var exception = await Assert.ThrowsAsync<Exception>(() =>_handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be("Nie znaleziono adresu");
+        exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Address>()), Times.Never);
     }
 }

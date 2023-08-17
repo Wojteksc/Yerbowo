@@ -1,5 +1,4 @@
-﻿using Yerbowo.Infrastructure;
-namespace Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Extensions;
 
 public static class ServiceExtensions
 {
@@ -100,5 +99,23 @@ public static class ServiceExtensions
 				{ jwtSecurityScheme, Array.Empty<string>() }
 			});
         });
+    }
+
+    public static void AddLocalizationOptions(this IServiceCollection services)
+    {
+        services.AddLocalization();
+        var localizationOptions = new RequestLocalizationOptions();
+
+        var supportedCultures = new[]
+        {
+                new CultureInfo("pl-PL"),
+                new CultureInfo("en-US")
+            };
+
+        localizationOptions.SupportedCultures = supportedCultures;
+        localizationOptions.SupportedUICultures = supportedCultures;
+        localizationOptions.SetDefaultCulture("en-US");
+        localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+
     }
 }

@@ -3,10 +3,12 @@
 public class RemoveAddressHandler : IRequestHandler<RemoveAddressCommand>
 {
     private readonly IAddressRepository _addressRepository;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public RemoveAddressHandler(IAddressRepository addressRepository)
+    public RemoveAddressHandler(IAddressRepository addressRepository, IStringLocalizer<SharedResource> localizer)
     {
         _addressRepository = addressRepository;
+        _localizer = localizer;
     }
 
     public async Task<Unit> Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
@@ -15,7 +17,7 @@ public class RemoveAddressHandler : IRequestHandler<RemoveAddressCommand>
 
         if (address == null || address.IsRemoved)
         {
-            throw new Exception("Adres nie istnieje");
+            throw new Exception(_localizer["ExceptionAddressNotFound"]);
         }
 
         await _addressRepository.RemoveAsync(address);

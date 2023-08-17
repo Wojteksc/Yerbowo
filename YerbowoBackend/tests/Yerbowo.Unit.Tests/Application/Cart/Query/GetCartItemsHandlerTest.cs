@@ -17,7 +17,7 @@ public class GetCartItemsHandlerTest
         result.Should().BeEquivalentTo(expectedData);
     }
 
-    private IList<CartItemDto> GetSessionData()
+    private static IList<CartItemDto> GetSessionData()
     {
         return new List<CartItemDto>
         {
@@ -75,7 +75,7 @@ public class GetCartItemsHandlerTest
         };
     }
 
-    private CartDto GetExpectedData()
+    private static CartDto GetExpectedData()
     {
         return new CartDto
         {
@@ -138,7 +138,7 @@ public class GetCartItemsHandlerTest
         };
     }
 
-    private GetCartItemsHandler CreateHandler(HttpContextAccessor httpContextAccessor)
+    private static GetCartItemsHandler CreateHandler(HttpContextAccessor httpContextAccessor)
     {
         return new GetCartItemsHandler(
             httpContextAccessor,

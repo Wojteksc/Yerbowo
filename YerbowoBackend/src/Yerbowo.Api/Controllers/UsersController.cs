@@ -6,10 +6,13 @@
 public class UsersController : ApiControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public UsersController(IMediator mediator)
+    public UsersController(IMediator mediator,
+        IStringLocalizer<SharedResource> localizer)
     {
         _mediator = mediator;
+        _localizer = localizer;
     }
 
     [HttpGet("{id:int}")]
@@ -32,7 +35,7 @@ public class UsersController : ApiControllerBase
     public async Task<IActionResult> UpdateUser(int id, ChangeUserCommand user)
     {
         if (id != user.Id)
-            return BadRequest();
+            return BadRequest(_localizer["ResponseBadRequest"]);
 
         await _mediator.Send(user);
 

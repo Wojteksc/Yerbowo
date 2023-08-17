@@ -4,18 +4,21 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
 {
 	private readonly IProductRepository _productRepository;
 	private readonly IMapper _mapper;
+	private readonly IStringLocalizer<SharedResource> _localizer;
 
-	public CreateProductHandler(IProductRepository productRepository,
-		IMapper mapper)
-	{
-		_productRepository = productRepository;
-		_mapper = mapper;
-	}
+    public CreateProductHandler(IProductRepository productRepository,
+        IMapper mapper,
+        IStringLocalizer<SharedResource> localizer)
+    {
+        _productRepository = productRepository;
+        _mapper = mapper;
+        _localizer = localizer;
+    }
 
-	public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<ProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
 		if (await _productRepository.ExistsAsync(request.Name.ToSlug()))
-			throw new Exception($"Produkt o nazwie {request.Name} już istnieje. Zmień nazwę.");
+			throw new Exception(_localizer["ExceptionProductAlreadyExistsWithThatName"]);
 
 		var product = _mapper.Map<Product>(request);
 

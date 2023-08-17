@@ -20,6 +20,7 @@ public class Startup
         services.AddAuthentication(Configuration);
         services.AddAuthorization();
         services.AddCors();
+        services.AddLocalization();
         services.AddSessionOptions();
         services.AddResponseCaching();
     }
@@ -46,6 +47,7 @@ public class Startup
         app.UseDefaultFiles();
         app.UseStaticFiles();
         app.UseCookiePolicy();
+        app.UseRequestLocalizations();
         app.UseSession();
         app.UseEndpointsOptions();
 

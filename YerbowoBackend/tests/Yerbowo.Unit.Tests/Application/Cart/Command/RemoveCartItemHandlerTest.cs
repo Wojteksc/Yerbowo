@@ -51,9 +51,13 @@ public class RemoveCartItemHandlerTest
         sessionMock.Verify(x => x.Set(Consts.CartSessionKey, It.IsAny<byte[]>()), Times.Once);
     }
 
-    [Fact]
-    public async Task Should_ThrowException_When_ProductDoesNotExistInCart()
+    [Theory]
+    [InlineData("en-US", "Product not found")]
+    [InlineData("pl-PL", "Nie znaleziono produktu")]
+    public async Task Should_ThrowException_When_ProductDoesNotExistInCart(string culture, string expectedMessage)
     {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
         int productId = 999;
         var request = new RemoveCartItemCommand(productId);
 
@@ -73,14 +77,15 @@ public class RemoveCartItemHandlerTest
         var exception = await Assert.ThrowsAsync<Exception>(
             () => handler.Handle(request, CancellationToken.None));
 
-        exception.Message.Should().Be("Nie znaleziono produktu.");
+        exception.Message.Should().Be(expectedMessage);
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
-    private RemoveCartItemHandler CreateHandler(HttpContextAccessor httpContextAccessor)
+    private static RemoveCartItemHandler CreateHandler(HttpContextAccessor httpContextAccessor)
     {
         return new RemoveCartItemHandler(
             httpContextAccessor,
-            AutoMapperConfig.Initialize());
+            AutoMapperConfig.Initialize(),
+            StringLocalizerFactory.Create());
     }
 }
