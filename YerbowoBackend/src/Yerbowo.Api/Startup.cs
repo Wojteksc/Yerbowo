@@ -27,7 +27,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, YerbowoContextSeed dbInitializer)
     {
-        if (env.IsDevelopment() || env.IsEnvironment("Testing"))
+        if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
             app.UseSwaggers();

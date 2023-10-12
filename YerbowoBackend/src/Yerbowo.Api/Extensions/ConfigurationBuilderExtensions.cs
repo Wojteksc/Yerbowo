@@ -18,10 +18,7 @@ public static class ConfigurationBuilderExtensions
 
     public static void AddAppSettings(this IConfigurationBuilder config, HostBuilderContext context)
     {
-        bool isTesting = context.HostingEnvironment.IsEnvironment("Testing");
-
         config.AddJsonFile("appsettings.json");
-        config.AddJsonFile("appsettings.Development.json", optional: true);
-        config.AddJsonFile("appsettings.Cloud.json", optional: !isTesting);
+        config.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json");
     }
 }

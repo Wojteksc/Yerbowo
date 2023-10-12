@@ -21,7 +21,7 @@ public class Program
                 {
                     config.AddAppSettings(context);
 
-                    if (!context.HostingEnvironment.IsDevelopment())
+                    if (context.HostingEnvironment.IsProduction())
                     {
                         config.AddAzureKeyVault();
                     }

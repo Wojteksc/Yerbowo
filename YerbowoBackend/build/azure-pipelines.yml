@@ -13,7 +13,7 @@ steps:
   inputs:
     folderPath: '$(System.DefaultWorkingDirectory)/**/'
     fileType: 'json'
-    targetFiles: '**/appsettings.Cloud.json'
+    targetFiles: '**/appsettings.Production.json'
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'

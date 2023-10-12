@@ -9,10 +9,18 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
+        string environment = "";
+
+#if DEBUG
+        environment = "Development";
+#else
+        environment = "Production";
+#endif
+
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
             .ConfigureAppConfiguration(ConfigureAppConfiguration)
-            .UseEnvironment("Testing"));
+            .UseEnvironment(environment));
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
     }
