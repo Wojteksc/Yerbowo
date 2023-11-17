@@ -15,59 +15,59 @@
       </div>
       
       <label class="label-small" for="firstName">Imię: *</label>
-      <input type="text" class="input-text-small" formControlName="firstName"  
+      <input type="text" class="input-text-small" formControlName="firstName" autocomplete="given-name"
       [ngClass]="{ 'is-invalid': f.firstName.errors && (f.firstName.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.firstName.touched || submitted) && f.firstName.errors?.required">
         Pole 'Imię' jest wymagane.
       </div>
 
       <label class="label-small" for="lastName">Nazwisko: *</label>
-      <input type="text" class="input-text-small" formControlName="lastName"  
+      <input type="text" class="input-text-small" formControlName="lastName" autocomplete="family-name"
       [ngClass]="{ 'is-invalid': f.lastName.errors && (f.lastName.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.lastName.touched || submitted) && f.lastName.errors?.required">
         Pole 'Nazwisko' jest wymagane.
       </div>
 
       <label class="label-small" for="street">Ulica: *</label>
-      <input type="text" class="input-text-small" formControlName="street"  
+      <input type="text" class="input-text-small" formControlName="street" autocomplete="street-address"
       [ngClass]="{ 'is-invalid': f.street.errors && (f.street.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.street.touched || submitted) && f.street.errors?.required">
         Pole 'Ulica' jest wymagane.
       </div>
 
       <label class="label-small" for="buildingNumber">Numer budynku: *</label>
-      <input type="text" class="input-text-small" formControlName="buildingNumber"  
+      <input type="text" class="input-text-small" formControlName="buildingNumber" autocomplete="address-line2"
       [ngClass]="{ 'is-invalid': f.buildingNumber.errors && (f.buildingNumber.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.buildingNumber.touched || submitted) && f.buildingNumber.errors?.required">
         Pole 'Numer budynku' jest wymagane.
       </div>
 
       <label class="label-small" for="apartmentNumber">Numer lokalu: </label>
-      <input type="text" class="input-text-small" formControlName="apartmentNumber">
+      <input type="text" class="input-text-small" formControlName="apartmentNumber" autocomplete="address-line3">
 
       <label class="label-small" for="place">Miejscowość: *</label>
-      <input type="text" class="input-text-small" formControlName="place"  
+      <input type="text" class="input-text-small" formControlName="place" autocomplete="address-level2"
       [ngClass]="{ 'is-invalid': f.place.errors && (f.place.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.place.touched || submitted) && f.place.errors?.required">
         Pole 'Miejscowość' jest wymagane.
       </div>
 
       <label class="label-small" for="postCode">Kod pocztowy: *</label>
-      <input type="text" class="input-text-small" formControlName="postCode"  
+      <input type="text" class="input-text-small" formControlName="postCode" autocomplete="postal-code"
       [ngClass]="{ 'is-invalid': f.postCode.errors && (f.postCode.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.postCode.touched || submitted) && f.postCode.errors?.required">
         Pole 'Kod pocztowy' jest wymagane.
       </div>
 
       <label class="label-small" for="phone">Telefon: *</label>
-      <input type="tel" class="input-text-small" formControlName="phone"  
+      <input type="tel" class="input-text-small" formControlName="phone" autocomplete="tel"
       [ngClass]="{ 'is-invalid': f.phone.errors && (f.phone.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.phone.touched || submitted) && f.phone.errors?.required">
         Pole 'Telefon' jest wymagane.
       </div>
       
       <label class="label-small" for="email">E-mail: *</label>
-      <input type="email" class="input-text-small" formControlName="email"  
+      <input type="email" class="input-text-small" formControlName="email" autocomplete="email"
       [ngClass]="{ 'is-invalid': f.email.errors && (f.email.touched || submitted) }">
       <div class="text-danger" *ngIf="(f.email.touched || submitted) && f.email.errors?.required">
         Pole 'E-mail' jest wymagane.
@@ -77,7 +77,7 @@
       <input type="text" class="input-text-small" formControlName="nip">
 
       <label class="label-small" for="company">Firma: </label>
-      <input type="text" class="input-text-small" formControlName="company">
+      <input type="text" class="input-text-small" formControlName="company" autocomplete="organization">
 
       <div class="full-row">
         <hr>

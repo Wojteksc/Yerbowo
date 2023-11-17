@@ -2,7 +2,7 @@
   <div class="grid-area-center">
       <h2 class="text-center">Zaloguj się</h2>
       <form #loginForm="ngForm" (ngSubmit)="signIn()" class="subgrid-col-1 grid-items-center">      
-        <input type="text" name="email" placeholder="E-mail" required [(ngModel)]="model.email" class="input-text">
+        <input type="text" name="email" placeholder="E-mail" autocomplete="email" required [(ngModel)]="model.email" class="input-text">
         <input type="password" name="password" placeholder="Hasło" required [(ngModel)]="model.password" class="input-text">
         <input type="submit" class="btn-submit" value="Zaloguj"/>
       </form>  

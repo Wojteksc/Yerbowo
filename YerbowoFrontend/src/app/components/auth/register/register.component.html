@@ -4,24 +4,24 @@
       <form [formGroup]="registerForm" (ngSubmit)="register()" class="subgrid-col-2">
           
           <label class="label" for="firstName">Imię: *</label>
-          <input type="text" class="input-text" formControlName="firstName"
+          <input type="text" class="input-text" formControlName="firstName" autocomplete="given-name"
           [ngClass]="{ 'is-invalid': f.firstName.errors && (f.firstName.touched || submitted) }">
           <div class="text-danger" *ngIf="(f.firstName.touched || submitted) && f.firstName.errors?.required">
               Pole 'Imię' jest wymagane.
           </div>
 
           <label class="label" for="lastName">Nazwisko: *</label>
-          <input type="text" class="input-text" formControlName="lastName"
+          <input type="text" class="input-text" formControlName="lastName" autocomplete="family-name"
           [ngClass]="{ 'is-invalid': f.lastName.errors && (f.lastName.touched || submitted) }">
           <div class="text-danger" *ngIf="(f.lastName.touched || submitted) && f.lastName.errors?.required">
               Pole 'Nazwisko' jest wymagane.
           </div>    
           
           <label class="label" for="companyName">Nazwa firmy: </label>
-          <input type="text" class="input-text" formControlName="companyName">
+          <input type="text" class="input-text" formControlName="companyName" autocomplete="organization">
           
           <label class="label" for="email">E-mail: *</label>
-          <input type="email" class="input-text" formControlName="email"
+          <input type="email" class="input-text" formControlName="email" autocomplete="email"
           [ngClass]="{ 'is-invalid': f.email.errors && (f.email.touched || submitted) }">
           <div class="text-danger" *ngIf="f.email.errors && (f.email.touched || submitted) ">
             <div *ngIf="f.email.errors.required">Pole 'E-mail' jest wymagane.</div>
@@ -29,7 +29,7 @@
           </div>
           
           <label class="label" for="confirmEmail">Powtórz e-mail: *</label>
-          <input type="email" class="input-text" formControlName="confirmEmail"
+          <input type="email" class="input-text" formControlName="confirmEmail" autocomplete="email"
           [ngClass]="{ 'is-invalid': f.confirmEmail.errors && (f.confirmEmail.touched || submitted) }">
           <div class="text-danger" *ngIf="f.confirmEmail.errors && (f.confirmEmail.touched || submitted) ">
             <div *ngIf="f.confirmEmail.errors.required">Pole 'Powtórz e-mail' jest wymagane.</div>
