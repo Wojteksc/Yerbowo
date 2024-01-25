@@ -45,7 +45,7 @@ public class RemoveAddressHandlerTest
         _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Address>(null));
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
@@ -61,10 +61,11 @@ public class RemoveAddressHandlerTest
 
         var request = new RemoveAddressCommand(2);
 
-        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        _addressRepositoryMock
+            .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(_address);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }

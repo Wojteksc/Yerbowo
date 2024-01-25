@@ -19,6 +19,11 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
+            .ConfigureTestServices(services =>
+            {
+                var descriptor = services.Single(s => s.ImplementationType == typeof(ProcessOutboxMessagesJob));
+                services.Remove(descriptor);
+            })
             .ConfigureAppConfiguration(ConfigureAppConfiguration)
             .UseEnvironment(environment));
 

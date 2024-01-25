@@ -1,10 +1,10 @@
 ﻿namespace Yerbowo.Application.Settings;
 
-public class JwtSettings
+public record JwtSettings
 {
-    public string Key { get; set; }
+    public required string Key { get; init; }
 
-    public string Issuer { get; set; }
+    public required string Issuer { get; init; }
 
-    public int ExpiryMinutes { get; set; }
+    public required int ExpiryMinutes { get; init; }
 }

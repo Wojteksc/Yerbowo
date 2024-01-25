@@ -4,12 +4,12 @@ public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
 {
 	private readonly IUserRepository _userRepository;
 	private readonly IPasswordValidator _passwordValidator;
-	private readonly IJwtHandler _jwtHandler;
+	private readonly IJwtProvider _jwtHandler;
 	private readonly IStringLocalizer<SharedResource> _localizer;
 
     public LoginHandler(IUserRepository userRepository,
         IPasswordValidator passwordValidator,
-        IJwtHandler jwtHandler,
+        IJwtProvider jwtHandler,
         IStringLocalizer<SharedResource> localizer)
     {
         _userRepository = userRepository;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>f75d3c84-eb22-4511-a39d-4240b3c6434c</UserSecretsId>
   </PropertyGroup>
 
@@ -10,15 +10,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
-    <PackageReference Include="Azure.Identity" Version="1.4.1" />
-    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.2.0" />
-    <PackageReference Include="DotNetCore.IoC" Version="16.35.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.5" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.0" />
+    <PackageReference Include="Azure.Identity" Version="1.10.4" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.5.0" />
+    <PackageReference Include="DotNetCore.IoC" Version="18.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.1" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />
 	<PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>

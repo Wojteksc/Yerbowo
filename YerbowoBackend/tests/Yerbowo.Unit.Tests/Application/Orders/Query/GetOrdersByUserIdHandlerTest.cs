@@ -17,7 +17,7 @@ public class GetOrdersByUserIdHandlerTest
     [Fact]
     public async Task Should_GetOdersByUserIdCorrectly()
     {
-        var dateTimeNow = DateTime.Now;
+        var dateTimeNow = DateTime.UtcNow;
 
         var orderItems = new List<OrderItem>()
         {
@@ -34,7 +34,7 @@ public class GetOrdersByUserIdHandlerTest
             new OrderDto()
             {
                 Status = "Skompletowane",
-                Date = DateTime.MinValue.ToString(),
+                Date = null,
                 Total = 36.45m + 45m,
                 ProductImages = new List<OrderProductImageDto> 
                 {

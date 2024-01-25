@@ -3,19 +3,29 @@
 public class ProductRepository : DbEntityRepository<Product>, IProductRepository
 {
     public ProductRepository(YerbowoContext db) : base(db)
-    {
-    }
+    {}
 
     public async Task<Product> GetAsync(string slug)
     {
         return await _entitiesNotRemoved.SingleOrDefaultAsync(x => x.Slug == slug);
     }
 
-    public async Task<Product> GetAsync(string slug, Func<IQueryable<Product>, IQueryable<Product>> func)
+    public async Task<Product> GetWithCategoryAsync(int productId)
     {
-        IQueryable<Product> resultWithEagerLoading = func(_entitiesNotRemoved);
+        IQueryable<Product> resultWithEagerLoading = _entitiesNotRemoved
+            .Include(x => x.Subcategory)
+            .ThenInclude(x => x.Category);
 
-        return await resultWithEagerLoading.SingleOrDefaultAsync(e => e.Slug == slug);
+        return await resultWithEagerLoading.SingleOrDefaultAsync(p => p.Id == productId);
+    }
+
+    public async Task<Product> GetWithCategoryAsync(string slug)
+    {
+        IQueryable<Product> resultWithEagerLoading = _entitiesNotRemoved
+            .Include(x => x.Subcategory)
+            .ThenInclude(x => x.Category);
+
+        return await resultWithEagerLoading.SingleOrDefaultAsync(p => p.Slug == slug);
     }
 
     public async Task<bool> ExistsAsync(string slug)

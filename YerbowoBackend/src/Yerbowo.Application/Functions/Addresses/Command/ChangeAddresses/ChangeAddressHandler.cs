@@ -16,17 +16,15 @@ public class ChangeAddressHandler : IRequestHandler<ChangeAddressCommand>
         _localizer = localizer;
     }
 
-    public async Task<Unit> Handle(ChangeAddressCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeAddressCommand request, CancellationToken cancellationToken)
     {
         var address = await _addressRepository.GetAsync(request.Id);
 
         if (address == null)
-            throw new Exception(_localizer["ExceptionAddressNotFound"]);
+            throw new ArgumentException(_localizer["ExceptionAddressNotFound"]);
 
         _mapper.Map(request, address);
 
         await _addressRepository.UpdateAsync(address);
-
-        return Unit.Value;
     }
 }

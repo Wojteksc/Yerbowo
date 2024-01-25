@@ -1,6 +1,4 @@
-﻿
-
-namespace Yerbowo.Api.Controllers;
+﻿namespace Yerbowo.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -35,7 +33,7 @@ public class AuthController : ApiControllerBase
     }
 
     [HttpPost("confirmEmail")]
-    public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
+    public async Task<IActionResult> ConfirmEmail(ConfirmRegistrationEmailCommand command)
     {
         await _mediator.Send(command);
         return Ok();

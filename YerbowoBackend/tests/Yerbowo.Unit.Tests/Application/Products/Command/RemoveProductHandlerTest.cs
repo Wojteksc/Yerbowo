@@ -53,7 +53,7 @@ public class RemoveProductHandlerTest
         _productRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Product>(null));
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Product>()), Times.Never);
     }
@@ -72,7 +72,7 @@ public class RemoveProductHandlerTest
         _productRepositoryMock.Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(_product);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Product>()), Times.Never);
     }

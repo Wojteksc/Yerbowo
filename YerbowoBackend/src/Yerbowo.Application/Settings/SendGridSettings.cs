@@ -1,9 +1,11 @@
 ﻿namespace Yerbowo.Application.Settings;
 
-public class SendGridSettings
+public record SendGridSettings
 {
-    public string ApiKey { get; set; }
-    public string SenderEMail { get; set; }
-    public string SenderName { get; set; }
-    public string VerificationEmailTemplateId { get; set; }
+    public required string ApiKey { get; init; }
+    public required string SenderEMail { get; init; }
+    public required string SenderName { get; init; }
+    public required string RegistrationConfirmationEmailTemplateId { get; init; }
+    public required string NewsletterInvitationEmailTemplateId { get; init; }
+    public required string NewsletterEmailTemplateId { get; init; }
 }

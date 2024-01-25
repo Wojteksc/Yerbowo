@@ -68,7 +68,7 @@ public class ChangeProductHandlerTest
             .ReturnsAsync((Product)null);
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
-        var exception = await Assert.ThrowsAsync<Exception>(act);
+        var exception = await Assert.ThrowsAsync<ArgumentException>(act);
         exception.Message.Should().Be(expectedMessage);
         _productRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Product>()), Times.Never);
     }

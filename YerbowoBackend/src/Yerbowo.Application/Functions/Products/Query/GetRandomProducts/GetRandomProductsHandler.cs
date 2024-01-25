@@ -23,9 +23,12 @@ public class GetRandomProductsHandler : IRequestHandler<GetRandomProductsQuery, 
         var news = GetNews(productsCardDto, PRODUCTS_PER_PAGE);
         var promotions = GetPromotions(productsCardDto, PRODUCTS_PER_PAGE);
 
-        var allTypesProducts = new { bestsellers, news, promotions };
-
-        return _mapper.Map<RandomProductsDto>(allTypesProducts);
+        return new RandomProductsDto
+        {
+            Bestsellers = bestsellers,
+            News = news,
+            Promotions = promotions
+        };
     }
 
     private IEnumerable<ProductCardDto> GetBestsellers(List<ProductCardDto> products, int amount)

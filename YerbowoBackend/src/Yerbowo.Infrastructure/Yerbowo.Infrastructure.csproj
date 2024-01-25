@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,20 +9,18 @@
   </ItemGroup>
 	
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="8.0.0" />
-    <PackageReference Include="DotNetCore.EntityFrameworkCore" Version="16.35.0" />
-    <PackageReference Include="Enums.NET" Version="2.3.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
+    <PackageReference Include="DotNetCore.EntityFrameworkCore" Version="18.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0-preview4.23342.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\Yerbowo.Domain\Yerbowo.Domain.csproj" />
+    <ProjectReference Include="..\Yerbowo.Application\Yerbowo.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

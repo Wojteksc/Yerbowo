@@ -18,12 +18,12 @@ public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
         _localizer = localizer;
     }
 
-    public async Task<Unit> Handle(ChangeUserCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeUserCommand request, CancellationToken cancellationToken)
 	{
 		var userDb = await _userRepository.GetAsync(request.Id);
 
 		if (userDb == null)
-            throw new Exception(_localizer["ExceptionUserNotFound"]);
+            throw new ArgumentException(_localizer["ExceptionUserNotFound"]);
 
         if (!_passwordValidator.Equals(request.CurrentPassword, userDb.PasswordHash, userDb.PasswordSalt))
             throw new Exception(_localizer["ExceptionPasswordIsIncorrect"]);
@@ -36,7 +36,5 @@ public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
 		_mapper.Map(request, userDb);
 
 		await _userRepository.UpdateAsync(userDb);
-
-		return Unit.Value;
 	}
 }

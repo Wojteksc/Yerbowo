@@ -165,6 +165,12 @@
   <data name="ExceptionUserNotFound" xml:space="preserve">
     <value>User not found</value>
   </data>
+  <data name="Newsletter.Error.AlreadySubscribed" xml:space="preserve">
+    <value>This email address is already subscribed</value>
+  </data>
+  <data name="Newsletter.Response.SentEmail" xml:space="preserve">
+    <value>Thank you for signing up to the newsletter. We have sent a message to the e-mail.</value>
+  </data>
   <data name="ResponseBadRequest" xml:space="preserve">
     <value>Bad request</value>
   </data>

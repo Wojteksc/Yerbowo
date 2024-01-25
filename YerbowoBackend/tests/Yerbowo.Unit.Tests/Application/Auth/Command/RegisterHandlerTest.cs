@@ -4,6 +4,7 @@ public class RegisterHandlerTest
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IMediator> _mediatorMock;
+    private readonly Mock<IWebEncoder> _webEncoderMock;
 
     private readonly User _user;
     private readonly RegisterCommand _request;
@@ -13,8 +14,10 @@ public class RegisterHandlerTest
     {
         _userRepositoryMock = new Mock<IUserRepository>();
         _mediatorMock = new Mock<IMediator>();
+        _webEncoderMock = new Mock<IWebEncoder>();
 
         _user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
+        _user.SetVerificationToken("token");
         _request = new RegisterCommand() 
         {
             FirstName = "firstName",
@@ -30,7 +33,8 @@ public class RegisterHandlerTest
             _userRepositoryMock.Object,
             AutoMapperConfig.Initialize(),
             _mediatorMock.Object,
-            StringLocalizerFactory.Create());
+            StringLocalizerFactory.Create(),
+            _webEncoderMock.Object);
     }
 
     [Fact]
@@ -38,27 +42,29 @@ public class RegisterHandlerTest
     {
         var users = new List<User>();
 
-        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
+        _userRepositoryMock
+            .Setup(x => x.ExistsAsync(_request.Email))
             .ReturnsAsync(false);
 
-        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
+        _userRepositoryMock
+            .Setup(x => x.AddAsync(It.IsAny<User>()))
             .Callback<User>(user => users.Add(user))
             .ReturnsAsync(true);
 
-        var result = await _handler.Handle(_request, CancellationToken.None);
+        _webEncoderMock
+            .Setup(x => x.Base64UrlEncodeGuid())
+            .Returns("token");
 
-        result.Should().Be(default);
+        await _handler.Handle(_request, CancellationToken.None);
+
         _userRepositoryMock.Verify(x => x.AddAsync(users.First()), Times.Once());
         _mediatorMock.Verify(x => 
-            x.Publish(It.IsAny<RegisterEndedEvent>(), It.IsAny<CancellationToken>()), Times.Once());
+            x.Publish(It.IsAny<UserRegisteredDomainEvent>(), It.IsAny<CancellationToken>()), Times.Once());
        
         users.Should().AllBeEquivalentTo(_user, 
             options => options
             .Excluding(x => x.PasswordHash)
-            .Excluding(x => x.PasswordSalt)
-            .Excluding(x => x.VerificationToken));
-
-        users.First().VerificationToken.Should().NotBeNull();
+            .Excluding(x => x.PasswordSalt));
     }
 
     [Theory]

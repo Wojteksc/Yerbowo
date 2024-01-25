@@ -4,7 +4,7 @@ public class LoginHandlerTest
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IPasswordValidator> _passwordValidatorMock;
-    private readonly Mock<IJwtHandler> _jwtHandlerMock;
+    private readonly Mock<IJwtProvider> _jwtHandlerMock;
     private readonly LoginHandler _handler;
     private readonly LoginCommand _request;
 
@@ -18,7 +18,7 @@ public class LoginHandlerTest
 
         _userRepositoryMock = new Mock<IUserRepository>();
         _passwordValidatorMock = new Mock<IPasswordValidator>();
-        _jwtHandlerMock = new Mock<IJwtHandler>();
+        _jwtHandlerMock = new Mock<IJwtProvider>();
 
         _handler = new LoginHandler(
             _userRepositoryMock.Object,

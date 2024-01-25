@@ -66,7 +66,7 @@ public class AuthControllerTest : ApiTestBase
 
             var userDb = await userRepository.GetAsync(email);
 
-            var confirmEmailCommand = new ConfirmEmailCommand()
+            var confirmEmailCommand = new ConfirmRegistrationEmailCommand()
             {
                 Email = email,
                 Token = userDb.VerificationToken

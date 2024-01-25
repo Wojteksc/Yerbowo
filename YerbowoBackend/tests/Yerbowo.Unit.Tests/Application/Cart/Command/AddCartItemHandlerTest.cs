@@ -42,8 +42,10 @@ public class AddCartItemHandlerTest
             }
         };
 
-        _productRepositoryMock.Setup(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()))
+        _productRepositoryMock
+            .Setup(x => x.GetWithCategoryAsync(_productId))
             .ReturnsAsync(_productDb);
+
         var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, null);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
@@ -80,8 +82,10 @@ public class AddCartItemHandlerTest
 
         var expectedProductsBytes = SerializerHelper.SerializeObjectToBytes(expectedCartProducts);
 
-        _productRepositoryMock.Setup(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()))
+        _productRepositoryMock
+            .Setup(x => x.GetWithCategoryAsync(_productId))
             .ReturnsAsync(_productDb);
+        
         var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, cartProducts);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
@@ -120,8 +124,10 @@ public class AddCartItemHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
 
         var request = new AddCartItemCommand(_productId, _productDb.Stock + 1);
-        _productRepositoryMock.Setup(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()))
+        _productRepositoryMock
+            .Setup(x => x.GetWithCategoryAsync(_productId))
             .ReturnsAsync(_productDb);
+        
         var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, null);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
@@ -130,7 +136,7 @@ public class AddCartItemHandlerTest
             () => handler.Handle(request, CancellationToken.None));
 
         exception.Message.Should().Be(expectedMessage);
-        _productRepositoryMock.Verify(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()), Times.Once);
+        _productRepositoryMock.Verify(x => x.GetWithCategoryAsync(_productId));
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
@@ -151,8 +157,10 @@ public class AddCartItemHandlerTest
             }
         };
 
-        _productRepositoryMock.Setup(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()))
+        _productRepositoryMock
+            .Setup(x => x.GetWithCategoryAsync(_productId))
             .ReturnsAsync(_productDb);
+        
         var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, cartProducts);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
@@ -161,7 +169,7 @@ public class AddCartItemHandlerTest
             () => handler.Handle(request, CancellationToken.None));
 
         exception.Message.Should().Be(expectedMessage);
-        _productRepositoryMock.Verify(x => x.GetAsync(_productId, It.IsAny<Func<IQueryable<Product>, IQueryable<Product>>>()), Times.Once);
+        _productRepositoryMock.Verify(x => x.GetWithCategoryAsync(_productId));
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 

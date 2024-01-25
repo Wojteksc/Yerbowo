@@ -14,6 +14,6 @@ public class ProductsControllerTest : ApiTestBase
 		const int Quantity = 3;
 		var products = await _httpClient.GetAsync<List<ProductCardDto>>($"api/products?category=yerba-mate&subcategory=klasyczne&pageNumber=1&pageSize={Quantity}");
 
-		Assert.Equal(products.Count, Quantity);
+		Assert.Equal(Quantity, products.Count);
 	}
 }

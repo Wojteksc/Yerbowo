@@ -17,7 +17,7 @@ public class GetOrderDetailsByIdHandlerTest
     [Fact]
     public async Task Should_GetOderDetailsCorrectly()
     {
-        var dateTimeNow = DateTime.Now;
+        var dateTimeNow = DateTime.UtcNow;
 
         var orderItems = new List<OrderItem>()
         {

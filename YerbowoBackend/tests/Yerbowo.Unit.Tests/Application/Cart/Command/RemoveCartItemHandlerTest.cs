@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Cart.Command.RemoveCartItems;
-
-namespace Yerbowo.Unit.Tests.Application.Cart.Command;
+﻿namespace Yerbowo.Unit.Tests.Application.Cart.Command;
 
 public class RemoveCartItemHandlerTest
 {

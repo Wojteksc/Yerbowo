@@ -6,24 +6,27 @@ public class RegisterHandler : IRequestHandler<RegisterCommand>
     private readonly IMediator _mediator;
     private readonly IUserRepository _userRepository;
     private readonly IStringLocalizer<SharedResource> _localizer;
+    private readonly IWebEncoder _webEncoder;
 
     public RegisterHandler(IUserRepository userRepository,
         IMapper mapper,
         IMediator mediator,
-        IStringLocalizer<SharedResource> localizer)
+        IStringLocalizer<SharedResource> localizer,
+        IWebEncoder webEncoder)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _mediator = mediator;
         _localizer = localizer;
+        _webEncoder = webEncoder;
     }
 
-    public async Task<Unit> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         if (await _userRepository.ExistsAsync(request.Email))
             throw new Exception(_localizer["ExceptionEmailIsAlreadyInUse"]);
 
-        string token = WebEncoders.Base64UrlEncode(Guid.NewGuid().ToByteArray());
+        string token = _webEncoder.Base64UrlEncodeGuid();
 
         var user = _mapper.Map<User>(request);
         user.SetPassword(request.Password);
@@ -32,8 +35,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand>
 
         await _userRepository.AddAsync(user);
 
-        await _mediator.Publish(new RegisterEndedEvent(user));
-
-        return Unit.Value;
+        await _mediator.Publish(
+            new UserRegisteredDomainEvent(user.FirstName, user.Email, user.VerificationToken));
     }
 }

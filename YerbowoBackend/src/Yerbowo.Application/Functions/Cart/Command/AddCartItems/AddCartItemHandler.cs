@@ -23,7 +23,7 @@ public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
         CartValidatorHelper.VerifyQuantity(request.Quantity, _localizer);
 
         var products = CartSessionHelper.GetCartProducts(_session);
-        var productDb = await GetProduct(request.Id);
+        var productDb = await _productRepository.GetWithCategoryAsync(request.Id);
         var productDto = _mapper.Map<CartProductItemDto>(productDb);
         var product = products.FirstOrDefault(x => x.Product.Id == productDb.Id);
 
@@ -45,11 +45,5 @@ public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
         CartSessionHelper.SaveCartProducts(_session, products);
 
         return _mapper.Map<CartDto>(products);
-    }
-
-    private async Task<Product> GetProduct(int productId)
-    {
-        return await _productRepository.GetAsync(productId, x => x
-            .Include(p => p.Subcategory.Category));
     }
 }

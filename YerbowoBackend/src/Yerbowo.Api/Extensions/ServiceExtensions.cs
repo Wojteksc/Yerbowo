@@ -18,7 +18,8 @@ public static class ServiceExtensions
 	{
 		services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 		services.Configure<SendGridSettings>(configuration.GetSection("SendGrid"));
-	}
+		services.Configure<AppSettings>(configuration.GetSection("App"));
+    }
 
 	public static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
 	{
@@ -66,7 +67,7 @@ public static class ServiceExtensions
 		{
 			options.Cookie.IsEssential = true;
 			options.Cookie.Name = "Cart";
-			options.IdleTimeout = TimeSpan.FromDays(1);
+			options.IdleTimeout = TimeSpan.FromDays(5);
 		});
 	}
 
@@ -116,6 +117,16 @@ public static class ServiceExtensions
         localizationOptions.SupportedUICultures = supportedCultures;
         localizationOptions.SetDefaultCulture("en-US");
         localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+    }
 
+	public static void AddHostedServices(this IServiceCollection services)
+	{
+		services.Configure<HostOptions>(options =>
+		{
+			options.ServicesStartConcurrently = true;
+			options.ServicesStopConcurrently = false;
+		});
+
+        services.AddHostedService<ProcessOutboxMessagesJob>();
     }
 }

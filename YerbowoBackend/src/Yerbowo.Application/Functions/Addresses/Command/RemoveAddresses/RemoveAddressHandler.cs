@@ -11,17 +11,15 @@ public class RemoveAddressHandler : IRequestHandler<RemoveAddressCommand>
         _localizer = localizer;
     }
 
-    public async Task<Unit> Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveAddressCommand request, CancellationToken cancellationToken)
     {
         var address = await _addressRepository.GetAsync(request.Id);
 
         if (address == null || address.IsRemoved)
         {
-            throw new Exception(_localizer["ExceptionAddressNotFound"]);
+            throw new ArgumentException(_localizer["ExceptionAddressNotFound"]);
         }
 
         await _addressRepository.RemoveAsync(address);
-
-        return Unit.Value;
     }
 }

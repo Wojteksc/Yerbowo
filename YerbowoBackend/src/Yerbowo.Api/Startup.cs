@@ -15,6 +15,7 @@ public class Startup
         services.AddControllersOptions();
         services.AddMemoryCache();
         services.AddSettings(Configuration);
+        services.AddHostedServices();
         services.AddYerbowoInfrastructure(Configuration);
         services.AddYerbowoApplication();
         services.AddAuthentication(Configuration);
@@ -23,6 +24,7 @@ public class Startup
         services.AddLocalization();
         services.AddSessionOptions();
         services.AddResponseCaching();
+        services.AddHttpContextAccessor();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, YerbowoContextSeed dbInitializer)

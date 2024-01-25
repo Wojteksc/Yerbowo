@@ -4,12 +4,12 @@ public class SocialLoginHandler : IRequestHandler<SocialLoginCommand, ResponseTo
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-    private readonly IJwtHandler _jwtHandler;
+    private readonly IJwtProvider _jwtHandler;
     private readonly IStringLocalizer<SharedResource> _localizer;
 
     public SocialLoginHandler(IUserRepository userRepository,
         IMapper mapper,
-        IJwtHandler jwtHandler,
+        IJwtProvider jwtHandler,
         IStringLocalizer<SharedResource> localizer)
     {
         _userRepository = userRepository;

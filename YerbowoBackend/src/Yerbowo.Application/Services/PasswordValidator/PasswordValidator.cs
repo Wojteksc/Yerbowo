@@ -1,5 +1,6 @@
 ﻿namespace Yerbowo.Application.Services.PasswordValidator;
 
+[ExcludeFromCodeCoverage]
 public class PasswordValidator : IPasswordValidator
 {
     public bool Equals(string newPassword, byte[] currentPassword, byte[] currentSalt)

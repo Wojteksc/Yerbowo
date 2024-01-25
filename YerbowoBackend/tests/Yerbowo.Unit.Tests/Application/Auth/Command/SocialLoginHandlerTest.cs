@@ -3,7 +3,7 @@
 public class SocialLoginHandlerTest
 {
     private Mock<IUserRepository> _userRepositoryMock;
-    private Mock<IJwtHandler> _jwtHandlerMock;
+    private Mock<IJwtProvider> _jwtHandlerMock;
 
     private readonly SocialLoginHandler _handler;
     private readonly SocialLoginCommand _request;
@@ -12,7 +12,7 @@ public class SocialLoginHandlerTest
     public SocialLoginHandlerTest()
     {
         _userRepositoryMock = new Mock<IUserRepository>();
-        _jwtHandlerMock = new Mock<IJwtHandler>();
+        _jwtHandlerMock = new Mock<IJwtProvider>();
 
         _handler = new SocialLoginHandler(
           _userRepositoryMock.Object,

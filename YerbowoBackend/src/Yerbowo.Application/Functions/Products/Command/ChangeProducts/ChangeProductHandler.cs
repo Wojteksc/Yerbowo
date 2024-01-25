@@ -15,13 +15,11 @@ public class ChangeProductHandler : IRequestHandler<ChangeProductCommand>
         _localizer = localizer;
     }
 
-    public async Task<Unit> Handle(ChangeProductCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ChangeProductCommand request, CancellationToken cancellationToken)
 	{
-		var productDb = await _productRepository.GetAsync(request.Id);
-
-		if (productDb == null)
-			throw new Exception(_localizer["ExceptionProductNotFound"]);
-
+		var productDb = await _productRepository.GetAsync(request.Id) 
+			?? throw new ArgumentException(_localizer["ExceptionProductNotFound"]);
+        
 		if (request.State == ProductState.Promotion
 			&& request.Price >= productDb.Price
 			&& productDb.OldPrice != default)
@@ -34,7 +32,5 @@ public class ChangeProductHandler : IRequestHandler<ChangeProductCommand>
         _mapper.Map(request, productDb);
 
 		await _productRepository.UpdateAsync(productDb);	
-
-		return Unit.Value;
 	}
 }

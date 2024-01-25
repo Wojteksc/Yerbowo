@@ -120,7 +120,7 @@ public class ChangeUserHandlerTest
             .ReturnsAsync((User)null);
 
         Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
-        var exception = await Assert.ThrowsAsync<Exception>(act);
+        var exception = await Assert.ThrowsAsync<ArgumentException>(act);
         exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
     }

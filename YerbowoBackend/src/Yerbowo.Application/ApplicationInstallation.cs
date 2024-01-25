@@ -4,12 +4,14 @@ public static class ApplicationInstallation
 {
     public static void AddYerbowoApplication(this IServiceCollection services)
     {
-        services.AddSingleton<IJwtHandler, JwtHandler>();
-        services.AddSingleton<IPasswordValidator, PasswordValidator>();
         services.AddSingleton(AutoMapperConfig.Initialize());
-        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddSingleton<IVerificationEmailTemplateSender, VerificationEmailTemplateSender>();
+        services.AddSingleton<IInterfaceConverterJsonOptions, InterfaceConverterJsonOptions>();
+        services.AddSingleton<IAssemblyExecutor, AssemblyExecutor>();
 
-        services.AddMediatR(Assembly.GetExecutingAssembly());
+        services.AddScoped<IPasswordValidator, PasswordValidator>();
+        services.AddScoped<IWebEncoder, WebEncoder>();
+        
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
     }
 }

@@ -4,22 +4,23 @@ public class GetProductBySlugHandler : IRequestHandler<GetProductBySlugQuery, Pr
 {
 	private readonly IProductRepository _productRepository;
 	private readonly IMapper _mapper;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-	public GetProductBySlugHandler(IProductRepository productRepository,
-		IMapper mapper)
+    public GetProductBySlugHandler(IProductRepository productRepository,
+		IMapper mapper,
+        IStringLocalizer<SharedResource> localizer)
 	{
 		_productRepository = productRepository;
 		_mapper = mapper;
-	}
+        _localizer = localizer;
+    }
 
 	public async Task<ProductDetailsDto> Handle(GetProductBySlugQuery request, CancellationToken cancellationToken)
 	{
-		var product = await _productRepository.GetAsync(request.Slug, x => x
-			.Include(p => p.Subcategory)
-			.ThenInclude(s => s.Category));
+		var product = await _productRepository.GetWithCategoryAsync(request.Slug);
 
 		if (product == null)
-			throw new Exception("Produkt nie istnieje");
+			throw new ArgumentException(_localizer["ExceptionProductNotFound"]);
 
 		return _mapper.Map<ProductDetailsDto>(product);
 	}

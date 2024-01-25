@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.4.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
-
+	
 </Project>

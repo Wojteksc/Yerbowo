@@ -6,11 +6,19 @@
                 <label for="checkbox-newsletter-footer" class="title-subfooter">NEWSLETTER <i class="icon-plus-circled"></i></label>
                 <div class="footer-section-content">
                     <p>Podaj nam swój email aby otrzymywać informacje o nowościach i promocjach.</p>
-
-                    <input name="data[Subscriber][email]" type="text" placeholder="Twój email" maxlength="128" id="SubscriberEmail">
-                    <input type="submit" value="Zapisz">
-
-                    <p>Copyright © 2020 <a style="color: deepskyblue" href="http://www.woytech.net">WoyTech.net</a></p>
+                    <form [formGroup]="newsletterForm" (ngSubmit)="invite()">
+                        <input type="email" placeholder="Twój email"
+                            [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched }"
+                            formControlName="email" 
+                            class="input-text-small">
+                            
+                        <div *ngIf="f.email.touched && f.email.errors" class="invalid-feedback">
+                            <div *ngIf="f.email.errors.required" class="invalid-feedback">Pole 'E-mail' jest wymagane.</div>
+                            <div *ngIf="f.email.errors.email" class="invalid-feedback">Nieprawidłowy format adresu e-mail.</div>
+                        </div>
+                        <input [disabled]="!newsletterForm.valid" type="submit" class="btn-submit" value="Zapisz"/>
+                    </form>
+                    <p>Copyright © 2024 <a style="color: deepskyblue" href="http://www.woytech.net">WoyTech.net</a></p>
                 </div>
             </div>
             <div class="informations-footer">

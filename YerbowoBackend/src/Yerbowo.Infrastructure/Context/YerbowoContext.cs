@@ -2,9 +2,7 @@
 
 public class YerbowoContext : DbContext
 {
-    public YerbowoContext(DbContextOptions<YerbowoContext> options) : base(options)
-    {
-    }
+    public YerbowoContext(DbContextOptions<YerbowoContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -13,6 +11,8 @@ public class YerbowoContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Newsletter> Newsletters { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     /// <summary>
     /// Saves changes to the database

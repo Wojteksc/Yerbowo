@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Application.Functions.Products.Command.ChangeProducts;
+﻿using Yerbowo.Domain.Entities.Products;
+
+namespace Yerbowo.Application.Functions.Products.Command.ChangeProducts;
 
 public class ChangeProductCommand : IRequest
 {

@@ -1,10 +1,8 @@
-﻿using Serilog;
-
-namespace Yerbowo.Api;
+﻿namespace Yerbowo.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
             .ReadFrom
@@ -15,7 +13,7 @@ public class Program
         {
             Log.Information("Application Starting.");
 
-            Host.CreateDefaultBuilder(args)
+            IHost host =  Host.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .ConfigureAppConfiguration((context, config) =>
                 {
@@ -30,8 +28,9 @@ public class Program
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .Build()
-                .Run();
+                .Build();
+            
+           await host.RunAsync();
         }
         catch (Exception ex)
         {

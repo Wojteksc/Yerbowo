@@ -22,7 +22,9 @@ import { AddressEditResolver } from './_resolvers/address-edit.resolver';
 import { AccountOptionListComponent } from './components/account/account-option-list/account-option-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
-import { EmailVerificationComponent } from './components/auth/email-verification/email-verification.component';
+import { RegistrationEmailVerificationComponent } from './components/auth/registration-email-verification/registration-email-verification.component';
+import { NewsletterEmailSubscribeComponent } from './components/newsletter/newsletter-email-subscribe/newsletter-email-subscribe.component';
+import { NewsletterEmailUnsubscribeComponent } from './components/newsletter/newsletter-email-unsubscribe/newsletter-email-unsubscribe.component';
 
 
 export const appRoutes: Routes = [
@@ -32,7 +34,9 @@ export const appRoutes: Routes = [
     { path: 'sklep/:category/:subcategory', component: ProductListComponent, resolve: {products: ProductListResolver} },
     { path: 'sklep/:category/:subcategory/:product', component: ProductDetailComponent, resolve: {product: ProductDetailResolver}},
     { path: 'koszyk', component: CartComponent, resolve: {cart: CartResolver}},
-    { path: 'confirmEmail', component: EmailVerificationComponent },
+    { path: 'confirmEmail', component: RegistrationEmailVerificationComponent },
+    { path: 'subscribe', component: NewsletterEmailSubscribeComponent },
+    { path: 'unsubscribe', component: NewsletterEmailUnsubscribeComponent },
     {
         path: '',
         runGuardsAndResolvers: 'always',

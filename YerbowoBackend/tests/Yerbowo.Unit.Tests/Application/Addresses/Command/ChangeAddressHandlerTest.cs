@@ -67,7 +67,7 @@ public class ChangeAddressHandlerTest
         _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
             .ReturnsAsync((Address)null);
 
-        var exception = await Assert.ThrowsAsync<Exception>(() =>_handler.Handle(_request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>_handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Address>()), Times.Never);
     }

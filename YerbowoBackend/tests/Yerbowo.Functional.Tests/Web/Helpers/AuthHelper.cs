@@ -9,7 +9,7 @@ public static class AuthHelper
 		return await httpClient.PostAsync("api/auth/register", request.Content);
 	}
     
-	public async static Task<HttpResponseMessage> ConfirmEmailAsync(HttpClient httpClient, ConfirmEmailCommand confirmEmailCommand)
+	public async static Task<HttpResponseMessage> ConfirmEmailAsync(HttpClient httpClient, ConfirmRegistrationEmailCommand confirmEmailCommand)
     {
         HttpRequestMessage request = GetHttpRequestMessage(confirmEmailCommand);
 
@@ -47,7 +47,7 @@ public static class AuthHelper
 
         var userDb = await userRepository.GetAsync(registerCommand.Email);
 
-        var confirmEmailCommand = new ConfirmEmailCommand()
+        var confirmEmailCommand = new ConfirmRegistrationEmailCommand()
         {
             Email = registerCommand.Email,
             Token = userDb.VerificationToken

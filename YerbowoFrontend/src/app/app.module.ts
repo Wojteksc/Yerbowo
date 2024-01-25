@@ -47,8 +47,10 @@ import { AccountOptionCardComponent } from './components/account/account-option-
 import { AccountOptionListComponent } from './components/account/account-option-list/account-option-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CartResolver } from './_resolvers/cart.resolver';
-import { EmailVerificationComponent } from './components/auth/email-verification/email-verification.component';
+import { RegistrationEmailVerificationComponent } from './components/auth/registration-email-verification/registration-email-verification.component';
 import { CommonModule } from '@angular/common';
+import { NewsletterEmailSubscribeComponent } from './components/newsletter/newsletter-email-subscribe/newsletter-email-subscribe.component';
+import { NewsletterEmailUnsubscribeComponent } from './components/newsletter/newsletter-email-unsubscribe/newsletter-email-unsubscribe.component';
 
 export function tokkenGetter() {
   return localStorage.getItem('token');
@@ -101,7 +103,9 @@ export function provideSocialAuthConfig() {
     AccountOptionCardComponent,
     AccountOptionListComponent,
     CartComponent,
-    EmailVerificationComponent,
+    RegistrationEmailVerificationComponent,
+    NewsletterEmailSubscribeComponent,
+    NewsletterEmailUnsubscribeComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes, {}),

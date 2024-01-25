@@ -13,9 +13,6 @@ public class UserRepository : DbEntityRepository<User>, IUserRepository
 
     public async Task<bool> ExistsAsync(string email)
     {
-        if (await _entities.AnyAsync(x => x.Email == email))
-            return true;
-
-        return false;
+        return await _entities.AnyAsync(x => x.Email == email);
     }
 }

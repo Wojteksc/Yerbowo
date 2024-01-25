@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace Yerbowo.Api.Extensions;
+﻿namespace Yerbowo.Api.Extensions;
 
 public static class ApplicationExtensions
 {
