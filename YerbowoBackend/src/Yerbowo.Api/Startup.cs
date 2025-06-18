@@ -35,8 +35,8 @@ public class Startup(IConfiguration Configuration)
         app.UseRequestLocalizations();
         app.UseCorsOptions(Configuration);
         app.UseSecurityHeaders();
-        app.UseStaticFiles();
         app.UseDefaultFiles();
+        app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
