@@ -1,21 +1,13 @@
 ﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
 
-public class GetOrderDetailsByIdHandler : IRequestHandler<GetOrderDetailsByIdQuery, OrderDetailsDto>
+public class GetOrderDetailsByIdHandler(
+	IOrderRepository orderRepository,
+    IMapper mapper) : IQueryHandler<GetOrderDetailsByIdQuery, OrderDetailsDto>
 {
-	private readonly IOrderRepository _orderRepository;
-	private readonly IMapper _mapper;
-
-	public GetOrderDetailsByIdHandler(IOrderRepository orderRepository,
-		IMapper mapper)
+    public async Task<OrderDetailsDto> Handle(GetOrderDetailsByIdQuery request, CancellationToken cancellationToken)
 	{
-		_orderRepository = orderRepository;
-		_mapper = mapper;
-	}
+		var order = await orderRepository.GetAsync(request.Id);
 
-	public async Task<OrderDetailsDto> Handle(GetOrderDetailsByIdQuery request, CancellationToken cancellationToken)
-	{
-		var order = await _orderRepository.GetAsync(request.Id);
-
-		return _mapper.Map<OrderDetailsDto>(order);
+		return mapper.Map<OrderDetailsDto>(order);
 	}
 }

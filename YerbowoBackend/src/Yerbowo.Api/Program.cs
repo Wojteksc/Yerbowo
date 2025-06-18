@@ -17,7 +17,7 @@ public class Program
                 .UseSerilog()
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    config.AddAppSettings(context);
+                    config.AddAppConfigurationFiles(context);
 
                     if (context.HostingEnvironment.IsProduction())
                     {

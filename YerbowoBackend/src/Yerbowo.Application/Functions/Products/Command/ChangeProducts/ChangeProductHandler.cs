@@ -1,36 +1,26 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Command.ChangeProducts;
 
-public class ChangeProductHandler : IRequestHandler<ChangeProductCommand>
+public class ChangeProductHandler(
+	IProductRepository productRepository,
+    IMapper mapper,
+    IStringLocalizer<SharedResource> localizer) : ICommandHandler<ChangeProductCommand>
 {
-	private readonly IProductRepository _productRepository;
-	private readonly IMapper _mapper;
-	private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public ChangeProductHandler(IProductRepository productRepository,
-        IMapper mapper,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _productRepository = productRepository;
-        _mapper = mapper;
-        _localizer = localizer;
-    }
-
     public async Task Handle(ChangeProductCommand request, CancellationToken cancellationToken)
 	{
-		var productDb = await _productRepository.GetAsync(request.Id) 
-			?? throw new ArgumentException(_localizer["ExceptionProductNotFound"]);
+		var productDb = await productRepository.GetAsync(request.Id) 
+			?? throw new ProductNotFoundException(localizer);
         
 		if (request.State == ProductState.Promotion
 			&& request.Price >= productDb.Price
 			&& productDb.OldPrice != default)
-			throw new Exception(_localizer["ExceptionNewPromotionalProductPriceMustBeLowerThanCurrentPrice"]);
+			throw new PromotionalProductPriceMustBeLowerException(localizer);
 
-		if(await _productRepository.ExistsAsync(productDb.Slug))
-            throw new Exception(_localizer["ExceptionProductAlreadyExistsWithThatName"]);
+		if(await productRepository.ExistsAsync(productDb.Slug))
+            throw new ProductNameIsAlreadyExistsException(localizer);
 
 		productDb.SetOldPrice(productDb.Price);
-        _mapper.Map(request, productDb);
+        mapper.Map(request, productDb);
 
-		await _productRepository.UpdateAsync(productDb);	
+		await productRepository.UpdateAsync(productDb);	
 	}
 }

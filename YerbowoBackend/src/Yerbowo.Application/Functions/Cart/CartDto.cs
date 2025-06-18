@@ -1,8 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Cart;
 
-public class CartDto
+public record CartDto
 {
-	public List<CartItemDto> Items { get; set; }
-	public decimal Sum { get; set; }
-	public int TotalItems { get; set; } 
+	public List<CartItemDto> Items { get; init; }
+	public decimal Sum { get; init; }
+	public int TotalItems { get; init; } 
 }

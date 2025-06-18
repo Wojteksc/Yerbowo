@@ -2,40 +2,33 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ApiControllerBase
+public class AuthController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public AuthController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginCommand command)
+    public async Task<ActionResult<ResponseToken>> Login(LoginCommand command)
     {
-        var token = await _mediator.Send(command);
+        var token = await dispatcher.ExecuteCommand(command);
         return Ok(token);
     }
 
     [HttpPost("socialLogin")]
-    public async Task<IActionResult> Login(SocialLoginCommand command)
+    public async Task<ActionResult<ResponseToken>> Login(SocialLoginCommand command)
     {
-        var token = await _mediator.Send(command);
+        var token = await dispatcher.ExecuteCommand(command);
         return Ok(token);
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterCommand command)
+    public async Task<ActionResult> Register(RegisterCommand command)
     {
-        await _mediator.Send(command);
+        await dispatcher.ExecuteCommand(command);
         return Ok();
     }
 
     [HttpPost("confirmEmail")]
-    public async Task<IActionResult> ConfirmEmail(ConfirmRegistrationEmailCommand command)
+    public async Task<ActionResult> ConfirmEmail(ConfirmRegistrationEmailCommand command)
     {
-        await _mediator.Send(command);
+        await dispatcher.ExecuteCommand(command);
         return Ok();
     }
 }

@@ -1,40 +1,26 @@
 ﻿namespace Yerbowo.Application.Functions.Users.Command.ChangeUsers;
 
-public class ChangeUserHandler : IRequestHandler<ChangeUserCommand>
+public class ChangeUserHandler(
+    IMapper mapper,
+    IUserRepository userRepository,
+    IPasswordManager passwordManager,
+    IStringLocalizer<SharedResource> localizer) : ICommandHandler<ChangeUserCommand>
 {
-	private readonly IMapper _mapper;
-	private readonly IUserRepository _userRepository;
-	private readonly IPasswordValidator _passwordValidator;
-	private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public ChangeUserHandler(IMapper mapper,
-        IUserRepository userRepository,
-        IPasswordValidator passwordValidator,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _mapper = mapper;
-        _userRepository = userRepository;
-        _passwordValidator = passwordValidator;
-        _localizer = localizer;
-    }
-
     public async Task Handle(ChangeUserCommand request, CancellationToken cancellationToken)
 	{
-		var userDb = await _userRepository.GetAsync(request.Id);
-
-		if (userDb == null)
-            throw new ArgumentException(_localizer["ExceptionUserNotFound"]);
-
-        if (!_passwordValidator.Equals(request.CurrentPassword, userDb.PasswordHash, userDb.PasswordSalt))
-            throw new Exception(_localizer["ExceptionPasswordIsIncorrect"]);
+		var userDb = await userRepository.GetAsync(request.Id) 
+            ?? throw new UserNotFoundException(localizer);
+        
+        if (!passwordManager.Validate(request.CurrentPassword, userDb.Password))
+            throw new UserPasswordIsIncorrectException(localizer);
 
         if (!string.IsNullOrEmpty(request.NewPassword) && !string.IsNullOrEmpty(request.ConfirmPassword))
 		{
-			userDb.SetPassword(request.ConfirmPassword);
+			userDb.SetPassword(passwordManager.Secure(request.ConfirmPassword));
 		}
 
-		_mapper.Map(request, userDb);
+		mapper.Map(request, userDb);
 
-		await _userRepository.UpdateAsync(userDb);
+		await userRepository.UpdateAsync(userDb);
 	}
 }

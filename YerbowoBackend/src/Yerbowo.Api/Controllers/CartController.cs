@@ -2,54 +2,41 @@
 
 [ApiController]
 [Route("api/cart")]
-public class CartController : ApiControllerBase
+public class CartController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-	private readonly IMediator _mediator;
-	private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public CartController(
-		IMediator mediator, 
-		IStringLocalizer<SharedResource> localizer)
-    {
-        _mediator = mediator;
-        _localizer = localizer;
-    }
-
     [HttpGet]
-	public async Task<IActionResult> Get()
+	public async Task<ActionResult<CartDto>> Get()
 	{
-		var cart = await _mediator.Send(new GetCartItemsQuery());
+		var cart = await dispatcher.ExecuteQuery(new GetCartItemsQuery());
 		return Ok(cart);
 	}
 
 	[HttpGet("totalCartProducts")]
-	public async Task<IActionResult> GetTotalCartProducts()
+	public async Task<ActionResult<int>> GetTotalCartProducts()
 	{
-		int totalCartItems = await _mediator.Send(new GetTotalCartItemsQuery());
+		int totalCartItems = await dispatcher.ExecuteQuery(new GetTotalCartItemsQuery());
 		return Ok(totalCartItems);
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Add(AddCartItemCommand command)
+	public async Task<ActionResult<CartDto>> Add(AddCartItemCommand command)
 	{
-		var cart = await _mediator.Send(command);
+		var cart = await dispatcher.ExecuteCommand(command);
 		return Ok(cart);
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Put(int id, ChangeCartItemCommand command)
+	[BadRequestFilter]
+	public async Task<ActionResult<CartDto>> Put(int id, ChangeCartItemCommand command)
 	{
-		if (id != command.Id)
-			return BadRequest(_localizer["ResponseBadRequest"]);
-
-		var cart = await _mediator.Send(command);
+		var cart = await dispatcher.ExecuteCommand(command);
 		return Ok(cart);
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<IActionResult> Delete(int id)
+	public async Task<ActionResult<CartDto>> Delete(int id)
 	{
-		var cart = await _mediator.Send(new RemoveCartItemCommand(id));
+		var cart = await dispatcher.ExecuteCommand(new RemoveCartItemCommand(id));
 		return Ok(cart);
 	}
 }

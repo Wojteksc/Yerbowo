@@ -6,8 +6,12 @@ public class RemoveCartItemHandlerTest
 
     const int _productId = 1000;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public RemoveCartItemHandlerTest()
     {
+        _localizer = StringLocalizerFactory.Create();
+
         _cartProductItem = new CartProductItemDto
         {
             Id = _productId,
@@ -39,22 +43,23 @@ public class RemoveCartItemHandlerTest
 
         var expectedCartProducts = new List<CartItemDto>();
 
-        var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, cartProducts);
+        var sessionMock = SessionMockHelper.SetupSession(SessionKeys.CartSession, cartProducts);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
 
         var result = await handler.Handle(request, CancellationToken.None);
 
         result.Items.Should().BeEquivalentTo(expectedCartProducts);
-        sessionMock.Verify(x => x.Set(Consts.CartSessionKey, It.IsAny<byte[]>()), Times.Once);
+        sessionMock.Verify(x => x.Set(SessionKeys.CartSession, It.IsAny<byte[]>()), Times.Once);
     }
 
     [Theory]
-    [InlineData("en-US", "Product not found")]
-    [InlineData("pl-PL", "Nie znaleziono produktu")]
-    public async Task Should_ThrowException_When_ProductDoesNotExistInCart(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_ProductDoesNotExistInCart(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.ProductNotFound];
 
         int productId = 999;
         var request = new RemoveCartItemCommand(productId);
@@ -68,22 +73,22 @@ public class RemoveCartItemHandlerTest
             }
         };
 
-        var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, cartProducts);
+        var sessionMock = SessionMockHelper.SetupSession(SessionKeys.CartSession, cartProducts);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
 
-        var exception = await Assert.ThrowsAsync<Exception>(
+        var exception = await Assert.ThrowsAsync<ProductNotFoundException>(
             () => handler.Handle(request, CancellationToken.None));
 
         exception.Message.Should().Be(expectedMessage);
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
-    private static RemoveCartItemHandler CreateHandler(HttpContextAccessor httpContextAccessor)
+    private RemoveCartItemHandler CreateHandler(HttpContextAccessor httpContextAccessor)
     {
         return new RemoveCartItemHandler(
             httpContextAccessor,
             AutoMapperConfig.Initialize(),
-            StringLocalizerFactory.Create());
+            _localizer);
     }
 }

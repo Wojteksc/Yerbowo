@@ -1,16 +1,16 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Query.GetProductDetails;
 
-public class ProductDetailsDto
+public record ProductDetailsDto 
 {
-    public int Id { get; set; }
-    public string Code { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public decimal Price { get; set; }
-    public decimal OldPrice { get; set; }
-    public int Stock { get; set; }
-    public ProductState State { get; set; }
-    public string Image { get; set; }
-    public string Category { get; set; }
-    public string Subcategory { get; set; }
+    public int Id { get; init; }
+    public string Code { get; init; }
+    public string Name { get; init; }
+    public string Description { get; init; }
+    public decimal Price { get; init; }
+    public decimal OldPrice { get; init; }
+    public int Stock { get; init; }
+    public ProductState State { get; init; }
+    public string Image { get; init; }
+    public string Category { get; init; }
+    public string Subcategory { get; init; }
 }

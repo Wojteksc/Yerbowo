@@ -5,6 +5,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     private readonly WebApplicationFactory<Startup> _webApplicationFactory;
 
     public WebApplicationFactory<Startup> WebApplicationFactory => _webApplicationFactory;
+
     public User User { get; private set; }
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
@@ -21,22 +22,15 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             builder => builder
             .ConfigureTestServices(services =>
             {
-                var descriptor = services.Single(s => s.ImplementationType == typeof(ProcessOutboxMessagesJob));
+                var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
             .ConfigureAppConfiguration(ConfigureAppConfiguration)
             .UseEnvironment(environment));
+        
+        ExecuteDatabaseInitializerJob();
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
-    }
-
-    private User GetUserByEmail(string email)
-    {
-        using (var scope = WebApplicationFactory.Server.Services.CreateScope())
-        {
-            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-            return userRepository.GetAsync(email).Result;
-        }
     }
 
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
@@ -54,5 +48,34 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         Task.Run(async () => await AuthHelper.LoginAsync(client, loginCommand)).Wait();
      
         return client;
+    }
+
+    private User GetUserByEmail(string email)
+    {
+        using (var scope = WebApplicationFactory.Server.Services.CreateScope())
+        {
+            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+            return userRepository.GetAsync(email).Result;
+        }
+    }
+
+    private void ExecuteDatabaseInitializerJob()
+    {
+        try
+        {
+            using var scope = WebApplicationFactory.Server.Services.CreateScope();
+            var scopeFactory = scope.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILogger<DatabaseInitializerJob>>();
+            var job = new DatabaseInitializerJob(scopeFactory, loggerService);
+            Task.Run(async () => await job.StartAsync(default)).Wait();
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Task cancelled");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Something went wrong while executing {nameof(DatabaseInitializerJob)}", ex);
+        }
     }
 }

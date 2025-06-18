@@ -18,7 +18,9 @@ public class AuthControllerTest : ApiTestBase
         var socialLoginCommand = new SocialLoginCommand
         {
             Email = "authControllerTestSocialLogin@testemail.com",
-            Provider = "GOOGLE"
+            Provider = "GOOGLE",
+            FirstName = "Auth Name",
+            LastName = "Auth Surname"
         };
 
         var response = await AuthHelper.SocialLoginAsync(_httpClient, socialLoginCommand);
@@ -66,11 +68,7 @@ public class AuthControllerTest : ApiTestBase
 
             var userDb = await userRepository.GetAsync(email);
 
-            var confirmEmailCommand = new ConfirmRegistrationEmailCommand()
-            {
-                Email = email,
-                Token = userDb.VerificationToken
-            };
+            var confirmEmailCommand = new ConfirmRegistrationEmailCommand(email, userDb.VerificationToken);
 
             var response = await AuthHelper.ConfirmEmailAsync(_httpClient, confirmEmailCommand);
 
@@ -86,9 +84,9 @@ public class AuthControllerTest : ApiTestBase
             Password = PrimaryPassword
         };
 
-        var message = await AuthHelper.LoginAsync(_httpClient, loginCommand);
+        var (response, token) = await AuthHelper.LoginAsync(_httpClient, loginCommand);
 
-        message.response.StatusCode.Should().Be(HttpStatusCode.OK);
-        message.token.Should().NotBe(null);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        token.Should().NotBe(null);
     }
 }

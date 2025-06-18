@@ -1,3 +1,3 @@
 ﻿namespace Yerbowo.Application.Functions.Cart.Query.GetCartItems;
 
-public class GetCartItemsQuery : IRequest<CartDto> {}
+public record GetCartItemsQuery : IQuery<CartDto> {}

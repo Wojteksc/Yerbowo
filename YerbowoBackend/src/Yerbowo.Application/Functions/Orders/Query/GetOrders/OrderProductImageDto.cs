@@ -1,7 +1,7 @@
 ﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrders;
 
-public class OrderProductImageDto
+public record OrderProductImageDto
 {
-    public int Quantity { get; set; }
-    public string Name { get; set; }
+    public int Quantity { get; init; }
+    public string Name { get; init; }
 }

@@ -1,30 +1,17 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Command.ChangeAddresses;
 
-public class ChangeAddressHandler : IRequestHandler<ChangeAddressCommand>
+public class ChangeAddressHandler(
+    IAddressRepository addressRepository,
+    IMapper mapper,
+    IStringLocalizer<SharedResource> localizer) : ICommandHandler<ChangeAddressCommand>
 {
-    private readonly IAddressRepository _addressRepository;
-    private readonly IMapper _mapper;
-    private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public ChangeAddressHandler(
-        IAddressRepository addressRepository,
-        IMapper mapper,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _addressRepository = addressRepository;
-        _mapper = mapper;
-        _localizer = localizer;
-    }
-
     public async Task Handle(ChangeAddressCommand request, CancellationToken cancellationToken)
     {
-        var address = await _addressRepository.GetAsync(request.Id);
+        var address = await addressRepository.GetAsync(request.Id) 
+            ?? throw new AddressNotFoundException(localizer);
+        
+        mapper.Map(request, address);
 
-        if (address == null)
-            throw new ArgumentException(_localizer["ExceptionAddressNotFound"]);
-
-        _mapper.Map(request, address);
-
-        await _addressRepository.UpdateAsync(address);
+        await addressRepository.UpdateAsync(address);
     }
 }

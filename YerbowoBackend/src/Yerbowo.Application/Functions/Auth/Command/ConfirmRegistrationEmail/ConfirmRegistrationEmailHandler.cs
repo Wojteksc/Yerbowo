@@ -1,30 +1,25 @@
 ﻿namespace Yerbowo.Application.Functions.Auth.Command.ConfirmEmail;
 
-public class ConfirmRegistrationEmailHandler : IRequestHandler<ConfirmRegistrationEmailCommand>
+public class ConfirmRegistrationEmailHandler(
+    IUserRepository userRepository, 
+    IStringLocalizer<SharedResource> localizer) : ICommandHandler<ConfirmRegistrationEmailCommand>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public ConfirmRegistrationEmailHandler(IUserRepository userRepository, IStringLocalizer<SharedResource> localizer)
-    {
-        _userRepository = userRepository;
-        _localizer = localizer;
-    }
-
     public async Task Handle(ConfirmRegistrationEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetAsync(request.Email);
-        if (user == null || user.VerificationToken != request.Token)
-        {
-            throw new ArgumentException(_localizer["ResponseBadRequest"]);
-        }
+        var user = await userRepository.GetAsync(request.Email) 
+            ?? throw new UserNotFoundException(localizer);
         
-        if(user.VerifiedAt != null)
+        if (user.VerificationToken != request.Token)
         {
-            throw new Exception(_localizer["ExceptionEmailWasConfirmed"]);
+            throw new InvalidTokenException(localizer);
+        }
+
+        if (user.VerifiedAt != null)
+        {
+            throw new EmailWasAlreadyConfirmedException(localizer);
         }
 
         user.SetVerificationDate(DateTime.UtcNow);
-        await _userRepository.UpdateAsync(user);
+        await userRepository.UpdateAsync(user);
     }
 }

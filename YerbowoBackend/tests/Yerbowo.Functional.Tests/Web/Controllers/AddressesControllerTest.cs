@@ -34,8 +34,10 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email,
         };
 
-        var createdAddress = await _httpClient.PostAsync<CreateAddressCommand, AddressDetailsDto>
+        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
             ($"api/users/{User.Id}/addresses", address);
+
+        var createdAddress = await _httpClient.GetAsync<AddressDetailsDto>($"api/users/{User.Id}/addresses/{createdAddressId}");
 
         createdAddress.Should().BeEquivalentTo(address);
     }
@@ -57,12 +59,12 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email
         };
 
-        var createdAddress = await _httpClient.PostAsync<CreateAddressCommand, AddressDetailsDto>
+        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
             ($"/api/users/{User.Id}/addresses", newAddress);
 
         var addressCommand = new ChangeAddressCommand()
         {
-            Id = createdAddress.Id,
+            Id = createdAddressId,
             Alias = "updated 999",
             Email = "updated@updated999.pl",
             Phone = "123-123-123",
@@ -75,7 +77,7 @@ public class AddressesControllerTest : ApiTestBase
             PostCode = "00-321"
         };
 
-        var messagePut = await _httpClient.PutAsync($"/api/users/{User.Id}/addresses/{createdAddress.Id}", addressCommand);
+        var messagePut = await _httpClient.PutAsync($"/api/users/{User.Id}/addresses/{createdAddressId}", addressCommand);
 
         var updatedAddress = await _httpClient.GetAsync<AddressDetailsDto>($"api/users/{User.Id}/addresses/{addressCommand.Id}");
 
@@ -100,12 +102,12 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email
         };
 
-        var createdAddress = await _httpClient.PostAsync<CreateAddressCommand, AddressDetailsDto>
+        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
             ($"/api/users/{User.Id}/addresses", addressCommand);
 
-        var messageDelete = await _httpClient.DeleteAsync($"/api/users/{User.Id}/addresses/{createdAddress.Id}");
+        var messageDelete = await _httpClient.DeleteAsync($"/api/users/{User.Id}/addresses/{createdAddressId}");
 
-        var deletedAddress = await _httpClient.GetAsync<AddressDetailsDto>($"api/users/{User.Id}/addresses/{createdAddress.Id}");
+        var deletedAddress = await _httpClient.GetAsync<AddressDetailsDto>($"api/users/{User.Id}/addresses/{createdAddressId}");
 
         messageDelete.StatusCode.Should().Be(HttpStatusCode.NoContent);
         deletedAddress.Should().Be(null);

@@ -117,64 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExceptionAccountDoesNotExist" xml:space="preserve">
-    <value>Konto nie istnieje</value>
-  </data>
-  <data name="ExceptionAccountHasNoEmail" xml:space="preserve">
-    <value>Na Twoim koncie {0} nie jest zapisany adres e-mail</value>
-  </data>
-  <data name="ExceptionAccountRegistrationHasNotBeenConfirmed" xml:space="preserve">
-    <value>Rejestracja konta nie została potwierdzona. Odbierz wiadomość e-mail i kliknij w link potwierdzający.</value>
-  </data>
-  <data name="ExceptionAddressNotFound" xml:space="preserve">
+  <data name="Address.Error.NotFound" xml:space="preserve">
     <value>Nie znaleziono adresu</value>
   </data>
-  <data name="ExceptionEmailIsAlreadyInUse" xml:space="preserve">
-    <value>Podany adres e-mail jest już używany na innym koncie</value>
-  </data>
-  <data name="ExceptionEmailWasConfirmed" xml:space="preserve">
-    <value>Adres e-mail został już potwierdzony</value>
-  </data>
-  <data name="ExceptionFailedAttemptToSendEmail" xml:space="preserve">
-    <value>Nieudana próba wysłania wiadomości e-mail</value>
-  </data>
-  <data name="ExceptionIncorrectQuantity" xml:space="preserve">
-    <value>Nieprawidłowa ilość</value>
-  </data>
-  <data name="ExceptionInvalidLoginDetails" xml:space="preserve">
-    <value>Niepoprawne dane logowania</value>
-  </data>
-  <data name="ExceptionNewPromotionalProductPriceMustBeLowerThanCurrentPrice" xml:space="preserve">
-    <value>Nowe cena produktu objętego promocją musi być mniejsza od aktualnej ceny produktu</value>
-  </data>
-  <data name="ExceptionPasswordIsIncorrect" xml:space="preserve">
-    <value>Podane hasło jest nieprawidłowe</value>
-  </data>
-  <data name="ExceptionProductAlreadyExistsWithThatName" xml:space="preserve">
-    <value>Produkt o tej nazwie już istnieje</value>
-  </data>
-  <data name="ExceptionProductDoesNotExist" xml:space="preserve">
-    <value>Produkt nie istnieje</value>
-  </data>
-  <data name="ExceptionProductNotFound" xml:space="preserve">
-    <value>Nie znaleziono produktu</value>
-  </data>
-  <data name="ExceptionStockExceeded" xml:space="preserve">
+  <data name="Cart.Error.StockIsExceeded" xml:space="preserve">
     <value>Przekroczono zapas</value>
   </data>
-  <data name="ExceptionUserNotFound" xml:space="preserve">
-    <value>Nie znaleziono użytkownika</value>
+  <data name="Cart.Error.StockIsIncorrect" xml:space="preserve">
+    <value>Nieprawidłowa ilość</value>
   </data>
-  <data name="Newsletter.Error.AlreadySubscribed" xml:space="preserve">
+  <data name="Email.Error.IsAlreadyInUse" xml:space="preserve">
+    <value>Podany adres e-mail jest już używany na innym koncie</value>
+  </data>
+  <data name="Email.Error.IsAlreadySubscribed" xml:space="preserve">
     <value>Ten adres e-mail jest już subskrybowany</value>
+  </data>
+  <data name="Email.Error.SendingFailed" xml:space="preserve">
+    <value>Nieudana próba wysłania wiadomości e-mail</value>
+  </data>
+  <data name="Email.Error.WasAlreadyConfirmed" xml:space="preserve">
+    <value>Adres e-mail został już potwierdzony</value>
+  </data>
+  <data name="Newsletter.Error.NotFound" xml:space="preserve">
+    <value>Nie znaleziono newslettera</value>
   </data>
   <data name="Newsletter.Response.SentEmail" xml:space="preserve">
     <value>Dziękujemy za zapis do newslettera. Wysłaliśmy wiadomość na podany adres e-mail.</value>
   </data>
-  <data name="ResponseBadRequest" xml:space="preserve">
+  <data name="Product.Error.DoesNotExist" xml:space="preserve">
+    <value>Produkt nie istnieje</value>
+  </data>
+  <data name="Product.Error.NameIsAlreadyExists" xml:space="preserve">
+    <value>Produkt o tej nazwie już istnieje</value>
+  </data>
+  <data name="Product.Error.NotFound" xml:space="preserve">
+    <value>Nie znaleziono produktu</value>
+  </data>
+  <data name="Product.Error.PromotionalPriceMustBeLowerThanCurrent" xml:space="preserve">
+    <value>Nowe cena produktu objętego promocją musi być mniejsza od aktualnej ceny produktu</value>
+  </data>
+  <data name="Response.BadRequest" xml:space="preserve">
     <value>Nieprawidłowe żądanie</value>
   </data>
-  <data name="ResponseUnathorized" xml:space="preserve">
+  <data name="Response.Unathorized" xml:space="preserve">
     <value>Brak autoryzacji</value>
+  </data>
+  <data name="User.Error.HasNoEmail" xml:space="preserve">
+    <value>Na Twoim koncie {0} nie jest zapisany adres e-mail</value>
+  </data>
+  <data name="User.Error.InvalidCredentials" xml:space="preserve">
+    <value>Niepoprawne dane logowania</value>
+  </data>
+  <data name="User.Error.NotFound" xml:space="preserve">
+    <value>Nie znaleziono użytkownika</value>
+  </data>
+  <data name="User.Error.PasswordIsIncorrect" xml:space="preserve">
+    <value>Podane hasło jest nieprawidłowe</value>
+  </data>
+  <data name="User.Error.RegistrationWasNotConfirmed" xml:space="preserve">
+    <value>Rejestracja konta nie została potwierdzona. Odbierz wiadomość e-mail i kliknij w link potwierdzający.</value>
   </data>
 </root>

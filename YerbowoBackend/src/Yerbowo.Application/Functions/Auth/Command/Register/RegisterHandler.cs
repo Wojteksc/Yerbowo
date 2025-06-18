@@ -1,41 +1,26 @@
 ﻿namespace Yerbowo.Application.Functions.Auth.Command.Register;
 
-public class RegisterHandler : IRequestHandler<RegisterCommand>
+public class RegisterHandler
+    (IUserRepository userRepository,
+    IMapper mapper,
+    IStringLocalizer<SharedResource> localizer,
+    IWebEncoder webEncoder,
+    IPasswordManager passwordManager) : ICommandHandler<RegisterCommand>
 {
-    private readonly IMapper _mapper;
-    private readonly IMediator _mediator;
-    private readonly IUserRepository _userRepository;
-    private readonly IStringLocalizer<SharedResource> _localizer;
-    private readonly IWebEncoder _webEncoder;
-
-    public RegisterHandler(IUserRepository userRepository,
-        IMapper mapper,
-        IMediator mediator,
-        IStringLocalizer<SharedResource> localizer,
-        IWebEncoder webEncoder)
-    {
-        _userRepository = userRepository;
-        _mapper = mapper;
-        _mediator = mediator;
-        _localizer = localizer;
-        _webEncoder = webEncoder;
-    }
-
     public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        if (await _userRepository.ExistsAsync(request.Email))
-            throw new Exception(_localizer["ExceptionEmailIsAlreadyInUse"]);
+        if (await userRepository.ExistsAsync(request.Email))
+            throw new EmailIsAlreadyInUseException(localizer);
 
-        string token = _webEncoder.Base64UrlEncodeGuid();
+        string token = webEncoder.Base64UrlEncodeGuid();
 
-        var user = _mapper.Map<User>(request);
-        user.SetPassword(request.Password);
+        var user = mapper.Map<User>(request);
+        user.SetPassword(passwordManager.Secure(request.Password));
         user.SetRole("user");
         user.SetVerificationToken(token);
+        
+        user.Register();
 
-        await _userRepository.AddAsync(user);
-
-        await _mediator.Publish(
-            new UserRegisteredDomainEvent(user.FirstName, user.Email, user.VerificationToken));
+        await userRepository.AddAsync(user);
     }
 }

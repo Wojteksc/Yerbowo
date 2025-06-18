@@ -6,10 +6,15 @@ public class RemoveAddressHandlerTest
     private readonly RemoveAddressHandler _handler;
     private readonly Address _address;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public RemoveAddressHandlerTest()
     {
-        _addressRepositoryMock = new Mock<IAddressRepository>();
-        _handler = new RemoveAddressHandler(_addressRepositoryMock.Object, StringLocalizerFactory.Create());
+        _addressRepositoryMock = new();
+
+        _localizer = StringLocalizerFactory.Create();
+
+        _handler = new RemoveAddressHandler(_addressRepositoryMock.Object, _localizer);
 
         _address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
@@ -22,9 +27,12 @@ public class RemoveAddressHandlerTest
         var request = new RemoveAddressCommand(1);
         var addresses = new List<Address>();
 
-        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        _addressRepositoryMock
+            .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(_address);
-        _addressRepositoryMock.Setup(x => x.RemoveAsync(_address))
+        
+        _addressRepositoryMock
+            .Setup(x => x.RemoveAsync(_address))
             .Callback<Address>(a => addresses.Add(a));
 
         await _handler.Handle(request, CancellationToken.None);
@@ -34,28 +42,31 @@ public class RemoveAddressHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Address not found")]
-    [InlineData("pl-PL", "Nie znaleziono adresu")]
-    public async Task Should_ThrowException_WhenProductIsNull(string culture, string expectedMessage)
+    [InlineData("en-US" )]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_WhenProductIsNull(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.AddressNotFound];
 
         var request = new RemoveAddressCommand(999);
 
-        _addressRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        _addressRepositoryMock
+            .Setup(x => x.GetAsync(request.Id))
             .Returns(Task.FromResult<Address>(null));
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<AddressNotFoundException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }
 
     [Theory]
-    [InlineData("en-US", "Address not found")]
-    [InlineData("pl-PL", "Nie znaleziono adresu")]
-    public async Task Should_ThrowException_WhenProductIsRemoved(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_WhenProductIsRemoved(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.AddressNotFound];
 
         _address.IsRemoved = true;
 
@@ -65,7 +76,7 @@ public class RemoveAddressHandlerTest
             .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(_address);
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _handler.Handle(request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<AddressNotFoundException>(() => _handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.RemoveAsync(It.IsAny<Address>()), Times.Never);
     }

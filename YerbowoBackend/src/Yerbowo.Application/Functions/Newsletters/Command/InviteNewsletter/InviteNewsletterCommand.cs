@@ -1,7 +1,7 @@
 ﻿namespace Yerbowo.Application.Functions.Newsletters.Command.InviteNewsletter;
 
-public class InviteNewsletterCommand : IRequest<string>
+public record InviteNewsletterCommand : ICommand<string>
 {
     [EmailAddress(ErrorMessage = "Nieprawidłowy adres e-mail")]
-    public string Email { get; set; }
+    public string Email { get; init; }
 }

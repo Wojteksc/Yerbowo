@@ -7,13 +7,17 @@ public class ConfirmRegistrationEmailHandlerTest
     private readonly ConfirmRegistrationEmailCommand _request;
     private readonly User _user;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public ConfirmRegistrationEmailHandlerTest()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _handler = new ConfirmRegistrationEmailHandler(_userRepositoryMock.Object, StringLocalizerFactory.Create());
+        _userRepositoryMock = new();
 
-        _request = new ConfirmRegistrationEmailCommand() { Email = "email@email.com", Token = "1234567890" };
-        _user = new User("firstName", "lastName", "email@email.com", "password");
+        _localizer = StringLocalizerFactory.Create();
+
+        _handler = new ConfirmRegistrationEmailHandler(_userRepositoryMock.Object, _localizer);
+        _request = new ConfirmRegistrationEmailCommand("email@email.com", "1234567890");
+        _user = new User("firstName", "lastName", "email@email.com");
     }
 
     [Fact]
@@ -30,51 +34,54 @@ public class ConfirmRegistrationEmailHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Bad request")]
-    [InlineData("pl-PL", "Nieprawidłowe żądanie")]
-    public async Task Should_ThrowException_When_TokensDoNotMatch(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_TokensDoNotMatch(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.InvalidToken];
 
         _user.SetVerificationToken("123456789");
         _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .ReturnsAsync(_user);
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(
+        var exception = await Assert.ThrowsAsync<InvalidTokenException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Theory]
-    [InlineData("en-US", "Bad request")]
-    [InlineData("pl-PL", "Nieprawidłowe żądanie")]
-    public async Task Should_ThrowException_When_UserWasNotFound(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_UserWasNotFound(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.UserNotFound];
 
         _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(
+        var exception = await Assert.ThrowsAsync<UserNotFoundException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
     }
 
     [Theory]
-    [InlineData("en-US", "The e-mail address was already confirmed")]
-    [InlineData("pl-PL", "Adres e-mail został już potwierdzony")]
-    public async Task Should_ThrowException_When_EmailWasVerifiedAgain(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_EmailWasVerifiedAgain(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.EmailWasAlreadyConfirmed];
 
         _user.SetVerificationToken("1234567890");
         _user.SetVerificationDate(DateTime.UtcNow);
         _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
             .ReturnsAsync(_user);
 
-        var exception = await Assert.ThrowsAsync<Exception>(
+        var exception = await Assert.ThrowsAsync<EmailWasAlreadyConfirmedException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());

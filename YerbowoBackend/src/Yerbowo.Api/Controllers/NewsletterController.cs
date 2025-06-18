@@ -2,33 +2,26 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class NewsletterController : ApiControllerBase
+public class NewsletterController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public NewsletterController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpPost("invite")]
-    public async Task<IActionResult> Invite(InviteNewsletterCommand command)
+    public async Task<ActionResult<string>> Invite(InviteNewsletterCommand command)
     {
-        await _mediator.Send(command);
-        return Ok();
+        var message = await dispatcher.ExecuteCommand(command);
+        return Ok(message);
     }
 
     [HttpPost("subscribe")]
-    public async Task<IActionResult> Subscribe(SubscribeNewsletterCommand command)
+    public async Task<ActionResult> Subscribe(SubscribeNewsletterCommand command)
     {
-        await _mediator.Send(command);
+        await dispatcher.ExecuteCommand(command);
         return Ok();
     }
 
     [HttpPost("unsubscribe")]
-    public async Task<IActionResult> Unsubscribe(UnsubscribeNewsletterCommand command)
+    public async Task<ActionResult> Unsubscribe(UnsubscribeNewsletterCommand command)
     {
-        await _mediator.Send(command);
+        await dispatcher.ExecuteCommand(command);
         return Ok();
     }
 }

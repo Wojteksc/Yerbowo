@@ -1,6 +1,6 @@
 ﻿namespace Yerbowo.Domain.Entities.Users;
 
-public class User : BaseEntity
+public class User : AgregateRoot
 {
     public string FirstName { get; protected set; }
     public string LastName { get; protected set; }
@@ -9,8 +9,7 @@ public class User : BaseEntity
     public string Role { get; protected set; }
     public string PhotoUrl { get; protected set; }
     public string Provider { get; protected set; }
-    public byte[] PasswordHash { get; protected set; }
-    public byte[] PasswordSalt { get; protected set; }
+    public string Password { get; protected set; }
     public string VerificationToken { get; protected set; }
     public DateTime? VerifiedAt { get; protected set; }
 
@@ -18,36 +17,37 @@ public class User : BaseEntity
 
     private User() { }
 
-    public User(string firstName, string lastName, string email, string password,
+    public User(string firstName, 
+        string lastName, 
+        string email,
         string role = "user",
-        string companyName = null, string photoUrl = null,
+        string companyName = null, 
+        string photoUrl = null,
         string provider = null)
     {
 
         Against.NullOrEmpty(firstName, nameof(firstName));
         Against.NullOrEmpty(lastName, nameof(lastName));
         Against.NullOrEmpty(email, nameof(email));
-        Against.NullOrEmpty(password, nameof(password));
 
         FirstName = firstName;
         LastName = lastName;
         Email = email;
-        SetPassword(password);
         CompanyName = companyName;
         SetRole(role);
         SetPhotoUrl(photoUrl);
         Provider = provider;
     }
-
-    public void SetPassword(string passwordToHash)
+    public void Register()
     {
-        Against.NullOrEmpty(passwordToHash, nameof(passwordToHash));
+        RaiseDomainEvent(new UserRegisteredDomainEvent(FirstName, Email, VerificationToken));
+    }
 
-        using (var hmac = new HMACSHA512())
-        {
-            PasswordSalt = hmac.Key;
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(passwordToHash));
-        }
+    public void SetPassword(string hashedPassword)
+    {
+        Against.NullOrEmpty(hashedPassword, nameof(hashedPassword));
+
+        Password = hashedPassword;
     }
 
     public void SetRole(string role)

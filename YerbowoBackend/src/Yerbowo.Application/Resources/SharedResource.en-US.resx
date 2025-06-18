@@ -117,64 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExceptionAccountDoesNotExist" xml:space="preserve">
-    <value>The account does not exist</value>
-  </data>
-  <data name="ExceptionAccountHasNoEmail" xml:space="preserve">
-    <value>Your {0} account does not have an email address</value>
-  </data>
-  <data name="ExceptionAccountRegistrationHasNotBeenConfirmed" xml:space="preserve">
-    <value>Account registration has not been confirmed. Receive the e-mail and click on the confirmation link.</value>
-  </data>
-  <data name="ExceptionAddressNotFound" xml:space="preserve">
+  <data name="Address.Error.NotFound" xml:space="preserve">
     <value>Address not found</value>
   </data>
-  <data name="ExceptionEmailIsAlreadyInUse" xml:space="preserve">
-    <value>The email address you provided is already in use on another account</value>
-  </data>
-  <data name="ExceptionEmailWasConfirmed" xml:space="preserve">
-    <value>The e-mail address was already confirmed</value>
-  </data>
-  <data name="ExceptionFailedAttemptToSendEmail" xml:space="preserve">
-    <value>Failed attempt to send email</value>
-  </data>
-  <data name="ExceptionIncorrectQuantity" xml:space="preserve">
-    <value>Incorrect quantity</value>
-  </data>
-  <data name="ExceptionInvalidLoginDetails" xml:space="preserve">
-    <value>Invalid login details</value>
-  </data>
-  <data name="ExceptionNewPromotionalProductPriceMustBeLowerThanCurrentPrice" xml:space="preserve">
-    <value>The new price of the promotional product must be lower than the current price of the product</value>
-  </data>
-  <data name="ExceptionPasswordIsIncorrect" xml:space="preserve">
-    <value>The entered password is incorrect</value>
-  </data>
-  <data name="ExceptionProductAlreadyExistsWithThatName" xml:space="preserve">
-    <value>The product already exists with that name</value>
-  </data>
-  <data name="ExceptionProductDoesNotExist" xml:space="preserve">
-    <value>The product does not exist</value>
-  </data>
-  <data name="ExceptionProductNotFound" xml:space="preserve">
-    <value>Product not found</value>
-  </data>
-  <data name="ExceptionStockExceeded" xml:space="preserve">
+  <data name="Cart.Error.StockIsExceeded" xml:space="preserve">
     <value>Stock exceeded</value>
   </data>
-  <data name="ExceptionUserNotFound" xml:space="preserve">
-    <value>User not found</value>
+  <data name="Cart.Error.StockIsIncorrect" xml:space="preserve">
+    <value>Incorrect quantity</value>
   </data>
-  <data name="Newsletter.Error.AlreadySubscribed" xml:space="preserve">
+  <data name="Email.Error.IsAlreadyInUse" xml:space="preserve">
+    <value>The email address you provided is already in use on another account</value>
+  </data>
+  <data name="Email.Error.IsAlreadySubscribed" xml:space="preserve">
     <value>This email address is already subscribed</value>
+  </data>
+  <data name="Email.Error.SendingFailed" xml:space="preserve">
+    <value>Failed attempt to send email</value>
+  </data>
+  <data name="Email.Error.WasAlreadyConfirmed" xml:space="preserve">
+    <value>The e-mail address was already confirmed</value>
+  </data>
+  <data name="Newsletter.Error.NotFound" xml:space="preserve">
+    <value>Newsletter not found</value>
   </data>
   <data name="Newsletter.Response.SentEmail" xml:space="preserve">
     <value>Thank you for signing up to the newsletter. We have sent a message to the e-mail.</value>
   </data>
-  <data name="ResponseBadRequest" xml:space="preserve">
+  <data name="Product.Error.DoesNotExist" xml:space="preserve">
+    <value>The product does not exist</value>
+  </data>
+  <data name="Product.Error.NameIsAlreadyExists" xml:space="preserve">
+    <value>The product already exists with that name</value>
+  </data>
+  <data name="Product.Error.NotFound" xml:space="preserve">
+    <value>Product not found</value>
+  </data>
+  <data name="Product.Error.PromotionalPriceMustBeLowerThanCurrent" xml:space="preserve">
+    <value>The new price of the promotional product must be lower than the current price of the product</value>
+  </data>
+  <data name="Response.BadRequest" xml:space="preserve">
     <value>Bad request</value>
   </data>
-  <data name="ResponseUnathorized" xml:space="preserve">
+  <data name="Response.Unathorized" xml:space="preserve">
     <value>Unathorized</value>
+  </data>
+  <data name="User.Error.HasNoEmail" xml:space="preserve">
+    <value>Your {0} account does not have an email address</value>
+  </data>
+  <data name="User.Error.InvalidCredentials" xml:space="preserve">
+    <value>Invalid login details</value>
+  </data>
+  <data name="User.Error.NotFound" xml:space="preserve">
+    <value>User not found</value>
+  </data>
+  <data name="User.Error.PasswordIsIncorrect" xml:space="preserve">
+    <value>The entered password is incorrect</value>
+  </data>
+  <data name="User.Error.RegistrationWasNotConfirmed" xml:space="preserve">
+    <value>Account registration has not been confirmed. Receive the e-mail and click on the confirmation link.</value>
   </data>
 </root>

@@ -7,7 +7,7 @@ public class GetUserByEmailHandlerTest
 
     public GetUserByEmailHandlerTest()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
+        _userRepositoryMock = new();
 
         _handler = new GetUserByEmailHandler(
             AutoMapperConfig.Initialize(),
@@ -17,7 +17,7 @@ public class GetUserByEmailHandlerTest
     [Fact]
     public async Task Should_ReturnUserCorrectly()
     {
-        var user = new User("firstName", "lastName", "email@email.com", "password");
+        var user = new User("firstName", "lastName", "email@email.com");
 
         var userQuery = new GetUserByEmailQuery("emailTest@email.pl");
 
@@ -29,7 +29,8 @@ public class GetUserByEmailHandlerTest
             Role = "user"
         };
 
-        _userRepositoryMock.Setup(x => x.GetAsync(userQuery.Email))
+        _userRepositoryMock
+            .Setup(x => x.GetAsync(userQuery.Email))
             .ReturnsAsync(user);
 
         var result = await _handler.Handle(userQuery, CancellationToken.None);

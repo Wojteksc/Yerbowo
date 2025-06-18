@@ -3,73 +3,48 @@
 [ApiController]
 [Authorize]
 [Route("api/users/{userId}/addresses")]
-public class AddressesController : ApiControllerBase
+public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public AddressesController(
-        IMediator mediator,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _mediator = mediator;
-        _localizer = localizer;
-    }
-
     [HttpGet("{id}", Name = nameof(GetAddress))]
-    public async Task<IActionResult> GetAddress(int userId, int id)
+    [UnathorizedFilter]
+    public async Task<ActionResult<AddressDetailsDto>> GetAddress(int userId, int id)
     {
-        if (userId != UserId)
-            return Unauthorized(_localizer["ResponseUnathorized"]);
-
-        var address = await _mediator.Send(new GetAddressByIdQuery(id));
-
+        var address = await dispatcher.ExecuteQuery(new GetAddressByIdQuery(id));
         return Ok(address);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAddresses(int userId)
+    [UnathorizedFilter]
+    public async Task<ActionResult<AddressDto>> GetAddresses(int userId)
     {
-        if (userId != UserId)
-            return Unauthorized(_localizer["ResponseUnathorized"]);
-
-        var addresses = await _mediator.Send(new GetAddressesByUserIdQuery(userId));
-
+        var addresses = await dispatcher.ExecuteQuery(new GetAddressesByUserIdQuery(userId));
         return Ok(addresses);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(int userId, CreateAddressCommand command)
-    {
-        if (userId != UserId)
-            return Unauthorized(_localizer["ResponseUnathorized"]);
+    [UnathorizedFilter]
+    public async Task<ActionResult<int>> Create(int userId, CreateAddressCommand command)
+    { 
+        int addressId = await dispatcher.ExecuteCommand(command);
 
-        var address = await _mediator.Send(command);
-
-        return CreatedAtRoute(nameof(GetAddress), new { userId, id = address.Id }, address);
+        return CreatedAtRoute(nameof(GetAddress), new { userId, id = addressId }, addressId);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int userId, int id, ChangeAddressCommand command)
+    [UnathorizedFilter]
+    [BadRequestFilter]
+    public async Task<ActionResult> Update(int userId, int id, ChangeAddressCommand command)
     {
-        if (userId != UserId)
-            return Unauthorized(_localizer["ResponseUnathorized"]);
-
-        if (id != command.Id)
-            return BadRequest(_localizer["ResponseBadRequest"]);
-
-        await _mediator.Send(command);
+        await dispatcher.ExecuteCommand(command);
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int userId, int id)
+    [UnathorizedFilter]
+    public async Task<ActionResult> Delete(int userId, int id)
     {
-        if (userId != UserId)
-            return Unauthorized(_localizer["ResponseUnathorized"]);
-
-        await _mediator.Send(new RemoveAddressCommand(id));
+        await dispatcher.ExecuteCommand(new RemoveAddressCommand(id));
 
         return NoContent();
     }

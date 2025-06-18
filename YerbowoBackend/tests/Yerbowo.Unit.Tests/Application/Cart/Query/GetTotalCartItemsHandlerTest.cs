@@ -8,7 +8,7 @@ public class GetTotalCartItemsHandlerTest
         var sessionData = GetSessionData();
         int expectedQuantity = 10;
 
-        var sessionMock = SessionMockHelper.SetupSession(Consts.CartSessionKey, sessionData);
+        var sessionMock = SessionMockHelper.SetupSession(SessionKeys.CartSession, sessionData);
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
         var handler = CreateHandler(httpContextAccessor);
 

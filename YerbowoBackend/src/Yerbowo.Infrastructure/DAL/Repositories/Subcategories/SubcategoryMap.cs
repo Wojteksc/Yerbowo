@@ -1,0 +1,11 @@
+﻿namespace Yerbowo.Infrastructure.DAL.Repositories.Subcategories;
+
+public class SubcategoryMap : IEntityTypeConfiguration<Subcategory>
+{
+    public void Configure(EntityTypeBuilder<Subcategory> builder)
+    {
+        builder.HasMany(s => s.Products)
+            .WithOne(p => p.Subcategory)
+            .IsRequired();
+    }
+}

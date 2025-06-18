@@ -1,11 +1,11 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Query.GetPagedProducts;
 
-public class PageProductQuery : IRequest<PagedProductCardDto>
+public record PageProductQuery : IQuery<PagedProductCardDto>
 {
-	public int PageNumber { get; set; } = 1;
-	public int PageSize { get; set; } = 20;
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 20;
 	[Required]
-	public string Category { get; set; }
+	public string Category { get; init; }
 	[Required]
-	public string Subcategory { get; set; }
+	public string Subcategory { get; init; }
 }

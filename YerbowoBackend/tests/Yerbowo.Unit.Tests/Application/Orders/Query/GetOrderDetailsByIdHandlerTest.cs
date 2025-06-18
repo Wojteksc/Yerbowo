@@ -51,7 +51,8 @@ public class GetOrderDetailsByIdHandlerTest
             TotalCost = 36.45m + 45m
         };
 
-        _orderRepositoryMock.Setup(x => x.GetAsync(1))
+        _orderRepositoryMock
+            .Setup(x => x.GetAsync(1))
             .ReturnsAsync(order);
 
         var result = await _handler.Handle(request, CancellationToken.None);

@@ -1,106 +1,118 @@
-﻿namespace Yerbowo.Unit.Tests.Application.Auth.Command;
+namespace Yerbowo.Unit.Tests.Application.Auth.Command;
 
 public class LoginHandlerTest
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock;
-    private readonly Mock<IPasswordValidator> _passwordValidatorMock;
-    private readonly Mock<IJwtProvider> _jwtHandlerMock;
+    private readonly Mock<IUserRepository> userRepository;
+    private readonly Mock<IPasswordManager> passwordManager;
+    private readonly Mock<IAuthenticator> authenticator;
+
     private readonly LoginHandler _handler;
     private readonly LoginCommand _request;
-
     private readonly User _user;
+
+    private IStringLocalizer<SharedResource> _localizer;
 
     public LoginHandlerTest()
     {
-        _user = new User("firstName", "lastName", "email@email.com", "password");
+        userRepository = new();
+        passwordManager = new();
+        authenticator = new();
 
+        _user = new User("firstName", "lastName", "email@email.com");
         _request = new LoginCommand { Email = "email@email.com" };
-
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _passwordValidatorMock = new Mock<IPasswordValidator>();
-        _jwtHandlerMock = new Mock<IJwtProvider>();
+        _localizer = StringLocalizerFactory.Create();
 
         _handler = new LoginHandler(
-            _userRepositoryMock.Object,
-            _passwordValidatorMock.Object,
-            _jwtHandlerMock.Object,
-            StringLocalizerFactory.Create());
+            userRepository.Object,
+            passwordManager.Object,
+            authenticator.Object,
+            _localizer);
     }
 
     [Fact]
     public async Task Should_ReturnToken_When_LoginDataAreCorrect()
     {
+        var token = new TokenDto("token");
+
         _user.SetVerificationDate(DateTime.UtcNow);
 
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        userRepository
+            .Setup(x => x.GetAsync(_request.Email))
             .ReturnsAsync(_user);
 
-        _passwordValidatorMock.Setup(x => x.Equals(
-            It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+        passwordManager
+            .Setup(x => x.Validate(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(true);
 
-        _jwtHandlerMock.Setup(x => x.CreateToken(
-            _user.Id, _user.Email, _user.Role))
-            .Returns(new TokenDto());
+        authenticator
+            .Setup(x => x.CreateToken(_user.Id, _user.Email, _user.Role))
+            .Returns(token);
 
-        var result = await _handler.Handle(_request, CancellationToken.None);
-        result.Should().NotBe(null);
+        var response = await _handler.Handle(_request, CancellationToken.None);
+
+        response.Should().Be(new ResponseToken(token, null));
     }
 
     [Theory]
-    [InlineData("en-US", "Invalid login details")]
-    [InlineData("pl-PL", "Niepoprawne dane logowania")]
-    public async Task Should_ThrowException_When_UserDoesNotExist(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_UserDoesNotExist(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.UserInvalidCredentails];
 
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        userRepository.Setup(x => x.GetAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
-        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
+        var exception = await Assert.ThrowsAsync<UserInvalidCredentailsException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
-        _passwordValidatorMock.Verify(x =>
-            x.Equals(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()), Times.Never);
+        passwordManager.Verify(x =>
+            x.Validate(It.IsAny<string>(), It.IsAny<string>())
+            , Times.Never);
     }
 
     [Theory]
-    [InlineData("en-US", "Invalid login details")]
-    [InlineData("pl-PL", "Niepoprawne dane logowania")]
-    public async Task Should_ThrowException_When_UserIsRemoved(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_UserIsRemoved(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.UserInvalidCredentails];
 
         _user.IsRemoved = true;
 
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        userRepository.Setup(x => x.GetAsync(_request.Email))
             .ReturnsAsync(_user);
         
-        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
+        var exception = await Assert.ThrowsAsync<UserInvalidCredentailsException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
-        _passwordValidatorMock.Verify(x =>
-            x.Equals(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()), Times.Never);
+        passwordManager.Verify(x =>
+            x.Validate(It.IsAny<string>(), It.IsAny<string>())
+            , Times.Never);
     }
 
     [Theory]
-    [InlineData("en-US", "Account registration has not been confirmed. Receive the e-mail and click on the confirmation link.")]
-    [InlineData("pl-PL", "Rejestracja konta nie została potwierdzona. Odbierz wiadomość e-mail i kliknij w link potwierdzający.")]
-    public async Task Should_ThrowException_When_UserDidNotConfirmEmail(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_UserDidNotConfirmEmail(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.UserRegistrationWasNotConfirmed];
 
-        _userRepositoryMock.Setup(x => x.GetAsync(_user.Email))
+        userRepository.Setup(x => x.GetAsync(_user.Email))
             .ReturnsAsync(_user);
 
-        _passwordValidatorMock.Setup(x => x.Equals(
-            It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+        passwordManager
+            .Setup(x => x.Validate(It.IsAny<string>(), It.IsAny<string>()))
             .Returns(true);
 
-        var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
+        var exception = await Assert.ThrowsAsync<UserRegistrationWasNotConfirmedException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
-        _jwtHandlerMock.Verify(x => 
-            x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        authenticator.Verify(x => 
+            x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())
+            , Times.Never);
     }
 }

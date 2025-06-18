@@ -4,12 +4,12 @@ public class UserRegisteredDomainEvent : IDomainEvent
 {
     public string FirstName { get; }
     public string Email { get; }
-    public string VeriicationToken { get; }
+    public string VerificationToken { get; }
 
-    public UserRegisteredDomainEvent(string firstName, string email, string veryficationToken)
+    public UserRegisteredDomainEvent(string firstName, string email, string verificationToken)
     {
         FirstName = firstName;
         Email = email;
-        VeriicationToken = veryficationToken;
+        VerificationToken = verificationToken;
     }
 }

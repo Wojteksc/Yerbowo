@@ -3,6 +3,6 @@
 [ExcludeFromCodeCoverage]
 public class RegistrationConfirmationEmailSender : EmailTemplateSenderBase, IRegistrationConfirmationEmailSender
 {
-    public RegistrationConfirmationEmailSender(IOptions<SendGridSettings> settings)
-        : base(settings, settings.Value.RegistrationConfirmationEmailTemplateId) { }
+    public RegistrationConfirmationEmailSender(IOptions<SendGridOptions> options)
+        : base(options, options.Value.RegistrationConfirmationEmailTemplateId) { }
 }

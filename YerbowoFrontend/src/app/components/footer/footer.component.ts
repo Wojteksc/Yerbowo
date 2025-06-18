@@ -30,8 +30,8 @@ export class FooterComponent implements OnInit {
     if(this.newsletterForm.valid) {
       const email = this.newsletterForm.value;
 
-      this.newsletterService.invite(email).subscribe(next => {
-        this.alertify.success('Na podany adres e-mail wysłano zaproszenie do newslettera. Prosimy o potwierdzenie.');
+      this.newsletterService.invite(email).subscribe(response => {
+        this.alertify.success(response);
       }, error => {
         this.alertify.error(error);
       });

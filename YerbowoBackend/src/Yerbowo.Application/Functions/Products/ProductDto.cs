@@ -1,15 +1,15 @@
 ﻿namespace Yerbowo.Application.Functions.Products;
 
-public class ProductDto
+public record ProductDto
 {
-    public int Id { get; set; }
-    public string Code { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Slug { get; set; }
-    public decimal Price { get; set; }
-    public int Stock { get; set; }
-    public ProductState State { get; set; }
-    public string Image { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public int Id { get; init; }
+    public string Code { get; init; }
+    public string Name { get; init; }
+    public string Description { get; init; }
+    public string Slug { get; init; }
+    public decimal Price { get; init; }
+    public int Stock { get; init; }
+    public ProductState State { get; init; }
+    public string Image { get; init; }
+    public DateTime CreatedAt { get; init; }
 }

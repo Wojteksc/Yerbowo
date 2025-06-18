@@ -2,23 +2,31 @@
 
 public class RegisterHandlerTest
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock;
-    private readonly Mock<IMediator> _mediatorMock;
-    private readonly Mock<IWebEncoder> _webEncoderMock;
+    private readonly Mock<IUserRepository> userRepository;
+    private readonly Mock<IWebEncoder> webEncoder;
+    private readonly Mock<IPasswordManager> passwordManager;
 
-    private readonly User _user;
-    private readonly RegisterCommand _request;
-    private readonly RegisterHandler _handler;
+    private readonly User user;
+    private readonly RegisterCommand request;
+    private readonly RegisterHandler handler;
+
+    private IStringLocalizer<SharedResource> localizer;
+
+    private const int UserId = 1000;
 
     public RegisterHandlerTest()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _mediatorMock = new Mock<IMediator>();
-        _webEncoderMock = new Mock<IWebEncoder>();
+        userRepository = new();
+        webEncoder = new();
+        passwordManager = new();
 
-        _user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
-        _user.SetVerificationToken("token");
-        _request = new RegisterCommand() 
+        localizer = StringLocalizerFactory.Create();
+        user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        user.SetVerificationToken("token");
+        user.SetPassword("hashedPassword");
+        typeof(User).GetProperty(nameof(User.Id)).SetValue(user, UserId, null);
+
+        request = new RegisterCommand() 
         {
             FirstName = "firstName",
             LastName = "lastName",
@@ -29,60 +37,62 @@ public class RegisterHandlerTest
             ConfirmPassword = "password"
         };
 
-        _handler = new RegisterHandler(
-            _userRepositoryMock.Object,
+        handler = new RegisterHandler(
+            userRepository.Object,
             AutoMapperConfig.Initialize(),
-            _mediatorMock.Object,
-            StringLocalizerFactory.Create(),
-            _webEncoderMock.Object);
+            localizer,
+            webEncoder.Object,
+            passwordManager.Object);
     }
 
     [Fact]
-    public async Task Should_CreateUserCorrectly()
+    public async Task Should_RegisterUserCorrectly()
     {
         var users = new List<User>();
 
-        _userRepositoryMock
-            .Setup(x => x.ExistsAsync(_request.Email))
+        userRepository
+            .Setup(x => x.ExistsAsync(request.Email))
             .ReturnsAsync(false);
 
-        _userRepositoryMock
+        userRepository
             .Setup(x => x.AddAsync(It.IsAny<User>()))
-            .Callback<User>(user => users.Add(user))
-            .ReturnsAsync(true);
+            .Callback<User>(user =>
+            {
+                typeof(User).GetProperty(nameof(User.Id)).SetValue(user, UserId, null);
+                users.Add(user);
+            });
 
-        _webEncoderMock
+        webEncoder
             .Setup(x => x.Base64UrlEncodeGuid())
             .Returns("token");
 
-        await _handler.Handle(_request, CancellationToken.None);
+        passwordManager
+            .Setup(x => x.Secure(request.Password))
+            .Returns("hashedPassword");
 
-        _userRepositoryMock.Verify(x => x.AddAsync(users.First()), Times.Once());
-        _mediatorMock.Verify(x => 
-            x.Publish(It.IsAny<UserRegisteredDomainEvent>(), It.IsAny<CancellationToken>()), Times.Once());
-       
-        users.Should().AllBeEquivalentTo(_user, 
-            options => options
-            .Excluding(x => x.PasswordHash)
-            .Excluding(x => x.PasswordSalt));
+        await handler.Handle(request, CancellationToken.None);
+
+        userRepository.Verify(x => x.AddAsync(users.First()), Times.Once());
+        users.Should().AllBeEquivalentTo(user);
     }
 
     [Theory]
-    [InlineData("en-US", "The email address you provided is already in use on another account")]
-    [InlineData("pl-PL", "Podany adres e-mail jest już używany na innym koncie")]
-    public async Task Should_ThrowException_When_CreateUserWithTheSameEmail(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_CreateUserWithTheSameEmail(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = localizer[Localizations.EmailIsAlreadyInUse];
 
-        _userRepositoryMock.Setup(x => x.ExistsAsync(_request.Email))
+        userRepository
+            .Setup(x => x.ExistsAsync(request.Email))
             .ReturnsAsync(true);
 
-        _userRepositoryMock.Setup(x => x.AddAsync(It.IsAny<User>()))
-            .ReturnsAsync(false);
+        userRepository.Setup(x => x.AddAsync(It.IsAny<User>()));
 
-        var exception = await Assert.ThrowsAsync<Exception>(
-            () => _handler.Handle(_request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<EmailIsAlreadyInUseException>(
+            () => handler.Handle(request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
-        _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
+        userRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never());
     }
 }

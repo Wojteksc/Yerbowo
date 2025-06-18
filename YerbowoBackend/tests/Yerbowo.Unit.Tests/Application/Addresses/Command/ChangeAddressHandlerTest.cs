@@ -7,14 +7,18 @@ public class ChangeAddressHandlerTest
     private readonly Address _address;
     private readonly ChangeAddressCommand _request;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public ChangeAddressHandlerTest()
     {
-        _addressRepositoryMock = new Mock<IAddressRepository>();
+        _addressRepositoryMock = new();
+
+        _localizer = StringLocalizerFactory.Create();
 
         _handler = new ChangeAddressHandler(
             _addressRepositoryMock.Object, 
             AutoMapperConfig.Initialize(),
-            StringLocalizerFactory.Create());
+            _localizer);
 
         _address = new Address(1,
             "aliastTest",
@@ -47,8 +51,10 @@ public class ChangeAddressHandlerTest
     [Fact]
     public async Task Should_UpdateAddressCorrectly()
     {
-        _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
+        _addressRepositoryMock
+           .Setup(x => x.GetAsync(_request.Id))
            .ReturnsAsync(_address);
+
         _addressRepositoryMock.Setup(x => x.UpdateAsync(_address));
 
         await _handler.Handle(_request, CancellationToken.None);
@@ -58,16 +64,18 @@ public class ChangeAddressHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Address not found")]
-    [InlineData("pl-PL", "Nie znaleziono adresu")]
-    public async Task Should_ThrowException_When_AddressDoesNotExist(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_AddressDoesNotExist(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.AddressNotFound];
 
-        _addressRepositoryMock.Setup(x => x.GetAsync(_request.Id))
+        _addressRepositoryMock
+            .Setup(x => x.GetAsync(_request.Id))
             .ReturnsAsync((Address)null);
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>_handler.Handle(_request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<AddressNotFoundException>(() =>_handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Address>()), Times.Never);
     }

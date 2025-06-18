@@ -2,24 +2,16 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class HomeController : ControllerBase
+public class HomeController(
+    IRequestDispatcher dispatcher,
+    IMemoryCache memoryCache) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly IMemoryCache _memoryCache;
-
-    public HomeController(IMediator mediator,
-        IMemoryCache memoryCache)
-    {
-        _mediator = mediator;
-        _memoryCache = memoryCache;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<ActionResult<RandomProductsDto>> Get()
     {
-        var products = await _memoryCache.GetOrCreateAsync("HomeProducts", async x =>
+        var products = await memoryCache.GetOrCreateAsync("HomeProducts", async x =>
         {
-            return await _mediator.Send(new GetRandomProductsQuery());
+            return await dispatcher.ExecuteQuery(new GetRandomProductsQuery());
         });
 
         return Ok(products);

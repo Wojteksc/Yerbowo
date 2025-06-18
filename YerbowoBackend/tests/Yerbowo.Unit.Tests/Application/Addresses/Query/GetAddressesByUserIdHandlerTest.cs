@@ -59,7 +59,8 @@ public class GetAddressesByUserIdHandlerTest
             }
         };
 
-        _addressRepositoryMock.Setup(x => x.GetAddresses(request.UserId))
+        _addressRepositoryMock
+            .Setup(x => x.GetAddresses(request.UserId))
             .ReturnsAsync(new List<Address>() { address1, address2 });
 
         var result = await _handler.Handle(request, CancellationToken.None);

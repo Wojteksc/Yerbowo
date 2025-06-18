@@ -1,9 +1,9 @@
 ﻿namespace Yerbowo.Application.Functions.Orders.Query.GetOrderDetails;
 
-public class OrderDetailsDto
+public record OrderDetailsDto
 {
-    public int Id { get; set; }
-    public decimal TotalCost { get; set; }
-    public AddressDto Address { get; set; }
-    public List<OrderItemDto> OrderItems { get; set; }
+    public int Id { get; init; }
+    public decimal TotalCost { get; init; }
+    public AddressDto Address { get; init; }
+    public List<OrderItemDto> OrderItems { get; init; }
 }

@@ -1,19 +1,19 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Query.GetAddresses;
 
-public class AddressDto
+public record AddressDto
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public string Alias { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Street { get; set; }
-    public string BuildingNumber { get; set; }
-    public string ApartmentNumber { get; set; }
-    public string Place { get; set; }
-    public string PostCode { get; set; }
-    public string Phone { get; set; }
-    public string Email { get; set; }
-    public string Nip { get; set; }
-    public string Company { get; set; }
+    public int Id { get; init; }
+    public int UserId { get; init; }
+    public string Alias { get; init; }
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+    public string Street { get; init; }
+    public string BuildingNumber { get; init; }
+    public string ApartmentNumber { get; init; }
+    public string Place { get; init; }
+    public string PostCode { get; init; }
+    public string Phone { get; init; }
+    public string Email { get; init; }
+    public string Nip { get; init; }
+    public string Company { get; init; }
 }

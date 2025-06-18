@@ -7,9 +7,13 @@ public class UnsubscribeNewsletterHandlerTest
     private readonly Newsletter _newsletter;
     private readonly UnsubscribeNewsletterHandler _handler;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public UnsubscribeNewsletterHandlerTest()
     {
-        _newsletterRepositoryMock = new Mock<INewsletterRepository>();
+        _newsletterRepositoryMock = new();
+
+        _localizer = StringLocalizerFactory.Create();
 
         _handler = new UnsubscribeNewsletterHandler(
             _newsletterRepositoryMock.Object,
@@ -23,11 +27,7 @@ public class UnsubscribeNewsletterHandlerTest
     {
         var newsletters = new List<Newsletter>();
 
-        var request = new UnsubscribeNewsletterCommand()
-        {
-            Email = "test@test.com",
-            Token = "token"
-        };
+        var request = new UnsubscribeNewsletterCommand("test@test.com", "token");
 
         var expectedNewsletter = Newsletter.Create("test@test.com", "token");
         expectedNewsletter.Unsubscribe();
@@ -50,17 +50,14 @@ public class UnsubscribeNewsletterHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Bad request")]
-    [InlineData("pl-PL", "Nieprawidłowe żądanie")]
-    public async Task Should_ThrowException_WhenNewsletterDoesNotExist(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_WhenNewsletterDoesNotExist(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.NewsletterNotFound];
 
-        var request = new UnsubscribeNewsletterCommand()
-        {
-            Email = "incorrectEmail@test.com",
-            Token = "token"
-        };
+        var request = new UnsubscribeNewsletterCommand("incorrectEmail@test.com", "token");
 
         _newsletterRepositoryMock
             .Setup(x => x.GetAsync(request.Email))
@@ -68,7 +65,7 @@ public class UnsubscribeNewsletterHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, It.IsAny<CancellationToken>());
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(act);
+        var exception = await Assert.ThrowsAsync<NewsletterNotFoundException>(act);
         exception.Message.Should().Be(expectedMessage);
 
         _newsletterRepositoryMock.Verify(x => x.GetAsync(request.Email), Times.Once());
@@ -76,17 +73,14 @@ public class UnsubscribeNewsletterHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Bad request")]
-    [InlineData("pl-PL", "Nieprawidłowe żądanie")]
-    public async Task Should_ThrowException_WhenNewsletterHasIncorrectToken(string culture, string expectedMessage)
+    [InlineData ("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_WhenNewsletterHasIncorrectToken(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.InvalidToken];
 
-        var request = new UnsubscribeNewsletterCommand()
-        {
-            Email = "test@test.com",
-            Token = "incorrectToken"
-        };
+        var request = new UnsubscribeNewsletterCommand("test@test.com", "incorrectToken");
 
         _newsletterRepositoryMock
             .Setup(x => x.GetAsync(request.Email))
@@ -94,7 +88,7 @@ public class UnsubscribeNewsletterHandlerTest
 
         Func<Task> act = () => _handler.Handle(request, It.IsAny<CancellationToken>());
 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(act);
+        var exception = await Assert.ThrowsAsync<InvalidTokenException>(act);
         exception.Message.Should().Be(expectedMessage);
 
         _newsletterRepositoryMock.Verify(x => x.GetAsync(request.Email), Times.Once());

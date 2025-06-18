@@ -1,7 +1,7 @@
 ﻿namespace Yerbowo.Application.Functions.Cart;
 
-public class CartItemDto
+public record CartItemDto
 {
-	public CartProductItemDto Product { get; set; }
+	public CartProductItemDto Product { get; init; }
 	public int Quantity { get; set; }
 }

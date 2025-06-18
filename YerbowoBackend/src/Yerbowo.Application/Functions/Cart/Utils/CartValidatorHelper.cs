@@ -5,14 +5,12 @@ public static class CartValidatorHelper
     public static void VerifyStock(Product product, int cartItemQuantity, IStringLocalizer<SharedResource> localizer)
 	{
 		if (cartItemQuantity > product.Stock)
-			throw new Exception(localizer["ExceptionStockExceeded"]);
+			throw new CartStockExceeededException(localizer);
 	}
 
 	public static void VerifyQuantity(int quantity, IStringLocalizer<SharedResource> localizer)
 	{
 		if (quantity < 1)
-		{
-			throw new Exception(localizer["ExceptionIncorrectQuantity"]);
-		}
+			throw new CartStockIsIncorrectException(localizer);
 	}
 }

@@ -3,8 +3,8 @@
 [ExcludeFromCodeCoverage]
 public class NewsletterInvitationEmailSender : EmailTemplateSenderBase, INewsletterInvitationEmailSender
 {
-    public NewsletterInvitationEmailSender(IOptions<SendGridSettings> settings)
-        : base(settings, settings.Value.NewsletterInvitationEmailTemplateId)
+    public NewsletterInvitationEmailSender(IOptions<SendGridOptions> options)
+        : base(options, options.Value.NewsletterInvitationEmailTemplateId)
     {
     }
 }

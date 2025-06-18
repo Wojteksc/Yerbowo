@@ -3,41 +3,29 @@
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ApiControllerBase
+public class UsersController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public UsersController(IMediator mediator,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _mediator = mediator;
-        _localizer = localizer;
-    }
-
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUser(int id)
+    public async Task<ActionResult<UserDetailsDto>> GetUser(int id)
     {
-        var user = await _mediator.Send(new GetUserByIdQuery(id));
+        var user = await dispatcher.ExecuteQuery(new GetUserByIdQuery(id));
 
         return Ok(user);
     }
 
     [HttpGet("{email}")]
-    public async Task<IActionResult> GetUser(string email)
+    public async Task<ActionResult<UserDetailsDto>> GetUser(string email)
     {
-        var user = await _mediator.Send(new GetUserByEmailQuery(email));
+        var user = await dispatcher.ExecuteQuery(new GetUserByEmailQuery(email));
 
         return Ok(user);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, ChangeUserCommand user)
+    [BadRequestFilter]
+    public async Task<ActionResult> UpdateUser(int id, ChangeUserCommand user)
     {
-        if (id != user.Id)
-            return BadRequest(_localizer["ResponseBadRequest"]);
-
-        await _mediator.Send(user);
+        await dispatcher.ExecuteCommand(user);
 
         return NoContent();
     }

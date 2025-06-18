@@ -1,10 +1,10 @@
 ﻿namespace Yerbowo.Application.Functions.Auth.Command.SocialLogin;
 
-public class SocialLoginCommand : IRequest<ResponseToken>
+public record SocialLoginCommand : ICommand<ResponseToken>
 {
-	public string Email { get; set; }
-	public string FirstName { get; set; }
-	public string LastName { get; set; }
-	public string PhotoUrl { get; set; }
-	public string Provider { get; set; }
+	public string Email { get; init; }
+	public string FirstName { get; init; }
+	public string LastName { get; init; }
+	public string PhotoUrl { get; init; }
+	public string Provider { get; init; }
 }

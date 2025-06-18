@@ -2,27 +2,31 @@
 
 public class ChangeUserHandlerTest
 {
-    private readonly Mock<IUserRepository> _userRepositoryMock;
-    private readonly Mock<IPasswordValidator> _passwordValidatorMock;
-    private readonly ChangeUserHandler _handler;
+    private readonly Mock<IUserRepository> userRepository;
+    private readonly Mock<IPasswordManager> passwordManager;
+    private readonly ChangeUserHandler handler;
+
+    private IStringLocalizer<SharedResource> localizer;
 
     public ChangeUserHandlerTest()
     {
-        _userRepositoryMock = new Mock<IUserRepository>();
-        _passwordValidatorMock = new Mock<IPasswordValidator>();
+        userRepository = new();
+        passwordManager = new();
 
-        _handler = new ChangeUserHandler(
+        localizer = StringLocalizerFactory.Create();
+
+        handler = new ChangeUserHandler(
             AutoMapperConfig.Initialize(),
-            _userRepositoryMock.Object,
-            _passwordValidatorMock.Object,
+            userRepository.Object,
+            passwordManager.Object,
             StringLocalizerFactory.Create());
     }
 
     [Fact]
     public async Task Should_UpdateUserCorrectlyWithPassword()
     {
-        var user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
-
+        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        user.SetPassword("password");
         var request = new ChangeUserCommand
         {
             FirstName = "firstName_NEW",
@@ -39,35 +43,38 @@ public class ChangeUserHandlerTest
             "firstName_NEW",
             "lastName_NEW",
             "email@emailNEW.com",
-            "password_NEW",
             "user",
             "companyName_NEW");
+        expectedUpdatedUser.SetPassword("newhashedPassword");
 
         var users = new List<User>();
 
-        _userRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        userRepository
+            .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(user);
-        _userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>()))
-            .Callback<User>(u => users.Add(u))
-            .ReturnsAsync(true);
-        _passwordValidatorMock.Setup(x => x.Equals(
-            It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+
+        userRepository
+            .Setup(x => x.UpdateAsync(It.IsAny<User>()))
+            .Callback<User>(u => users.Add(u));
+        
+        passwordManager
+            .Setup(x => x.Validate("password", "password"))
             .Returns(true);
 
-        await _handler.Handle(request, CancellationToken.None);
-        _userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
-        users.Should().AllBeEquivalentTo(expectedUpdatedUser, x => x
-            .Excluding(u => u.PasswordHash)
-            .Excluding(u => u.PasswordSalt));
+        passwordManager
+            .Setup(x => x.Secure("password_NEW"))
+            .Returns("newhashedPassword");
 
-        IPasswordValidator passwordValidator = new PasswordValidator();
-        Assert.True(passwordValidator.Equals(request.NewPassword, users.First().PasswordHash, users.First().PasswordSalt));
+        await handler.Handle(request, CancellationToken.None);
+        userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
+        users.Should().AllBeEquivalentTo(expectedUpdatedUser);
     }
 
     [Fact]
     public async Task Should_UpdateUserCorrectlyWithoutPassword()
     {
-        var user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
+        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        user.SetPassword("password");
 
         var request = new ChangeUserCommand
         {
@@ -83,65 +90,68 @@ public class ChangeUserHandlerTest
             "firstName_NEW",
             "lastName_NEW",
             "email@emailNEW.com",
-            "password",
             "user",
             "companyName_NEW");
+        expectedUpdatedUser.SetPassword("password");
 
         var users = new List<User>();
 
-        _userRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        userRepository
+            .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(user);
-        _userRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<User>()))
-            .Callback<User>(u => users.Add(u))
-            .ReturnsAsync(true);
-        _passwordValidatorMock.Setup(x => x.Equals(
-            It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
+
+        userRepository
+            .Setup(x => x.UpdateAsync(It.IsAny<User>()))
+            .Callback<User>(u => users.Add(u));
+        
+        passwordManager
+            .Setup(x => x.Validate("password", "password"))
             .Returns(true);
 
-        await _handler.Handle(request, CancellationToken.None);
-        _userRepositoryMock.Verify(x => x.UpdateAsync(user), Times.Once);
-        users.Should().AllBeEquivalentTo(expectedUpdatedUser, x => x
-            .Excluding(u => u.PasswordHash)
-            .Excluding(u => u.PasswordSalt));
-        users.First().PasswordSalt.Should().BeEquivalentTo(user.PasswordSalt);
-        users.First().PasswordHash.Should().BeEquivalentTo(user.PasswordHash);
+        await handler.Handle(request, CancellationToken.None);
+        userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
+        passwordManager.Verify(x => x.Secure(It.IsAny<string>()), Times.Never());
+        users.Should().AllBeEquivalentTo(expectedUpdatedUser);
     }
 
     [Theory]
-    [InlineData("en-US", "User not found")]
-    [InlineData("pl-PL", "Nie znaleziono użytkownika")]
-    public async Task Should_ThrowException_When_UserDoesNotExist(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_UserDoesNotExist(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = localizer[Localizations.UserNotFound];
 
         var request = new ChangeUserCommand { Id = 1 };
 
-        _userRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        userRepository
+            .Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync((User)null);
 
-        Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
-        var exception = await Assert.ThrowsAsync<ArgumentException>(act);
+        Func<Task> act = () => handler.Handle(request, CancellationToken.None);
+        var exception = await Assert.ThrowsAsync<UserNotFoundException>(act);
         exception.Message.Should().Be(expectedMessage);
-        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
+        userRepository.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
     }
 
     [Theory]
-    [InlineData("en-US", "The entered password is incorrect")]
-    [InlineData("pl-PL", "Podane hasło jest nieprawidłowe")]
-    public async Task Should_ThrowException_When_PasswordIsInvalid(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_PasswordIsInvalid(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = localizer[Localizations.UserPasswordIsIncorrect];
 
-        var user = new User("firstName", "lastName", "email@email.com", "password", "user", "companyName");
+        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
 
         var request = new ChangeUserCommand { Id = 1, CurrentPassword = "password_xyz" };
 
-        _userRepositoryMock.Setup(x => x.GetAsync(request.Id))
+        userRepository.Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(user);
 
-        Func<Task> act = () => _handler.Handle(request, CancellationToken.None);
-        var exception = await Assert.ThrowsAsync<Exception>(act);
+        Func<Task> act = () => handler.Handle(request, CancellationToken.None);
+        var exception = await Assert.ThrowsAsync<UserPasswordIsIncorrectException>(act);
         exception.Message.Should().Be(expectedMessage);
-        _userRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
+        userRepository.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never);
     }
 }

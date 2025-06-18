@@ -1,42 +1,28 @@
-﻿namespace Yerbowo.Application.Functions.Auth.Command.Login;
+namespace Yerbowo.Application.Functions.Auth.Command.Login;
 
-public class LoginHandler : IRequestHandler<LoginCommand, ResponseToken>
+public class LoginHandler(
+	IUserRepository userRepository,
+    IPasswordManager passwordManager,
+    IAuthenticator authenticator,
+    IStringLocalizer<SharedResource> localizer) : ICommandHandler<LoginCommand, ResponseToken>
 {
-	private readonly IUserRepository _userRepository;
-	private readonly IPasswordValidator _passwordValidator;
-	private readonly IJwtProvider _jwtHandler;
-	private readonly IStringLocalizer<SharedResource> _localizer;
-
-    public LoginHandler(IUserRepository userRepository,
-        IPasswordValidator passwordValidator,
-        IJwtProvider jwtHandler,
-        IStringLocalizer<SharedResource> localizer)
-    {
-        _userRepository = userRepository;
-        _passwordValidator = passwordValidator;
-        _jwtHandler = jwtHandler;
-        _localizer = localizer;
-    }
-
     public async Task<ResponseToken> Handle(LoginCommand request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetAsync(request.Email);
+		var user = await userRepository.GetAsync(request.Email);
 
 		if (user == null || user.IsRemoved ||
-			!_passwordValidator.Equals(request.Password, user.PasswordHash, user.PasswordSalt))
+			!passwordManager.Validate(request.Password, user.Password))
 		{
-			throw new UnauthorizedAccessException(_localizer["ExceptionInvalidLoginDetails"]);
+			throw new UserInvalidCredentailsException(localizer);
 		}
 
 		if(user.VerifiedAt == null || !user.VerifiedAt.HasValue)
         {
-			throw new UnauthorizedAccessException(_localizer["ExceptionAccountRegistrationHasNotBeenConfirmed"]);
+			throw new UserRegistrationWasNotConfirmedException(localizer);
         }
 
-		return new ResponseToken()
-		{
-			Token = _jwtHandler.CreateToken(user.Id, user.Email, user.Role),
-			PhotoUrl = user.PhotoUrl
-		};
+		var responseToken = new ResponseToken(authenticator.CreateToken(user.Id, user.Email, user.Role), user.PhotoUrl);
+		
+		return responseToken;
 	}
 }

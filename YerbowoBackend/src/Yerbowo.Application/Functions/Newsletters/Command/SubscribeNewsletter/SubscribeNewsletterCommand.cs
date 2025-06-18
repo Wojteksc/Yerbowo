@@ -1,7 +1,3 @@
 ﻿namespace Yerbowo.Application.Functions.Newsletters.Command.SubscribeNewsletter;
 
-public class SubscribeNewsletterCommand : IRequest
-{
-    public string Email { get; set; }
-    public string Token { get; set; }
-}
+public record SubscribeNewsletterCommand(string Email, string Token) : ICommand { }

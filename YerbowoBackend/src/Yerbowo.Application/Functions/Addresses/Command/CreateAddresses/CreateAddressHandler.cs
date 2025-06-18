@@ -1,23 +1,15 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
 
-public class CreateAddressHandler : IRequestHandler<CreateAddressCommand, AddressDetailsDto>
+public class CreateAddressHandler(
+    IMapper mapper,
+    IAddressRepository addressRepository) : ICommandHandler<CreateAddressCommand, int>
 {
-    private readonly IMapper _mapper;
-    private readonly IAddressRepository _addressRepository;
-
-    public CreateAddressHandler(IMapper mapper,
-        IAddressRepository addressRepository)
+    public async Task<int> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
     {
-        _mapper = mapper;
-        _addressRepository = addressRepository;
-    }
+        var address = mapper.Map<Address>(request);
 
-    public async Task<AddressDetailsDto> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
-    {
-        var address = _mapper.Map<Address>(request);
+        await addressRepository.AddAsync(address);
 
-        await _addressRepository.AddAsync(address);
-
-        return _mapper.Map<AddressDetailsDto>(address);
+        return address.Id;
     }
 }

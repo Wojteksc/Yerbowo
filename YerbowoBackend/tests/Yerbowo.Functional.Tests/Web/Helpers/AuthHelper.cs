@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Functional.Tests.Web.Helpers;
+﻿using Yerbowo.Application.Functions.Users.Query;
+
+namespace Yerbowo.Functional.Tests.Web.Helpers;
 
 public static class AuthHelper
 {
@@ -21,6 +23,8 @@ public static class AuthHelper
 		HttpRequestMessage request = GetHttpRequestMessage(loginCommand);
 
 		HttpResponseMessage response = await httpClient.PostAsync("api/auth/login", request.Content);
+		if (!response.IsSuccessStatusCode)
+			throw new HttpRequestException($"Request failed with status code: {response.StatusCode}");
 
 		var stringResponse = await response.Content.ReadAsStringAsync();
 		var tokenDto = JsonSerializer.Deserialize<ResponseToken>(stringResponse, 
@@ -47,11 +51,7 @@ public static class AuthHelper
 
         var userDb = await userRepository.GetAsync(registerCommand.Email);
 
-        var confirmEmailCommand = new ConfirmRegistrationEmailCommand()
-        {
-            Email = registerCommand.Email,
-            Token = userDb.VerificationToken
-        };
+		var confirmEmailCommand = new ConfirmRegistrationEmailCommand(registerCommand.Email, userDb.VerificationToken);
 
         await ConfirmEmailAsync(httpClient, confirmEmailCommand);
 

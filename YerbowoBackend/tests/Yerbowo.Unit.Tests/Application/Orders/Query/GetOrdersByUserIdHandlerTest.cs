@@ -44,7 +44,8 @@ public class GetOrdersByUserIdHandlerTest
             }
         };
 
-        _orderRepositoryMock.Setup(x => x.GetByUserAsync(1))
+        _orderRepositoryMock
+            .Setup(x => x.GetByUserAsync(1))
             .ReturnsAsync(new List<Order> { order });
 
         var result = await _handler.Handle(request, CancellationToken.None);

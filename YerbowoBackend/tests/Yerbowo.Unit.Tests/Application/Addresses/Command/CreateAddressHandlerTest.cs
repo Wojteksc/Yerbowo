@@ -2,16 +2,19 @@
 
 public class CreateAddressHandlerTest
 {
-    private readonly Mock<IAddressRepository> _addressRepositoryMock;
+    private readonly Mock<IAddressRepository> _addressRepository;
+
     private readonly CreateAddressHandler _handler;
+
+    const int AddressId = 1000;
 
     public CreateAddressHandlerTest()
     {
-        _addressRepositoryMock = new Mock<IAddressRepository>();
+        _addressRepository = new();
 
         _handler = new CreateAddressHandler(
             AutoMapperConfig.Initialize(),
-            _addressRepositoryMock.Object);
+            _addressRepository.Object);
     }
 
     [Fact]
@@ -49,32 +52,21 @@ public class CreateAddressHandlerTest
             "1156301130",
             "Company_1");
 
-        var expectedResult = new AddressDetailsDto
-        {
-            UserId = 1,
-            Alias = "aliastTest",
-            FirstName = "firstName",
-            LastName = "LastName",
-            Street = "Street",
-            BuildingNumber = "15A",
-            ApartmentNumber = "3",
-            Place = "Place",
-            PostCode = "00-000",
-            Phone = "000-000-000",
-            Email = "test@test.com",
-            Nip = "1156301130",
-            Company = "Company_1"
-        };
+        typeof(Address).GetProperty(nameof(Address.Id)).SetValue(expectedInsertedAddress, AddressId, null);
 
         var addresses = new List<Address>();
 
-        _addressRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Address>()))
-            .Callback<Address>(a => addresses.Add(a));
+        _addressRepository
+            .Setup(x => x.AddAsync(It.IsAny<Address>()))
+            .Callback<Address>(a => 
+            {
+                typeof(Address).GetProperty(nameof(Address.Id)).SetValue(a, AddressId, null);
+                addresses.Add(a); 
+            });
 
-        var result = await _handler.Handle(command, CancellationToken.None);
+        int addressId = await _handler.Handle(command, CancellationToken.None);
 
-        _addressRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Address>()), Times.Once());
-        result.Should().BeEquivalentTo(expectedResult);
         addresses.Should().AllBeEquivalentTo(expectedInsertedAddress);
+        addressId.Should().Be(AddressId);
     }
 }

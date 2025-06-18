@@ -1,24 +1,15 @@
 ﻿namespace Yerbowo.Api;
 
-public class Startup
+public class Startup(IConfiguration Configuration)
 {
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
-
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSwagger();
+        services.AddSwaggerDocumentation();
         services.AddControllersOptions();
         services.AddMemoryCache();
-        services.AddSettings(Configuration);
-        services.AddHostedServices();
-        services.AddYerbowoInfrastructure(Configuration);
-        services.AddYerbowoApplication();
-        services.AddAuthentication(Configuration);
+        services.AddHostOptions();
+        services.AddApplicationServices();
+        services.AddInfrastructureServices(Configuration);
         services.AddAuthorization();
         services.AddCors();
         services.AddLocalization();
@@ -27,7 +18,7 @@ public class Startup
         services.AddHttpContextAccessor();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, YerbowoContextSeed dbInitializer)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
         {
@@ -40,19 +31,17 @@ public class Startup
             app.UseHttpsRedirection();
         }
 
-        app.UseExceptionHandlers();
+        app.UseInfrastructure();
+        app.UseRequestLocalizations();
         app.UseCorsOptions(Configuration);
-        app.UseRouting();
         app.UseSecurityHeaders();
+        app.UseStaticFiles();
+        app.UseDefaultFiles();
+        app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
-        app.UseCookiePolicy();
-        app.UseRequestLocalizations();
         app.UseSession();
+        app.UseCookiePolicy();
         app.UseEndpointsOptions();
-
-        dbInitializer.Seed();
     }
 }

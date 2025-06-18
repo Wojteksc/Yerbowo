@@ -16,18 +16,18 @@ public class NewsletterControllerTest : ApiTestBase
     {
         string email = "newsletter@testemail.com";
 
-        await UnsubscribeScenario(email);
+        await ReSubscribeScenario(email);
         var outboxMessagesFirstScnenario = await GetOutboxMessages();
         outboxMessagesFirstScnenario.Should().HaveCount(2);
         outboxMessagesFirstScnenario.Select(o => o.ProccessedAt).Should().NotBeNull();
 
-        await UnsubscribeScenario(email);
+        await ReSubscribeScenario(email);
         var outboxMessagesSecondScenario = await GetOutboxMessages();
         outboxMessagesSecondScenario.Should().HaveCount(4);
         outboxMessagesFirstScnenario.Select(o => o.ProccessedAt).Should().NotBeNull();
     }
 
-    private async Task UnsubscribeScenario(string email)
+    private async Task ReSubscribeScenario(string email)
     {
         await InviteNewsletterScenario(email);
 
@@ -41,15 +41,15 @@ public class NewsletterControllerTest : ApiTestBase
 
         (await IsNewsletterSubsribed(email)).Should().BeFalse();
 
-        await ExecuteBackroundService(cancelAfter: TimeSpan.FromSeconds(10));
+        await ExecuteOutboxMessagesJob(cancelAfter: TimeSpan.FromSeconds(5));
     }
 
-    private async Task ExecuteBackroundService(TimeSpan cancelAfter)
+    private async Task ExecuteOutboxMessagesJob(TimeSpan cancelAfter)
     {
         await using var scope = _scope.CreateAsyncScope();
-        var loggerService = scope.ServiceProvider.GetRequiredService<ILogger<ProcessOutboxMessagesJob>>();
+        var loggerService = scope.ServiceProvider.GetRequiredService<ILogger<OutboxMessagesJob>>();
         var interfaceConverterJsonOptions = scope.ServiceProvider.GetRequiredService<IInterfaceConverterJsonOptions>();
-        var job = new ProcessOutboxMessagesJob(_scope, loggerService, interfaceConverterJsonOptions);
+        var job = new OutboxMessagesJob(_scope, loggerService, interfaceConverterJsonOptions);
         try
         {
             var tokenSource = new CancellationTokenSource();
@@ -62,7 +62,7 @@ public class NewsletterControllerTest : ApiTestBase
         }
         catch (Exception ex)
         {
-            throw new Exception($"Something went wrong while executing {nameof(ProcessOutboxMessagesJob)}", ex);
+            throw new Exception($"Something went wrong while executing {nameof(OutboxMessagesJob)}", ex);
         }
     }
 
@@ -98,11 +98,7 @@ public class NewsletterControllerTest : ApiTestBase
 
     private async Task SubscribeNewsletterScenario(Newsletter newsletter)
     {
-        var subscribeNewsletterCommand = new SubscribeNewsletterCommand()
-        {
-            Email = newsletter.Email,
-            Token = newsletter.VerificationToken
-        };
+        var subscribeNewsletterCommand = new SubscribeNewsletterCommand(newsletter.Email, newsletter.VerificationToken);
 
         var response = await _httpClient.PostAsync($"api/newsletter/subscribe", subscribeNewsletterCommand);
 
@@ -111,11 +107,7 @@ public class NewsletterControllerTest : ApiTestBase
 
     private async Task UnsubscribeNewsletterScenario(Newsletter newsletter)
     {
-        var subscribeNewsletterCommand = new UnsubscribeNewsletterCommand()
-        {
-            Email = newsletter.Email,
-            Token = newsletter.VerificationToken
-        };
+        var subscribeNewsletterCommand = new UnsubscribeNewsletterCommand(newsletter.Email, newsletter.VerificationToken);
 
         var response = await _httpClient.PostAsync($"api/newsletter/unsubscribe", subscribeNewsletterCommand);
 

@@ -6,9 +6,13 @@ public class SendRegistrationConfirmationEmailHandlerTest
 
     private readonly SendRegistrationConfirmationEmailCommand request;
 
+    private IStringLocalizer<SharedResource> _localizer;
+
     public SendRegistrationConfirmationEmailHandlerTest()
     {
-        _emailSender = new Mock<IRegistrationConfirmationEmailSender>();
+        _emailSender = new();
+
+        _localizer = StringLocalizerFactory.Create();
 
         request = new SendRegistrationConfirmationEmailCommand("firstName", "email@email.com", "token");
     }
@@ -22,8 +26,7 @@ public class SendRegistrationConfirmationEmailHandlerTest
             x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
             .ReturnsAsync(new SendGrid.Response(HttpStatusCode.OK, It.IsAny<HttpContent>(), It.IsAny<HttpResponseHeaders>()));
 
-        IOptions<AppSettings> appSettings = Options.Create(
-            new AppSettings() { BaseUrl = "http://localhost:5000" });
+        IAppSettings appSettings = new AppOptions() { BaseUrl = "http://localhost:5000" };
 
         var handler = new SendRegistrationConfirmationEmailHandler(
             _emailSender.Object,
@@ -38,18 +41,18 @@ public class SendRegistrationConfirmationEmailHandlerTest
     }
 
     [Theory]
-    [InlineData("en-US", "Failed attempt to send email")]
-    [InlineData("pl-PL", "Nieudana próba wysłania wiadomości e-mail")]
-    public async Task Should_ThrowException_When_EmailCouldntBeSent(string culture, string expectedMessage)
+    [InlineData("en-US")]
+    [InlineData("pl-PL")]
+    public async Task Should_ThrowException_When_EmailCouldntBeSent(string culture)
     {
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        string expectedMessage = _localizer[Localizations.EmailSendingFailedException];
 
         _emailSender.Setup(
             x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
             .ReturnsAsync(new SendGrid.Response(HttpStatusCode.Conflict, It.IsAny<HttpContent>(), It.IsAny<HttpResponseHeaders>()));
 
-        IOptions<AppSettings> appSettings = Options.Create(
-            new AppSettings() { BaseUrl = "http://localhost:5000" });
+        IAppSettings appSettings = new AppOptions() { BaseUrl = "http://localhost:5000" };
 
         var handler = new SendRegistrationConfirmationEmailHandler(
             _emailSender.Object,
@@ -58,7 +61,7 @@ public class SendRegistrationConfirmationEmailHandlerTest
 
         Func<Task> act = () => handler.Handle(request, It.IsAny<CancellationToken>());
 
-        var exception = await Assert.ThrowsAsync<Exception>(act);
+        var exception = await Assert.ThrowsAsync<EmailSendingFailedException>(act);
         exception.Message.Should().Be(expectedMessage);
     }
 }

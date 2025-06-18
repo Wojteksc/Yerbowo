@@ -1,10 +1,10 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Query.GetRandomProducts;
 
-public class RandomProductsDto
+public record RandomProductsDto
 {
-    public IEnumerable<ProductCardDto> Bestsellers { get; set; }
+    public IEnumerable<ProductCardDto> Bestsellers { get; init; }
 
-    public IEnumerable<ProductCardDto> News { get; set; }
+    public IEnumerable<ProductCardDto> News { get; init; }
 
-    public IEnumerable<ProductCardDto> Promotions { get; set; }
+    public IEnumerable<ProductCardDto> Promotions { get; init; }
 }
