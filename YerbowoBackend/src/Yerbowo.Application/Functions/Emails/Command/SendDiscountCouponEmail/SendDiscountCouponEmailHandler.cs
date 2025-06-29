@@ -13,7 +13,7 @@ public class SendDiscountCouponEmailHandler(
 
         object dynamicTemplateData = new
         {
-            UnsubscribeLink = $"{appSettings.BaseUrl}/unsubscribe?email={request.Email}&token={request.VerificationToken}"
+            UnsubscribeLink = $"{appSettings.BaseUrl}/newsletter/unsubscribe?email={request.Email}&token={request.VerificationToken}"
         };
         var responseEmail = await emailSender.SendEmailAsync(new EmailAddress(request.Email), dynamicTemplateData);
 

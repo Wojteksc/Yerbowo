@@ -9,7 +9,7 @@ public class SendNewsletterInvitationEmailHandler(
     {
         object dynamicTemplateData = new
         {
-            ConfirmationLink = $"{settings.BaseUrl}/subscribe?email={request.Email}&token={request.VerificationToken}"
+            ConfirmationLink = $"{settings.BaseUrl}/newsletter/subscribe?email={request.Email}&token={request.VerificationToken}"
         };
 
         var responseEmail = await emailSender.SendEmailAsync(new EmailAddress(request.Email), dynamicTemplateData);

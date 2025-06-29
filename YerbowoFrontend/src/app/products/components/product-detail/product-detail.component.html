@@ -1,0 +1,38 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <div class="wrapper-product-details">
+    <img id="product-details-img" [src]="'/assets/images/products/yerba/' + product.image" alt="{{product.name}}">
+    <div id="product-details-info">
+      <h6>{{ product.category }} > {{ product.subcategory }}</h6>
+      <h1>{{ product.name }}</h1>
+      <hr>
+      <div class="subwrapper-product-details-info">
+        <p>Dostępność:</p>
+        <p><strong id="product-details-available">{{ product.stock > 0 ? 'Dostępny' : 'Niedostępny' }} ({{ product.stock }} szt.)</strong></p>
+        <p>Czas wysyłki:</p>
+        <p><strong id="product-details-delivery">3 dni</strong></p>
+        <h2>Cena:</h2>
+        <h2><strong><span id="product-details-price">{{ product.price.toFixed(2) }} zł</span></strong></h2>
+        <label id="product-details-quantity-key" for="product-details-quantity">Ilość: </label>
+        <input
+          id="product-details-quantity"
+          type="number"
+          formControlName="quantity"
+          min="1"
+          [attr.max]="product.stock"
+          (input)="
+            productForm.controls['quantity'].setValue(
+              $event.target.value === '' ? null : +$event.target.value
+            )
+          "
+        />
+        <input id="product-details-id" type="hidden" formControlName="id" />
+      </div>
+      <hr style="border-top: dashed 1px;">
+      <div style="text-align:center">
+        <button type="submit" id="product-addbasket" [disabled]="productForm.invalid">DODAJ DO KOSZYKA</button>
+      </div>
+      <hr style="border-top: dashed 1px;">
+    </div>
+    <div id="product-details-description" [innerHTML]="product.description"></div>
+  </div>
+</form>

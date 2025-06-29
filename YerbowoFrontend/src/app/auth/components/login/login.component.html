@@ -1,0 +1,21 @@
+<div class="grid">
+  <div class="grid-area-center">
+      <h2 class="text-center">Zaloguj się</h2>
+      <form #loginForm="ngForm" (ngSubmit)="signIn()" class="subgrid-col-1 grid-items-center">      
+        <input type="text" name="email" placeholder="E-mail" autocomplete="email" required [(ngModel)]="model.email" class="input-text">
+        <input type="password" name="password" placeholder="Hasło" required [(ngModel)]="model.password" class="input-text">
+        <input type="submit" class="btn-submit" value="Zaloguj"/>
+      </form>  
+      
+      <br>
+      <h4 class="header-crossed"><span>LUB</span></h4>
+      <br>
+
+      <div class="subgrid-social-login grid-items-center">
+        <button (click)="signInWithFB()" class="loginBtn loginBtn--facebook grid-item-right">
+          Zaloguj się przez Facebook
+        </button> 
+        <asl-google-signin-button (click)="signInWithGoogle()" class="loginBtn loginBtn--google grid-item-left" type='standard' size='medium' theme="filled_blue"></asl-google-signin-button>
+      </div>
+  </div>
+</div>

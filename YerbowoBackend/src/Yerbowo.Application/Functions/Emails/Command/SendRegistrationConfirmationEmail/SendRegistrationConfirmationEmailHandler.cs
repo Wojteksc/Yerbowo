@@ -10,7 +10,7 @@ public class SendRegistrationConfirmationEmailHandler(
         object dynamicTemplateData = new
         {
             RecipientName = request.FirstName,
-            ConfirmationLink = $"{appSettings.BaseUrl}/confirmEmail?email={request.Email}&token={request.VerificationToken}"
+            ConfirmationLink = $"{appSettings.BaseUrl}/auth/potwierdz-email?email={request.Email}&token={request.VerificationToken}"
         };
 
         var responseEmail = await emailSender.SendEmailAsync(
