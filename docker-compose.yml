@@ -1,0 +1,36 @@
+version: '3.8'
+
+volumes:
+  sql_data:
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: yerbowo_sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+    volumes:
+      - sql_data:/var/opt/mssql
+    ports:
+      - "1433:1433"
+    restart: always
+
+  web:
+    build:
+      context: .
+      dockerfile: YerbowoBackend/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "8888:80"
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - KeyVaultConfig__KVUrl=${KeyVaultConfig__KVUrl}
+      - KeyVaultConfig__TenantId=${KeyVaultConfig__TenantId}
+      - KeyVaultConfig__ClientId=${KeyVaultConfig__ClientId}
+      - KeyVaultConfig__ClientSecret=${KeyVaultConfig__ClientSecret}
+      

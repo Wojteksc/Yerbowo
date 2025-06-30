@@ -9,11 +9,18 @@ internal sealed class OutboxMessagesJob(
     {
         logger.LogInformation("Process: Outbox messages.");
 
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
-            await ProcessOutboxMessages(cancellationToken);
-
-            await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await ProcessOutboxMessages(cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+            }
+        }
+        catch (OperationCanceledException ex) when (cancellationToken.IsCancellationRequested)
+        {
+            logger.LogInformation("OutboxMessagesJob cancelled.");
+            logger.LogError(ex.Message);
         }
     }
 

@@ -55,9 +55,9 @@ steps:
     zipAfterPublish: false
 
 - task: NodeTool@0
-  displayName: 'Use Node 14.x'
+  displayName: 'Use Node 18.x'
   inputs:
-    versionSpec: 14.x
+    versionSpec: 18.x
 - task: Npm@1
   displayName: 'npm install'
   inputs:
@@ -70,7 +70,7 @@ steps:
     command: custom
     workingDir: YerbowoFrontend
     verbose: false
-    customCommand: 'run prod-build'
+    customCommand: 'run production'
 
 - task: CopyFiles@2
   displayName: 'Copy Angular files to $(build.artifactstagingdirectory)\Yerbowo.Api\wwwroot'
