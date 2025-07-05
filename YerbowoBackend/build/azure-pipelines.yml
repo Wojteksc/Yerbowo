@@ -2,19 +2,19 @@ trigger:
   - develop
 
 variables:
-  # --group: KV-Settings
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
 
 pool:
   vmImage: 'windows-latest'
 steps:
-- task: FileTransform@1
-  displayName: 'Fill Azure Key vault'
+- task: AzureKeyVault@2
+  displayName: 'Download secrets from Azure Key Vault'
   inputs:
-    folderPath: '$(System.DefaultWorkingDirectory)/**/'
-    fileType: 'json'
-    targetFiles: '**/appsettings.Production.json'
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    KeyVaultName: '$(KeyVaultConfig--KVUrl)'
+    SecretsFilter: '*'
+    RunAsPreJob: true
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
