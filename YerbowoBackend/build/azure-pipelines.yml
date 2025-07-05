@@ -2,6 +2,7 @@ trigger:
   - develop
 
 variables:
+  --group: KV-Settings
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
 
@@ -55,9 +56,9 @@ steps:
     zipAfterPublish: false
 
 - task: NodeTool@0
-  displayName: 'Use Node 18.x'
+  displayName: 'Use Node 14.x'
   inputs:
-    versionSpec: 18.x
+    versionSpec: 14.x
 - task: Npm@1
   displayName: 'npm install'
   inputs:
@@ -70,7 +71,7 @@ steps:
     command: custom
     workingDir: YerbowoFrontend
     verbose: false
-    customCommand: 'run production'
+    customCommand: 'run prod-build'
 
 - task: CopyFiles@2
   displayName: 'Copy Angular files to $(build.artifactstagingdirectory)\Yerbowo.Api\wwwroot'
