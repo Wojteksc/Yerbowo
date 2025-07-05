@@ -6,10 +6,10 @@ public static class AzureKeyVaultExtensions
     {
         var buildConfiguration = config.Build();
 
-        string kvURL = buildConfiguration["KeyVaultConfig:KVUrl"];
-        string tenantId = buildConfiguration["KeyVaultConfig:TenantId"];
-        string clientId = buildConfiguration["KeyVaultConfig:ClientId"];
-        string clientSecret = buildConfiguration["KeyVaultConfig:ClientSecret"];
+        string kvURL = buildConfiguration["KeyVaultConfig--KVUrl"];
+        string tenantId = buildConfiguration["KeyVaultConfig--TenantId"];
+        string clientId = buildConfiguration["KeyVaultConfig--ClientId"];
+        string clientSecret = buildConfiguration["KeyVaultConfig--ClientSecret"];
 
         var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
         var client = new SecretClient(new Uri(kvURL), credential);
