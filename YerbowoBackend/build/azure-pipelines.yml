@@ -44,6 +44,11 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
+  env:
+    KeyVaultConfig__KVUrl: $(KeyVaultConfig--KVUrl)
+    KeyVaultConfig__TenantId: $(KeyVaultConfig--TenantId)
+    KeyVaultConfig__ClientId: $(KeyVaultConfig--ClientId)
+    KeyVaultConfig__ClientSecret: $(KeyVaultConfig--ClientSecret)
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
