@@ -12,7 +12,7 @@ steps:
   displayName: 'Download secrets from Azure Key Vault'
   inputs:
     azureSubscription: 'azure-resource-manager-yerbowo'
-    KeyVaultName: '$(KeyVaultConfig--KVUrl)'
+    KeyVaultName: 'yerbowo-key-vault'
     SecretsFilter: '*'
     RunAsPreJob: true
 
