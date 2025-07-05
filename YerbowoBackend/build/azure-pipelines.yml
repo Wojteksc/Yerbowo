@@ -2,8 +2,11 @@ trigger:
   - develop
 
 variables:
-  buildConfiguration: 'Release'
-  dotnetSdkVersion: '8.x'
+  - group: KV-Settings
+  - name: buildConfiguration
+    value: 'Release'
+  - name: dotnetSdkVersion
+    value: '8.x'
 
 pool:
   vmImage: 'windows-latest'
