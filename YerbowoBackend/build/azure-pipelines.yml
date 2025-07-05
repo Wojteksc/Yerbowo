@@ -2,7 +2,7 @@ trigger:
   - develop
 
 variables:
-  --group: KV-Settings
+  # --group: KV-Settings
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
 
