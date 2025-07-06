@@ -16,6 +16,15 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         environment = "Development";
 #else
         environment = "Production";
+        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
+        string envFilePath = Path.Combine(root, ".env");
+
+        if (!File.Exists(envFilePath))
+        {
+            throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
+        }
+
+        DotNetEnv.Env.Load(envFilePath);
 #endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
@@ -36,7 +45,9 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
         // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
-        configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+        configuration
+            .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
+            .AddEnvironmentVariables();
     }
 
     protected virtual HttpClient CreateClient()
