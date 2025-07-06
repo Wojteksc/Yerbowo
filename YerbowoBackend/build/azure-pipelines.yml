@@ -37,14 +37,13 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
-- script: |
-    echo "Running functional tests with Key Vault env vars..."
-    dotnet test YerbowoBackend/tests/Yerbowo.Functional.Tests/Yerbowo.Functional.Tests.csproj \
-      --configuration $(buildConfiguration) \
-      --no-build \
-      --collect:"Code Coverage" \
-      --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings
-  displayName: 'Run functional tests with Azure Key Vault env'
+- task: DotNetCoreCLI@2
+  displayName: 'Run tests - $(buildConfiguration)'
+  inputs:
+    command: 'test'
+    arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings'
+    publishTestResults: true
+    projects: '**/*.Tests.csproj'
   env:
     AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
     AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
