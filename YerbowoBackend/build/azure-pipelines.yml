@@ -45,7 +45,10 @@ steps:
     publishTestResults: true
     projects: '**/*.Tests.csproj'
   env:
-    KeyVaultConfig__KVUrl: $(KeyVaultConfig--KVUrl)
+    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
+    AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
+    AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
+    AZURE_TENANT_ID: $(KeyVaultConfig--TenantId)
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
