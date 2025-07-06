@@ -37,18 +37,19 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests - $(buildConfiguration)'
-  inputs:
-    command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
-    publishTestResults: true
-    projects: '**/*.Tests.csproj'
+- script: |
+    echo "Running functional tests with Key Vault env vars..."
+    dotnet test YerbowoBackend/tests/Yerbowo.Functional.Tests/Yerbowo.Functional.Tests.csproj \
+      --configuration $(buildConfiguration) \
+      --no-build \
+      --collect:"Code Coverage" \
+      --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings
+  displayName: 'Run functional tests with Azure Key Vault env'
   env:
-    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
     AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
     AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
     AZURE_TENANT_ID: $(KeyVaultConfig--TenantId)
+    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
