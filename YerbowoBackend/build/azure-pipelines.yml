@@ -11,13 +11,13 @@ variables:
 pool:
   vmImage: 'windows-latest'
 steps:
-# - task: AzureKeyVault@2
-#   displayName: 'Download secrets from Azure Key Vault'
-#   inputs:
-#     azureSubscription: 'Azure subscription (bb17721a-df4e-43ac-84b2-36834e5b4c83)'
-#     KeyVaultName: 'yerbowo-key-vault'
-#     SecretsFilter: '*'
-#     RunAsPreJob: true
+- task: AzureKeyVault@2
+  displayName: 'Download secrets from Azure Key Vault'
+  inputs:
+    azureSubscription: 'Azure subscription (bb17721a-df4e-43ac-84b2-36834e5b4c83)'
+    KeyVaultName: 'yerbowo-key-vault'
+    SecretsFilter: '*'
+    RunAsPreJob: true
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
