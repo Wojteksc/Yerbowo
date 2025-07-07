@@ -19,6 +19,10 @@ steps:
     SecretsFilter: '*'
     RunAsPreJob: false
 
+- script: |
+    echo "Sekret $(secretName): $(KeyVaultConfig--ClientId)"
+  displayName: 'Print downloaded secret (non-sensitive)'
+
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
