@@ -17,11 +17,15 @@ steps:
     azureSubscription: 'Azure subscription key vault'
     KeyVaultName: 'yerbowo-key-vault'
     SecretsFilter: '*'
-    RunAsPreJob: false
+    RunAsPreJob: true
 
-- script: |
-    echo "Sekret $(secretName): $(KeyVaultConfig--ClientId)"
-  displayName: 'Print downloaded secret (non-sensitive)'
+- powershell: |
+    Write-Host "Setting pipeline variables from Key Vault secrets..."
+    Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID]$(KeyVaultConfig--ClientId)"
+    Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET]$(KeyVaultConfig--ClientSecret)"
+    Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID]$(KeyVaultConfig--TenantId)"
+    Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL]$(KeyVaultConfig--KVUrl)"
+  displayName: 'Set Azure Key Vault environment variables globally (PowerShell)'
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
