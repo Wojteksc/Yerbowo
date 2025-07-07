@@ -45,6 +45,14 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
+- powershell: |
+    Write-Host "Setting environment variables for .NET test runtime..."
+    [System.Environment]::SetEnvironmentVariable('AZURE_CLIENT_ID', '$(AZURE_CLIENT_ID)', [System.EnvironmentVariableTarget]::Process)
+    [System.Environment]::SetEnvironmentVariable('AZURE_CLIENT_SECRET', '$(AZURE_CLIENT_SECRET)', [System.EnvironmentVariableTarget]::Process)
+    [System.Environment]::SetEnvironmentVariable('AZURE_TENANT_ID', '$(AZURE_TENANT_ID)', [System.EnvironmentVariableTarget]::Process)
+    [System.Environment]::SetEnvironmentVariable('AZURE_KEYVAULT_URL', '$(AZURE_KEYVAULT_URL)', [System.EnvironmentVariableTarget]::Process)
+  displayName: 'Set env variables for test host process'
+
 - task: DotNetCoreCLI@2
   displayName: 'Run tests - $(buildConfiguration)'
   inputs:
@@ -52,12 +60,6 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
-  env:
-    AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-    AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
-    AZURE_TENANT_ID: $(AZURE_TENANT_ID)
-    AZURE_KEYVAULT_URL: $(AZURE_KEYVAULT_URL)
-
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
