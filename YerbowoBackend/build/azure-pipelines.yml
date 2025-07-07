@@ -36,6 +36,11 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+  env:
+    AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
+    AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
+    AZURE_TENANT_ID: $(KeyVaultConfig--TenantId)
+    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
 
 - task: DotNetCoreCLI@2
   displayName: 'Run tests - $(buildConfiguration)'
@@ -44,11 +49,7 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
-  env:
-    AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
-    AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
-    AZURE_TENANT_ID: $(KeyVaultConfig--TenantId)
-    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
+
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
