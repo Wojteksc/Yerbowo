@@ -17,7 +17,7 @@ steps:
     azureSubscription: 'Azure subscription key vault'
     KeyVaultName: 'yerbowo-key-vault'
     SecretsFilter: '*'
-    RunAsPreJob: true
+    RunAsPreJob: false
 
 - powershell: |
     Write-Host "Setting pipeline variables from Key Vault secrets..."
