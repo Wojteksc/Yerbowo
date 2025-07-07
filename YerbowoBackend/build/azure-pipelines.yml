@@ -2,7 +2,7 @@ trigger:
   - develop
 
 variables:
-  - group: KV-Settings
+  # - group: KV-Settings
   - name: buildConfiguration
     value: 'Release'
   - name: dotnetSdkVersion
