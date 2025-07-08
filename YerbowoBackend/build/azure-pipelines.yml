@@ -19,22 +19,15 @@ steps:
     RunAsPreJob: true
 
 - task: PowerShell@2
+  name: SetSecrets
   displayName: 'Set environment variables from Key Vault secrets'
   inputs:
     targetType: 'inline'
     script: |
-      Write-Host "Setting pipeline & environment variables..."
-      
-      $env:AZURE_KEYVAULT_URL = "$(KeyVaultConfig--KVUrl)"
-      $env:AZURE_CLIENT_ID    = "$(KeyVaultConfig--ClientId)"
-      $env:AZURE_CLIENT_SECRET = "$(KeyVaultConfig--ClientSecret)"
-      $env:AZURE_TENANT_ID     = "$(KeyVaultConfig--TenantId)"
-
-      # Optional: propagate to pipeline if needed
-      Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL]$env:AZURE_KEYVAULT_URL"
-      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID]$env:AZURE_CLIENT_ID"
-      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET]$env:AZURE_CLIENT_SECRET"
-      Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID]$env:AZURE_TENANT_ID"
+      Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL;isOutput=true]$(KeyVaultConfig--KVUrl)"
+      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID;isOutput=true]$(KeyVaultConfig--ClientId)"
+      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET;isOutput=true]$(KeyVaultConfig--ClientSecret)"
+      Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID;isOutput=true]$(KeyVaultConfig--TenantId)"
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
@@ -61,6 +54,12 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
+  env:
+    AZURE_KEYVAULT_URL: $(SetSecrets.AZURE_KEYVAULT_URL)
+    AZURE_CLIENT_ID: $(SetSecrets.AZURE_CLIENT_ID)
+    AZURE_CLIENT_SECRET: $(SetSecrets.AZURE_CLIENT_SECRET)
+    AZURE_TENANT_ID: $(SetSecrets.AZURE_TENANT_ID)
+
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
