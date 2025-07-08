@@ -1,8 +1,7 @@
-trigger: 
+trigger:
   - develop
 
 variables:
-  - group: KV-Settings
   - name: buildConfiguration
     value: 'Release'
   - name: dotnetSdkVersion
@@ -10,81 +9,108 @@ variables:
 
 pool:
   vmImage: 'windows-latest'
-steps:
-# - task: AzureKeyVault@2
-#   displayName: 'Download secrets from Azure Key Vault'
-#   inputs:
-#     azureSubscription: 'Azure subscription (bb17721a-df4e-43ac-84b2-36834e5b4c83)'
-#     KeyVaultName: 'yerbowo-key-vault'
-#     SecretsFilter: '*'
-#     RunAsPreJob: true
 
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-  inputs:
-    version: '$(dotnetSdkVersion)'
+jobs:
+- job: FetchSecrets
+  displayName: 'Fetch Key Vault secrets'
+  steps:
+    - task: AzureKeyVault@2
+      displayName: 'Download secrets from Azure Key Vault'
+      inputs:
+        azureSubscription: 'Azure subscription key vault'
+        KeyVaultName: 'yerbowo-key-vault'
+        SecretsFilter: '*'
+        RunAsPreJob: false
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID;isOutput=true]$(KeyVaultConfig--ClientId)"
+        Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET;isOutput=true]$(KeyVaultConfig--ClientSecret)"
+        Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID;isOutput=true]$(KeyVaultConfig--TenantId)"
+        Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL;isOutput=true]$(KeyVaultConfig--KVUrl)"
+      name: SetSecrets
+      displayName: 'Export Key Vault secrets as output variables'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build project - $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
+- job: BuildAndTest
+  displayName: 'Build, test, and package'
+  dependsOn: FetchSecrets
+  variables:
+    AZURE_CLIENT_ID: $[ dependencies.FetchSecrets.outputs['SetSecrets.AZURE_CLIENT_ID'] ]
+    AZURE_CLIENT_SECRET: $[ dependencies.FetchSecrets.outputs['SetSecrets.AZURE_CLIENT_SECRET'] ]
+    AZURE_TENANT_ID: $[ dependencies.FetchSecrets.outputs['SetSecrets.AZURE_TENANT_ID'] ]
+    AZURE_KEYVAULT_URL: $[ dependencies.FetchSecrets.outputs['SetSecrets.AZURE_KEYVAULT_URL'] ]
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+      inputs:
+        version: '$(dotnetSdkVersion)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests - $(buildConfiguration)'
-  inputs:
-    command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
-    publishTestResults: true
-    projects: '**/*.Tests.csproj'
-  env:
-    KeyVaultConfig__KVUrl: $(KeyVaultConfig--KVUrl)
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage report'
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build project - $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+        projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish project'
-  inputs:
-    command: publish
-    arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
-    zipAfterPublish: false
+    - task: DotNetCoreCLI@2
+      displayName: 'Run tests - $(buildConfiguration)'
+      inputs:
+        command: 'test'
+        arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)/YerbowoBackend/.runsettings'
+        publishTestResults: true
+        projects: '**/*.Tests.csproj'
+      env:
+        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+        AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+        AZURE_KEYVAULT_URL: $(AZURE_KEYVAULT_URL)
 
-- task: NodeTool@0
-  displayName: 'Use Node 18.x'
-  inputs:
-    versionSpec: 18.x
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    workingDir: YerbowoFrontend
-    verbose: false
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage report'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
 
-- task: Npm@1
-  displayName: 'Build Angular'
-  inputs:
-    command: custom
-    workingDir: YerbowoFrontend
-    verbose: false
-    customCommand: 'run production'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish project'
+      inputs:
+        command: publish
+        arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+        zipAfterPublish: false
 
-- task: CopyFiles@2
-  displayName: 'Copy Angular files to $(build.artifactstagingdirectory)\Yerbowo.Api\wwwroot'
-  inputs:
-    SourceFolder: YerbowoFrontend/dist/yerbowo
-    TargetFolder: '$(build.artifactstagingdirectory)/Yerbowo.Api/wwwroot'
+    - task: NodeTool@0
+      displayName: 'Use Node 18.x'
+      inputs:
+        versionSpec: 18.x
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(Build.artifactStagingDirectory)'
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        workingDir: YerbowoFrontend
+        verbose: false
+
+    - task: Npm@1
+      displayName: 'Build Angular'
+      inputs:
+        command: custom
+        workingDir: YerbowoFrontend
+        verbose: false
+        customCommand: 'run production'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Angular files to $(build.artifactstagingdirectory)\Yerbowo.Api\wwwroot'
+      inputs:
+        SourceFolder: YerbowoFrontend/dist/yerbowo
+        TargetFolder: '$(build.artifactstagingdirectory)/Yerbowo.Api/wwwroot'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      inputs:
+        PathtoPublish: '$(Build.artifactStagingDirectory)'
