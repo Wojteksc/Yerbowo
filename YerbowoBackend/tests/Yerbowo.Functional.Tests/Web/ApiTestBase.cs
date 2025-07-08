@@ -41,25 +41,21 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
         Console.WriteLine("ConfigureAppConfiguration");
-        // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
-        configuration
-            .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
 
+        configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
 
-        Console.WriteLine("BEFORE AZURE_CLIENT_ID: " + Environment.GetEnvironmentVariable("AZURE_CLIENT_ID"));
-        Console.WriteLine("BEFORE AZURE_KEYVAULT_URL: " + Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL"));
+        var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+        var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
 
-#if RELEASE
-        LoadEnvironments();
-        configuration
-            .AddEnvironmentVariables();
+        Console.WriteLine("AZURE_CLIENT_ID: " + azureClientId);
+        Console.WriteLine("AZURE_KEYVAULT_URL: " + azureKeyVaultUrl);
 
-        Console.WriteLine("AFTER AZURE_CLIENT_ID: " + Environment.GetEnvironmentVariable("AZURE_CLIENT_ID"));
-        Console.WriteLine("AFTER AZURE_KEYVAULT_URL: " + Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL"));
-
-        configuration
+        if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
+        {
+            configuration
+                .AddEnvironmentVariables()
                 .AddAzureKeyVault();
-        #endif
+        }
     }
 
     protected virtual HttpClient CreateClient()
