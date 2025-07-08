@@ -10,21 +10,12 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        string environment = "";
-
+        string environment;
 #if DEBUG
         environment = "Development";
 #else
-        environment = "Production";
-        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
-        string envFilePath = Path.Combine(root, ".env");
-
-        if (!File.Exists(envFilePath))
-        {
-            throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
-        }
-
-        DotNetEnv.Env.Load(envFilePath);
+        environment = "Test";
+        LoadEnvironments();
 #endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
@@ -36,12 +27,14 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             })
             .ConfigureAppConfiguration(ConfigureAppConfiguration)
             .UseEnvironment(environment));
-        
+
+        //Run server
+        var _ = _webApplicationFactory.Server;
+
         ExecuteDatabaseInitializerJob();
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
     }
-
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
         // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
@@ -69,6 +62,20 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             return userRepository.GetAsync(email).Result;
         }
     }
+
+    private static void LoadEnvironments()
+    {
+        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
+        string envFilePath = Path.Combine(root, ".env");
+
+        if (!File.Exists(envFilePath))
+        {
+            throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
+        }
+
+        DotNetEnv.Env.Load(envFilePath);
+    }
+
 
     private void ExecuteDatabaseInitializerJob()
     {

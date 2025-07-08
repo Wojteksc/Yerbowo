@@ -6,16 +6,17 @@ public class Program
     {
         var hostBuilder = CreateHostBuilder(args);
 
-        var config = hostBuilder.Build().Services.GetRequiredService<IConfiguration>();
+        var host = hostBuilder.Build();
+        var configuration = host.Services.GetRequiredService<IConfiguration>();
 
         Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(config)
+            .ReadFrom.Configuration(configuration)
             .CreateLogger();
 
         try
         {
             Log.Information("Application Starting.");
-            await hostBuilder.Build().RunAsync();
+            await host.RunAsync();
         }
         catch (Exception ex)
         {
@@ -35,7 +36,8 @@ public class Program
             {
                 config.AddAppConfigurationFiles(context);
 
-                if (context.HostingEnvironment.IsProduction())
+                if (context.HostingEnvironment.IsProduction() || 
+                    context.HostingEnvironment.EnvironmentName == "Test")
                 {
                     config.AddAzureKeyVault();
                 }
