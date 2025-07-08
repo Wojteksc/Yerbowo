@@ -18,6 +18,17 @@ steps:
     SecretsFilter: '*'
     RunAsPreJob: true
 
+- task: PowerShell@2
+  displayName: 'Set environment variables from Key Vault secrets'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Setting pipeline variables..."
+      Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL]$(KeyVaultConfig--KVUrl)"
+      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID]$(KeyVaultConfig--ClientId)"
+      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET]$(KeyVaultConfig--ClientSecret)"
+      Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID]$(KeyVaultConfig--TenantId)"
+
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
@@ -43,11 +54,6 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
     publishTestResults: true
     projects: '**/*.Tests.csproj'
-  env:
-    AZURE_KEYVAULT_URL: $(KeyVaultConfig--KVUrl)
-    AZURE_CLIENT_ID: $(KeyVaultConfig--ClientId)
-    AZURE_CLIENT_SECRET: $(KeyVaultConfig--ClientSecret)
-    AZURE_TENANT_ID: $(KeyVaultConfig--TenantId)
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
