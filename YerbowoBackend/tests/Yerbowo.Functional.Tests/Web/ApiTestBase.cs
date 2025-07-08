@@ -1,4 +1,6 @@
-﻿namespace Yerbowo.Functional.Tests.Web;
+﻿using Yerbowo.Api.Extensions.ConfigurationBuilderExtensions;
+
+namespace Yerbowo.Functional.Tests.Web;
 
 public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
 {
@@ -15,7 +17,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         environment = "Development";
 #else
         environment = "Test";
-        LoadEnvironments();
 #endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
@@ -25,8 +26,10 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .ConfigureAppConfiguration(ConfigureAppConfiguration)
-            .UseEnvironment(environment));
+            .UseEnvironment(environment)
+            .ConfigureAppConfiguration(ConfigureAppConfiguration));
+
+        Console.WriteLine("ApiTestBase");
 
         //Run server
         var _ = _webApplicationFactory.Server;
@@ -37,10 +40,18 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     }
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
+        Console.WriteLine("ConfigureAppConfiguration");
         // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
         configuration
-            .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") })
-            .AddEnvironmentVariables();
+            .AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+        
+
+        #if RELEASE
+            LoadEnvironments();
+            configuration
+                .AddEnvironmentVariables()
+                .AddAzureKeyVault();
+        #endif
     }
 
     protected virtual HttpClient CreateClient()
@@ -68,12 +79,14 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
         string envFilePath = Path.Combine(root, ".env");
 
-        if (!File.Exists(envFilePath))
+        //if (!File.Exists(envFilePath))
+        //{
+        //    throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
+        //}
+        if (File.Exists(envFilePath))
         {
-            throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
+            DotNetEnv.Env.Load(envFilePath);
         }
-
-        DotNetEnv.Env.Load(envFilePath);
     }
 
 

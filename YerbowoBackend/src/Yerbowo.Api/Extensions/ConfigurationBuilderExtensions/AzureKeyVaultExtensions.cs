@@ -4,6 +4,7 @@ public static class AzureKeyVaultExtensions
 {
     public static void AddAzureKeyVault(this IConfigurationBuilder config)
     {
+        Console.WriteLine("AddAzureKeyVault");
         string kvURL = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
         string tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
         string clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");

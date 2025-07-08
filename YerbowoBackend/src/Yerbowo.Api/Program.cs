@@ -36,8 +36,7 @@ public class Program
             {
                 config.AddAppConfigurationFiles(context);
 
-                if (context.HostingEnvironment.IsProduction() || 
-                    context.HostingEnvironment.EnvironmentName == "Test")
+                if (context.HostingEnvironment.IsProduction())
                 {
                     config.AddAzureKeyVault();
                 }
