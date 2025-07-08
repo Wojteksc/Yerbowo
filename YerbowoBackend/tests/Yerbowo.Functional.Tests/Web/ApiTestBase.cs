@@ -12,13 +12,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        string environment;
-#if DEBUG
-        environment = "Development";
-#else
-        environment = "Test";
-#endif
-
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
             .ConfigureTestServices(services =>
@@ -26,10 +19,8 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .UseEnvironment(environment)
+            .UseEnvironment("Test")
             .ConfigureAppConfiguration(ConfigureAppConfiguration));
-
-        Console.WriteLine("ApiTestBase");
 
         //Run server
         var _ = _webApplicationFactory.Server;
@@ -40,21 +31,18 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     }
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
-        Console.WriteLine("ConfigureAppConfiguration");
-
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+
+        LoadEnvironments();
+
+        configuration.AddEnvironmentVariables();
 
         var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
         var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
 
-        Console.WriteLine("AZURE_CLIENT_ID: " + azureClientId);
-        Console.WriteLine("AZURE_KEYVAULT_URL: " + azureKeyVaultUrl);
-
         if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
         {
-            configuration
-                .AddEnvironmentVariables()
-                .AddAzureKeyVault();
+            configuration.AddAzureKeyVault();
         }
     }
 
@@ -83,10 +71,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
         string envFilePath = Path.Combine(root, ".env");
 
-        //if (!File.Exists(envFilePath))
-        //{
-        //    throw new FileNotFoundException($".env file not found at expected location: {envFilePath}");
-        //}
         if (File.Exists(envFilePath))
         {
             DotNetEnv.Env.Load(envFilePath);
