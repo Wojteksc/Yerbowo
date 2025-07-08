@@ -1,4 +1,4 @@
-trigger: 
+trigger:
   - develop
 
 variables:
@@ -9,6 +9,7 @@ variables:
 
 pool:
   vmImage: 'windows-latest'
+
 steps:
 - task: AzureKeyVault@2
   displayName: 'Download secrets from Azure Key Vault'
@@ -17,17 +18,6 @@ steps:
     KeyVaultName: 'yerbowo-key-vault'
     SecretsFilter: '*'
     RunAsPreJob: true
-
-- task: PowerShell@2
-  name: SetSecrets
-  displayName: 'Set environment variables from Key Vault secrets'
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "##vso[task.setvariable variable=AZURE_KEYVAULT_URL;isOutput=true]$(KeyVaultConfig--KVUrl)"
-      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_ID;isOutput=true]$(KeyVaultConfig--ClientId)"
-      Write-Host "##vso[task.setvariable variable=AZURE_CLIENT_SECRET;isOutput=true]$(KeyVaultConfig--ClientSecret)"
-      Write-Host "##vso[task.setvariable variable=AZURE_TENANT_ID;isOutput=true]$(KeyVaultConfig--TenantId)"
 
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
@@ -47,19 +37,26 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests - $(buildConfiguration)'
+# ✅ Testy uruchamiane z prawidłowo ustawionymi zmiennymi środowiskowymi
+- task: PowerShell@2
+  displayName: 'Run tests with Key Vault environment variables'
   inputs:
-    command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration) --collect:"Code Coverage" --settings $(Build.Repository.LocalPath)\YerbowoBackend\.runsettings'
-    publishTestResults: true
-    projects: '**/*.Tests.csproj'
-  env:
-    AZURE_KEYVAULT_URL: $(SetSecrets.AZURE_KEYVAULT_URL)
-    AZURE_CLIENT_ID: $(SetSecrets.AZURE_CLIENT_ID)
-    AZURE_CLIENT_SECRET: $(SetSecrets.AZURE_CLIENT_SECRET)
-    AZURE_TENANT_ID: $(SetSecrets.AZURE_TENANT_ID)
+    targetType: 'inline'
+    script: |
+      Write-Host "Setting environment variables..."
+      $env:AZURE_KEYVAULT_URL = "$(KeyVaultConfig--KVUrl)"
+      $env:AZURE_CLIENT_ID = "$(KeyVaultConfig--ClientId)"
+      $env:AZURE_CLIENT_SECRET = "$(KeyVaultConfig--ClientSecret)"
+      $env:AZURE_TENANT_ID = "$(KeyVaultConfig--TenantId)"
 
+      Write-Host "AZURE_CLIENT_ID=$env:AZURE_CLIENT_ID"
+      Write-Host "AZURE_KEYVAULT_URL=$env:AZURE_KEYVAULT_URL"
+
+      dotnet test "$(Build.SourcesDirectory)\YerbowoBackend\tests\Yerbowo.Functional.Tests\Yerbowo.Functional.Tests.csproj" `
+        --no-build `
+        --configuration Release `
+        --collect:"Code Coverage" `
+        --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings"
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
@@ -74,10 +71,12 @@ steps:
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
     zipAfterPublish: false
 
+# Angular frontend
 - task: NodeTool@0
   displayName: 'Use Node 18.x'
   inputs:
     versionSpec: 18.x
+
 - task: Npm@1
   displayName: 'npm install'
   inputs:
@@ -93,7 +92,7 @@ steps:
     customCommand: 'run production'
 
 - task: CopyFiles@2
-  displayName: 'Copy Angular files to $(build.artifactstagingdirectory)\Yerbowo.Api\wwwroot'
+  displayName: 'Copy Angular files to wwwroot'
   inputs:
     SourceFolder: YerbowoFrontend/dist/yerbowo
     TargetFolder: '$(build.artifactstagingdirectory)/Yerbowo.Api/wwwroot'
