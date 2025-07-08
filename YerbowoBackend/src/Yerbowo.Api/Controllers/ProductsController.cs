@@ -2,7 +2,7 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController(IRequestDispatcher dispatcher, IHttpContextAccessor httpContextAccessor) : ApiControllerBase
+public class ProductsController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
     [HttpGet("{slug}")]
     public async Task<ActionResult<ProductDetailsDto>> Get(string slug)
