@@ -10,13 +10,14 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public User User { get; private set; }
 
-    string Environment { get; set; } = "Test";
-
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        //#if DEBUG
-        //    Environment = "Development";
-        //#endif
+        string environment;
+#if DEBUG
+        environment = "Development";
+#else
+        environment = "Test";
+#endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
@@ -25,7 +26,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .UseEnvironment(Environment)
+            .UseEnvironment(environment)
             .ConfigureAppConfiguration(ConfigureAppConfiguration));
 
         //Run server
@@ -39,9 +40,14 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     {
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
 
-        if (Environment == "Test")
+        //LoadEnvironments();
+
+
+        var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+        var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
+
+        if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
         {
-            LoadEnvironments();
             configuration.AddEnvironmentVariables();
             configuration.AddAzureKeyVault();
         }
@@ -77,6 +83,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             DotNetEnv.Env.Load(envFilePath);
         }
     }
+
 
     private void ExecuteDatabaseInitializerJob()
     {
