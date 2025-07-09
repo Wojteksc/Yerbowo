@@ -12,13 +12,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        string environment;
-#if DEBUG
-        environment = "Development";
-#else
-        environment = "Test";
-#endif
-
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
             .ConfigureTestServices(services =>
@@ -26,10 +19,8 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .UseEnvironment(environment)
+            .UseEnvironment("Test")
             .ConfigureAppConfiguration(ConfigureAppConfiguration));
-
-        Console.WriteLine("ApiTestBase");
 
         //Run server
         var _ = _webApplicationFactory.Server;
@@ -40,22 +31,19 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     }
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
-        Console.WriteLine("ConfigureAppConfiguration");
-
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+
+        LoadEnvironments();
+
+        configuration.AddEnvironmentVariables();
 
         var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
         var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
 
-        Console.WriteLine("AZURE_CLIENT_ID: " + azureClientId);
-        Console.WriteLine("AZURE_KEYVAULT_URL: " + azureKeyVaultUrl);
-
-        if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
-        {
-            configuration
-                .AddEnvironmentVariables()
-                .AddAzureKeyVault();
-        }
+        //if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
+        //{
+            configuration.AddAzureKeyVault();
+        //}
     }
 
     protected virtual HttpClient CreateClient()
@@ -63,9 +51,9 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         var client = _webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var loginCommand = new LoginCommand() { Email = User.Email, Password = "Haslo123." };
-
+        
         Task.Run(async () => await AuthHelper.LoginAsync(client, loginCommand)).Wait();
-
+     
         return client;
     }
 
@@ -88,7 +76,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
             DotNetEnv.Env.Load(envFilePath);
         }
     }
-
 
     private void ExecuteDatabaseInitializerJob()
     {
