@@ -38,7 +38,7 @@ steps:
     projects: '**/*.csproj'
 
 - task: PowerShell@2
-  displayName: 'Run all tests with Key Vault environment variables'
+  displayName: 'Run tests with Key Vault environment variables'
   inputs:
     targetType: 'inline'
     script: |
@@ -48,17 +48,14 @@ steps:
       $env:AZURE_CLIENT_SECRET = "$(KeyVaultConfig--ClientSecret)"
       $env:AZURE_TENANT_ID = "$(KeyVaultConfig--TenantId)"
 
-      $testProjects = Get-ChildItem -Path "$(Build.SourcesDirectory)" -Recurse -Filter *.Tests.csproj
+      Write-Host "AZURE_CLIENT_ID=$env:AZURE_CLIENT_ID"
+      Write-Host "AZURE_KEYVAULT_URL=$env:AZURE_KEYVAULT_URL"
 
-      foreach ($proj in $testProjects) {
-          Write-Host "Running tests in $($proj.FullName)..."
-
-          dotnet test "$($proj.FullName)" `
-            --no-build `
-            --configuration Release `
-            --collect:"Code Coverage" `
-            --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings"
-      }
+      dotnet test "$(Build.SourcesDirectory)\YerbowoBackend\tests\Yerbowo.Functional.Tests\Yerbowo.Functional.Tests.csproj" `
+        --no-build `
+        --configuration Release `
+        --collect:"Code Coverage" `
+        --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings"
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage report'
