@@ -73,7 +73,6 @@ steps:
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
     zipAfterPublish: false
 
-# Angular frontend
 - task: NodeTool@0
   displayName: 'Use Node 18.x'
   inputs:
