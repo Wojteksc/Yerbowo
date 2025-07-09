@@ -14,9 +14,9 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        #if DEBUG
-            Environment = "Development";
-        #endif
+        //#if DEBUG
+        //    Environment = "Development";
+        //#endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
             builder => builder
