@@ -37,6 +37,7 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
+# ✅ Testy uruchamiane z prawidłowo ustawionymi zmiennymi środowiskowymi
 - task: PowerShell@2
   displayName: 'Run tests with Key Vault environment variables'
   inputs:
@@ -70,6 +71,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
     zipAfterPublish: false
 
+# Angular frontend
 - task: NodeTool@0
   displayName: 'Use Node 18.x'
   inputs:
