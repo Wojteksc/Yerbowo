@@ -40,7 +40,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     {
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
 
-        LoadEnvironments();
+        //LoadEnvironments();
 
         var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
         var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
