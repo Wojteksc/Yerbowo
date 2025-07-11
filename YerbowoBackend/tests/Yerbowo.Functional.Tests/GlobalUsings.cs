@@ -38,3 +38,4 @@ global using Yerbowo.Infrastructure.BackgroundJobs;
 global using Yerbowo.Infrastructure.DAL;
 global using Yerbowo.Infrastructure.Outbox;
 global using Yerbowo.Infrastructure.Services.InterfaceConverterJsonOptions;
+global using Yerbowo.Api.Extensions.ConfigurationBuilderExtensions;

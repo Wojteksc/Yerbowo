@@ -1,6 +1,4 @@
-﻿using Yerbowo.Api.Extensions.ConfigurationBuilderExtensions;
-
-namespace Yerbowo.Functional.Tests.Web;
+﻿namespace Yerbowo.Functional.Tests.Web;
 
 public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
 {
@@ -10,13 +8,12 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public User User { get; private set; }
 
+    public string Environment { get; private set; } = "Test";
+
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        string environment;
 #if DEBUG
-        environment = "Development";
-#else
-        environment = "Test";
+        Environment = "Development";
 #endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
@@ -26,7 +23,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .UseEnvironment(environment)
+            .UseEnvironment(Environment)
             .ConfigureAppConfiguration(ConfigureAppConfiguration));
 
         //Run server
@@ -36,20 +33,36 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
         User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
     }
+
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
 
-        //LoadEnvironments();
-
-        var azureClientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
-        var azureKeyVaultUrl = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
-
-        if (!string.IsNullOrEmpty(azureClientId) && !string.IsNullOrEmpty(azureKeyVaultUrl))
+        if (Environment == "Test")
         {
-            configuration.AddEnvironmentVariables();
+            LoadEnvOrSystemVariables(configuration);
+
             configuration.AddAzureKeyVault();
         }
+    }
+
+    private static void LoadEnvOrSystemVariables(IConfigurationBuilder configuration)
+    {
+        string envFilePath = GetEnvFilePath();
+        if (File.Exists(envFilePath))
+        {
+            DotNetEnv.Env.Load(envFilePath);
+        }
+        else
+        {
+            configuration.AddEnvironmentVariables();
+        }
+    }
+
+    private static string GetEnvFilePath()
+    {
+        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
+        return Path.Combine(root, ".env");
     }
 
     protected virtual HttpClient CreateClient()
@@ -69,17 +82,6 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
         {
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
             return userRepository.GetAsync(email).Result;
-        }
-    }
-
-    private static void LoadEnvironments()
-    {
-        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
-        string envFilePath = Path.Combine(root, ".env");
-
-        if (File.Exists(envFilePath))
-        {
-            DotNetEnv.Env.Load(envFilePath);
         }
     }
 
