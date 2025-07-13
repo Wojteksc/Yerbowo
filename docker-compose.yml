@@ -17,6 +17,8 @@ services:
     restart: always
 
   web:
+    image: wojtuchny/yerbowo-app:latest
+    container_name: yerbowo-app
     build:
       context: .
       dockerfile: YerbowoBackend/Dockerfile
@@ -29,8 +31,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=${ASPNETCORE_URLS}
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
-      - KeyVaultConfig__KVUrl=${KeyVaultConfig__KVUrl}
-      - KeyVaultConfig__TenantId=${KeyVaultConfig__TenantId}
-      - KeyVaultConfig__ClientId=${KeyVaultConfig__ClientId}
-      - KeyVaultConfig__ClientSecret=${KeyVaultConfig__ClientSecret}
+      - AZURE_KEYVAULT_URL=${AZURE_KEYVAULT_URL}
+      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
+      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
       
