@@ -37,7 +37,6 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
-# ✅ Testy uruchamiane z prawidłowo ustawionymi zmiennymi środowiskowymi
 - task: PowerShell@2
   displayName: 'Run tests with Key Vault environment variables'
   inputs:
@@ -71,7 +70,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
     zipAfterPublish: false
 
-# Angular frontend
+
 - task: NodeTool@0
   displayName: 'Use Node 18.x'
   inputs:
@@ -101,3 +100,25 @@ steps:
   displayName: 'Publish Artifact: drop'
   inputs:
     PathtoPublish: '$(Build.artifactStagingDirectory)'
+
+- task: Docker@2
+  displayName: 'Login to Docker Hub'
+  inputs:
+    command: login
+    containerRegistry: 'docker-hub-yerbowo'
+
+- task: Docker@2
+  displayName: 'Build Docker image'
+  inputs:
+    command: build
+    repository: 'wojtuchny/yerbowo-app'
+    dockerfile: 'YerbowoBackend/Dockerfile'
+    buildContext: '.'
+    tags: latest
+
+- task: Docker@2
+  displayName: 'Push Docker image'
+  inputs:
+    command: push
+    repository: 'wojtuchny/yerbowo-app'
+    tags: latest
