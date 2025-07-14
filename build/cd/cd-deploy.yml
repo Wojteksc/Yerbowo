@@ -1,12 +1,12 @@
 trigger:
   branches:
     exclude:
-      - '*'  # Nie uruchamiaj ręcznie
+      - '*'  # Manual only
 
 resources:
   pipelines:
     - pipeline: yerbowo_ci
-      source: yerbowo-ci  # <- Nazwa CI pipeline (z 'ci-pipeline.yml')
+      source: yerbowo-ci
       trigger:
         branches:
           include:
@@ -21,16 +21,16 @@ variables:
   containerImage: 'wojtuchny/yerbowo-app:latest'
 
 steps:
-- task: AzureWebAppContainer@1
+- task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
-    azureSubscription: 'azure-resource-manager-yerbowo'  # <- ARM Service Connection
-    appName: '$(containerAppName)'
-    containers: |
-      [
-        {
-          "image": "$(containerImage)",
-          "name": "yerbowo-app-container"
-        }
-      ]
-    resourceGroupName: '$(resourceGroup)'
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Deploying image $(containerImage) to Azure Container App $(containerAppName)..."
+      az config set extension.use_dynamic_install=yes_without_prompt
+      az containerapp update \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --image $(containerImage)
