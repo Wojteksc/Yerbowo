@@ -17,14 +17,14 @@ pool:
 
 variables:
   containerAppName: yerbowo-app-container
-  resourceGroup: yerbowo-rg
+  resourceGroup: yerbowo
   containerImage: 'wojtuchny/yerbowo-app:latest'
 
 steps:
 - task: AzureWebAppContainer@1
   displayName: 'Deploy to Azure Container App'
   inputs:
-    azureSubscription: 'Azure subscription'  # <- ARM Service Connection
+    azureSubscription: 'azure-resource-manager-yerbowo'  # <- ARM Service Connection
     appName: '$(containerAppName)'
     containers: |
       [
