@@ -30,7 +30,7 @@ steps:
       [
         {
           "image": "$(containerImage)",
-          "name": "yerbowo"
+          "name": "yerbowo-app-container"
         }
       ]
     resourceGroupName: '$(resourceGroup)'
