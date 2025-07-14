@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    exclude:
+      - '*'  # Nie uruchamiaj ręcznie
+
+resources:
+  pipelines:
+    - pipeline: yerbowo_ci
+      source: yerbowo-ci  # <- Nazwa CI pipeline (z 'ci-pipeline.yml')
+      trigger:
+        branches:
+          include:
+            - develop
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  containerAppName: yerbowo-app-container
+  resourceGroup: yerbowo-rg
+  containerImage: 'wojtuchny/yerbowo-app:latest'
+
+steps:
+- task: AzureWebAppContainer@1
+  displayName: 'Deploy to Azure Container App'
+  inputs:
+    azureSubscription: 'Azure subscription'  # <- ARM Service Connection
+    appName: '$(containerAppName)'
+    containers: |
+      [
+        {
+          "image": "$(containerImage)",
+          "name": "yerbowo"
+        }
+      ]
+    resourceGroupName: '$(resourceGroup)'
