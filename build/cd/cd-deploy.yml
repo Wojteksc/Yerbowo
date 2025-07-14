@@ -1,7 +1,7 @@
 trigger:
   branches:
     exclude:
-      - '*'  # Manual only (triggered from CI)
+      - '*'
 
 resources:
   pipelines:
@@ -19,25 +19,19 @@ variables:
   containerAppName: yerbowo-app-container
   resourceGroup: yerbowo
   containerImage: 'wojtuchny/yerbowo-app:latest'
-  dockerUsername: 'wojtuchny'
-  dockerPassword: $(DOCKER_HUB_PASSWORD)  # <- Sekret dodany w UI
 
 steps:
 - task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
-    azureSubscription: 'azure-resource-manager-yerbowo'  # <- Z listy service connections
+    azureSubscription: 'azure-resource-manager-yerbowo'
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
       echo "Deploying image $(containerImage) to Azure Container App $(containerAppName)..."
-      
       az config set extension.use_dynamic_install=yes_without_prompt
 
       az containerapp update \
         --name $(containerAppName) \
         --resource-group $(resourceGroup) \
-        --image $(containerImage) \
-        --registry-server registry.hub.docker.com \
-        --registry-username $(dockerUsername) \
-        --registry-password $(dockerPassword)
+        --image $(containerImage)
