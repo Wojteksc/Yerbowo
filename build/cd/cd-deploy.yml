@@ -22,6 +22,19 @@ variables:
 
 steps:
 - task: AzureCLI@2
+  displayName: 'Login to Docker Hub registry'
+  inputs:
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az containerapp registry set \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --server index.docker.io \
+        --username wojtuchny \
+        --password $(reg-pswd-38a8b399-8ae9)
+- task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
     azureSubscription: 'azure-resource-manager-yerbowo'
