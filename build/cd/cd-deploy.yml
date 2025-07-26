@@ -16,6 +16,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
+  -group: docker-hub-auth
   containerAppName: yerbowo-app-container
   resourceGroup: yerbowo
   containerImage: 'wojtuchny/yerbowo-app:latest'
