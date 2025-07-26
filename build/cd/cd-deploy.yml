@@ -16,10 +16,13 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  -group: docker-hub-auth
-  containerAppName: yerbowo-app-container
-  resourceGroup: yerbowo
-  containerImage: 'wojtuchny/yerbowo-app:latest'
+- group: docker-hub-auth 
+- name: containerAppName
+  value: yerbowo-app-container
+- name: resourceGroup
+  value: yerbowo
+- name: containerImage
+  value: 'wojtuchny/yerbowo-app:latest'
 
 steps:
 - task: AzureCLI@2
@@ -35,6 +38,7 @@ steps:
         --server index.docker.io \
         --username $(dockerHubUsername) \
         --password $(dockerHubToken)
+
 - task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
