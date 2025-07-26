@@ -32,8 +32,8 @@ steps:
         --name $(containerAppName) \
         --resource-group $(resourceGroup) \
         --server index.docker.io \
-        --username wojtuchny \
-        --password $(reg-pswd-38a8b399-8ae9)
+        --username $(dockerHubUsername) \
+        --password $(dockerHubToken)
 - task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
