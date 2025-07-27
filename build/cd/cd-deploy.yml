@@ -1,12 +1,12 @@
 trigger:
   branches:
     exclude:
-      - '*'  # Nie uruchamiaj ręcznie
+      - '*'
 
 resources:
   pipelines:
     - pipeline: yerbowo_ci
-      source: yerbowo-ci  # <- Nazwa CI pipeline (z 'ci-pipeline.yml')
+      source: yerbowo-ci
       trigger:
         branches:
           include:
@@ -16,21 +16,40 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  containerAppName: yerbowo-app-container
-  resourceGroup: yerbowo
-  containerImage: 'wojtuchny/yerbowo-app:latest'
+- group: docker-hub-auth 
+- name: containerAppName
+  value: yerbowo-app-container
+- name: resourceGroup
+  value: yerbowo
+- name: containerImage
+  value: 'wojtuchny/yerbowo-app:latest'
 
 steps:
-- task: AzureWebAppContainer@1
+- task: AzureCLI@2
+  displayName: 'Login to Docker Hub registry'
+  inputs:
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az containerapp registry set \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --server index.docker.io \
+        --username $(dockerHubUsername) \
+        --password $(dockerHubToken)
+
+- task: AzureCLI@2
   displayName: 'Deploy to Azure Container App'
   inputs:
-    azureSubscription: 'azure-resource-manager-yerbowo'  # <- ARM Service Connection
-    appName: '$(containerAppName)'
-    containers: |
-      [
-        {
-          "image": "$(containerImage)",
-          "name": "yerbowo"
-        }
-      ]
-    resourceGroupName: '$(resourceGroup)'
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Deploying image $(containerImage) to Azure Container App $(containerAppName)..."
+      az config set extension.use_dynamic_install=yes_without_prompt
+
+      az containerapp update \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --image $(containerImage)
