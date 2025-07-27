@@ -1,0 +1,16 @@
+trigger:
+  branches:
+    include:
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - script: |
+      git config --global user.email "$(GIT_USER_EMAIL)"
+      git config --global user.name "$(GIT_USER_NAME)"
+      git clone --bare $(Build.Repository.Uri) repo.git
+      cd repo.git
+      git push --mirror https://$(GITHUB_TOKEN)@github.com/$(GITHUB_USER_NAME)/Yerbowo.git
+    displayName: 'Mirror to GitHub'
