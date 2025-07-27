@@ -16,7 +16,7 @@ steps:
   - script: |
       git config --global user.email "$(GIT_USER_EMAIL)"
       git config --global user.name "$(GIT_USER_NAME)"
-      git clone --bare https://$(System.AccessToken)@$(System.CollectionUri)$(System.TeamProject)/_git/$(Build.Repository.Name) repo.git
+      git clone --bare https://$(System.AccessToken)@dev.azure.com/Wojtuchny/_git/Yerbowo repo.git
       cd repo.git
       git push "$(GITHUB_REPO_URL)" +refs/heads/*:refs/heads/*
     env:
