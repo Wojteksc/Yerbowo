@@ -18,7 +18,7 @@ steps:
       git config --global user.name "$(GIT_USER_NAME)"
       git clone --bare https://$(System.AccessToken)@$(System.CollectionUri)$(System.TeamProject)/_git/$(Build.Repository.Name) repo.git
       cd repo.git
-      git push --mirror "$(GITHUB_REPO_URL)"
+      git push "$(GITHUB_REPO_URL)" +refs/heads/*:refs/heads/*
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     displayName: 'Mirror to GitHub'
