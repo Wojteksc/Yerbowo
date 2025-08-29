@@ -1,42 +1,61 @@
-# .NET Core SDK
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.101 AS dotnetcore-sdk
+# =======================
+# STAGE 1: Angular build
+# =======================
+FROM node:20-alpine AS frontend-build
 
-WORKDIR /src
+WORKDIR /app/frontend
 
-# Copy Projects
-COPY src/Yerbowo.Api/Yerbowo.Api.csproj ./Yerbowo.Api/
-COPY src/Yerbowo.Application/Yerbowo.Application.csproj ./Yerbowo.Application/
-COPY src/Yerbowo.Core/Yerbowo.Core.csproj ./Yerbowo.Core/
-COPY src/Yerbowo.Domain/Yerbowo.Domain.csproj ./Yerbowo.Domain/
-COPY src/Yerbowo.Fakers/Yerbowo.Fakers.csproj ./Yerbowo.Fakers/
-COPY src/Yerbowo.Infrastructure/Yerbowo.Infrastructure.csproj ./Yerbowo.Infrastructure/
-
-# .NET Core Restore
-RUN dotnet restore ./Yerbowo.Api/Yerbowo.Api.csproj
-
-# Copy All Files
-COPY src .
-
-# .NET Core Build and Publish
-FROM dotnetcore-sdk as dotnetcore-build
-RUN dotnet publish ./Yerbowo.Api/Yerbowo.Api.csproj -c Release -o /publish
-
-# Angular
-FROM node:12.14.0 AS angular-build
-ARG ANGULAR_ENVIRONMENT
-WORKDIR /wwwroot
-ENV PATH /wwwroot/node_modules/.bin:$PATH
-COPY src/Yerbowo.Api/wwwroot/package.json .
+# Copy package files separately to optimize Docker layer caching during npm install
+COPY YerbowoFrontend/package.json YerbowoFrontend/package-lock.json ./
 RUN npm install
-COPY src/Yerbowo.Api/wwwroot .
-RUN npm run $ANGULAR_ENVIRONMENT
 
-# ASP.NET Core Runtime
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1.1-alpine AS aspnetcore-runtime
+# Copy all frontend source files and build the Angular app in production mode
+COPY YerbowoFrontend/ ./
+RUN npm run build -- --configuration production
+
+
+# ===================================
+# STAGE 2: .NET restore/build/publish
+# ===================================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+
+WORKDIR /app/backend
+
+# Copy project files separately to better leverage Docker cache for dotnet restore
+COPY YerbowoBackend/src/Yerbowo.Api/Yerbowo.Api.csproj Yerbowo.Api/
+COPY YerbowoBackend/src/Yerbowo.Application/Yerbowo.Application.csproj Yerbowo.Application/
+COPY YerbowoBackend/src/Yerbowo.Domain/Yerbowo.Domain.csproj Yerbowo.Domain/
+COPY YerbowoBackend/src/Yerbowo.Infrastructure/Yerbowo.Infrastructure.csproj Yerbowo.Infrastructure/
+
+# Restore NuGet packages (cached unless project files change)
+RUN dotnet restore Yerbowo.Api/Yerbowo.Api.csproj
+
+# Copy the rest of the backend source code
+COPY YerbowoBackend/src/ ./
+
+# Publish the backend application in Release configuration to /app/publish
+RUN dotnet publish Yerbowo.Api/Yerbowo.Api.csproj -c Release -o /app/publish
+
+
+# =======================
+# STAGE 3: Runtime image
+# =======================
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
+
+WORKDIR /app
+
+# Install ICU libraries needed for globalization/localization support
 RUN apk add --no-cache icu-libs
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-WORKDIR /app
-COPY --from=dotnetcore-build /publish .
-COPY --from=angular-build /wwwroot ./wwwroot
-EXPOSE 80/tcp
+
+# Copy published backend files from the build stage
+COPY --from=backend-build /app/publish ./
+
+# Copy Angular build output into wwwroot to serve frontend static files
+COPY --from=frontend-build /app/frontend/dist/yerbowo ./wwwroot/
+
+# Expose port 80 for the application
+EXPOSE 80
+
+# Start the backend application
 ENTRYPOINT ["dotnet", "Yerbowo.Api.dll"]

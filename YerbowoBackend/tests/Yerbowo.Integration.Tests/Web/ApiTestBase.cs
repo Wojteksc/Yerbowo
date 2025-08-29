@@ -1,4 +1,4 @@
-﻿namespace Yerbowo.Functional.Tests.Web;
+﻿namespace Yerbowo.Integration.Tests.Web;
 
 public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
 {
@@ -8,14 +8,12 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 
     public User User { get; private set; }
 
+    public string Environment { get; private set; } = "Test";
+
     public ApiTestBase(WebApplicationFactory<Startup> factory)
     {
-        string environment = "";
-
 #if DEBUG
-        environment = "Development";
-#else
-        environment = "Production";
+        Environment = "Development";
 #endif
 
         _webApplicationFactory = factory.WithWebHostBuilder(
@@ -25,18 +23,46 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
                 var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
                 services.Remove(descriptor);
             })
-            .ConfigureAppConfiguration(ConfigureAppConfiguration)
-            .UseEnvironment(environment));
-        
+            .UseEnvironment(Environment)
+            .ConfigureAppConfiguration(ConfigureAppConfiguration));
+
+        //Run server
+        var _ = _webApplicationFactory.Server;
+
         ExecuteDatabaseInitializerJob();
 
-        User = GetUserByEmail("yerbowoTestAdmin@functionalTestYerbowo.com");
+        User = GetUserByEmail("yerbowoTestAdmin@IntegrationTestYerbowo.com");
     }
 
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
-        // For testing, we want the in memory database to be used so this can be run in CI/CD without spinning up a DB for it.
         configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+
+        if (Environment == "Test")
+        {
+            LoadEnvOrSystemVariables(configuration);
+
+            configuration.AddAzureKeyVault();
+        }
+    }
+
+    private static void LoadEnvOrSystemVariables(IConfigurationBuilder configuration)
+    {
+        string envFilePath = GetEnvFilePath();
+        if (File.Exists(envFilePath))
+        {
+            DotNetEnv.Env.Load(envFilePath);
+        }
+        else
+        {
+            configuration.AddEnvironmentVariables();
+        }
+    }
+
+    private static string GetEnvFilePath()
+    {
+        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
+        return Path.Combine(root, ".env");
     }
 
     protected virtual HttpClient CreateClient()

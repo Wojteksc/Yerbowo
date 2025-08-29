@@ -1,0 +1,127 @@
+trigger:
+  branches:
+    exclude:
+      - '*'
+
+resources:
+  pipelines:
+    - pipeline: yerbowo_ci
+      source: Yerbowo-CI
+      trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+- name: sourceBranch
+  displayName: "Branch to deploy"
+  type: string
+  default: "develop"
+- name: deployContainer
+  displayName: "Deploy to Azure Container App"
+  type: boolean
+  default: true
+- name: deployWebApp
+  displayName: "Deploy to Azure Web App"
+  type: boolean
+  default: true
+- name: ciBuildId
+  displayName: 'CI build number (optional)'
+  type: string
+  default: ' '
+
+variables:
+- group: docker-hub-auth 
+
+#=========================
+# Container App Variables
+#=========================
+- name: containerAppName
+  value: yerbowo-app-container
+- name: resourceGroup
+  value: yerbowo
+- name: containerImage
+  value: 'wojtuchny/yerbowo-app:latest'
+
+#=========================
+# Web App Variables
+#=========================
+- name: ConnectedServiceName
+  value: 'Azure subscription key vault'
+- name: WebAppKind
+  value: 'webApp'
+- name: WebAppName
+  value: 'yerbowoapp'
+
+steps:
+# ===========================
+# Deploy to Azure Container App
+# ===========================
+- task: AzureCLI@2
+  displayName: 'Login to Docker Hub registry'
+  condition: eq('${{ parameters.deployContainer }}', true)
+  inputs:
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az containerapp registry set \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --server index.docker.io \
+        --username $(dockerHubUsername) \
+        --password $(dockerHubToken)
+
+- task: AzureCLI@2
+  displayName: 'Deploy to Azure Container App'
+  condition: eq('${{ parameters.deployContainer }}', true)
+  inputs:
+    azureSubscription: 'azure-resource-manager-yerbowo'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Deploying image $(containerImage) to Azure Container App $(containerAppName)..."
+      az config set extension.use_dynamic_install=yes_without_prompt
+
+      az containerapp update \
+        --name $(containerAppName) \
+        --resource-group $(resourceGroup) \
+        --image $(containerImage)
+
+# ========================
+# Deploy to Azure Web App
+# ========================
+
+# Latest build from selected branch
+- ${{ if eq(parameters.ciBuildId, ' ') }}:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download latest CI Artifact'
+    inputs:
+      source: 'specific'
+      project: '$(System.TeamProject)'
+      pipeline: 'Yerbowo-CI'
+      branchName: refs/heads/${{ parameters.sourceBranch }}
+      artifact: 'app-final'
+      path: '$(System.DefaultWorkingDirectory)/ciArtifact'
+
+# Specific build by runId from Yerbowo-CI
+- ${{ if ne(parameters.ciBuildId, ' ') }}:
+  - task: DownloadPipelineArtifact@2
+    displayName: 'Download specific CI Artifact'
+    inputs:
+      source: 'specific'
+      project: '$(System.TeamProject)'
+      pipeline: 'Yerbowo-CI'
+      runId: ${{ parameters.ciBuildId }}
+      artifact: 'app-final'
+      path: '$(System.DefaultWorkingDirectory)/ciArtifact'
+
+
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Deploy Azure App Service: Backend'
+  condition: eq('${{ parameters.deployWebApp }}', true)
+  inputs:
+    azureSubscription: '$(ConnectedServiceName)'
+    appType: '$(WebAppKind)'
+    WebAppName: '$(WebAppName)'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/ciArtifact/Yerbowo.Api'

@@ -4,12 +4,16 @@ public static class AzureKeyVaultExtensions
 {
     public static void AddAzureKeyVault(this IConfigurationBuilder config)
     {
-        var buildConfiguration = config.Build();
+        string kvURL = Environment.GetEnvironmentVariable("AZURE_KEYVAULT_URL");
+        string tenantId = Environment.GetEnvironmentVariable("AZURE_TENANT_ID");
+        string clientId = Environment.GetEnvironmentVariable("AZURE_CLIENT_ID");
+        string clientSecret = Environment.GetEnvironmentVariable("AZURE_CLIENT_SECRET");
 
-        string kvURL = buildConfiguration["KeyVaultConfig:KVUrl"];
-        string tenantId = buildConfiguration["KeyVaultConfig:TenantId"];
-        string clientId = buildConfiguration["KeyVaultConfig:ClientId"];
-        string clientSecret = buildConfiguration["KeyVaultConfig:ClientSecret"];
+        if (string.IsNullOrEmpty(kvURL)
+            || string.IsNullOrEmpty(tenantId)
+            || string.IsNullOrEmpty(clientId)
+            || string.IsNullOrEmpty(clientSecret))
+            throw new Exception("Azure Key Vault environment variables are not configured!");
 
         var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
         var client = new SecretClient(new Uri(kvURL), credential);

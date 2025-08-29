@@ -32,9 +32,10 @@ global using Yerbowo.Application.Functions.Newsletters.Command.UnsubscribeNewsle
 global using Yerbowo.Application.Functions.Products;
 global using Yerbowo.Domain.Entities.Newsletters;
 global using Yerbowo.Domain.Entities.Users;
-global using Yerbowo.Functional.Tests.Web.Extensions;
-global using Yerbowo.Functional.Tests.Web.Helpers;
+global using Yerbowo.Integration.Tests.Web.Extensions;
+global using Yerbowo.Integration.Tests.Web.Helpers;
 global using Yerbowo.Infrastructure.BackgroundJobs;
 global using Yerbowo.Infrastructure.DAL;
 global using Yerbowo.Infrastructure.Outbox;
 global using Yerbowo.Infrastructure.Services.InterfaceConverterJsonOptions;
+global using Yerbowo.Api.Extensions.ConfigurationBuilderExtensions;

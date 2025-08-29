@@ -1,0 +1,47 @@
+stages:
+- stage: Frontend
+  displayName: 'Frontend Build & Test'
+  dependsOn: []
+  jobs:
+  - job: BuildAndTestFrontend
+    displayName: 'Build, Test and Publish Frontend'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: NodeTool@0
+      displayName: 'Use Node 18.x'
+      inputs:
+        versionSpec: 18.x
+
+    - task: Npm@1
+      displayName: 'npm install'
+      inputs:
+        workingDir: YerbowoFrontend
+        verbose: false
+
+    - task: Npm@1
+      displayName: 'Build Angular'
+      inputs:
+        command: custom
+        workingDir: YerbowoFrontend
+        verbose: false
+        customCommand: 'run production'
+
+    - task: Npm@1
+      displayName: 'Run Angular tests with coverage'
+      inputs:
+        command: custom
+        workingDir: YerbowoFrontend
+        customCommand: 'run test-headless -- --code-coverage=true'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish frontend coverage and reports (as artifacts)'
+      inputs:
+        PathtoPublish: 'YerbowoFrontend/coverage'
+        ArtifactName: 'frontend-coverage-html'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Frontend Artifact'
+      inputs:
+        PathtoPublish: YerbowoFrontend/dist/yerbowo
+        ArtifactName: 'frontend-drop'

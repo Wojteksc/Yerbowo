@@ -1,0 +1,24 @@
+trigger:
+  branches:
+    include:
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  GITHUB_REPO_URL: 'https://$(GITHUB_USERNAME):$(GITHUB_TOKEN)@github.com/$(GITHUB_USERNAME)/Yerbowo.git'
+
+steps:
+  - checkout: self
+    persistCredentials: true
+
+  - script: |
+      git config --global user.email "$(GIT_USER_EMAIL)"
+      git config --global user.name "$(GIT_USER_NAME)"
+      git clone --bare https://$(System.AccessToken)@dev.azure.com/Wojtuchny/_git/Yerbowo repo.git
+      cd repo.git
+      git push "$(GITHUB_REPO_URL)" +refs/heads/*:refs/heads/*
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    displayName: 'Mirror to GitHub'

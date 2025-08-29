@@ -1,0 +1,113 @@
+parameters:
+  - name: buildConfiguration
+    default: 'Release'
+  - name: dotnetSdkVersion
+    default: '8.x'
+
+stages:
+- stage: Backend
+  displayName: 'Backend Build & Test'
+  jobs:
+    - job: BuildAndTestBackend
+      displayName: 'Build, Test and Publish Backend'
+      pool:
+        name: 'Default'
+      steps:
+        - task: AzureKeyVault@2
+          displayName: 'Download secrets from Azure Key Vault'
+          inputs:
+            azureSubscription: 'Azure subscription key vault'
+            KeyVaultName: 'yerbowo-key-vault'
+            SecretsFilter: '*'
+            RunAsPreJob: true
+
+        - task: UseDotNet@2
+          displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+          inputs:
+            version: '$(dotnetSdkVersion)'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Restore project dependencies'
+          inputs:
+            command: 'restore'
+            projects: '**/*.csproj'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Build project - $(buildConfiguration)'
+          inputs:
+            command: 'build'
+            arguments: '--no-restore --configuration $(buildConfiguration)'
+            projects: '**/*.csproj'
+
+        - task: PowerShell@2
+          displayName: 'Run backend tests with coverage (unit + integration)'
+          inputs:
+            targetType: 'inline'
+            script: |
+              Write-Host "Setting environment variables..."
+              $env:AZURE_KEYVAULT_URL = "$(KeyVaultConfig--KVUrl)"
+              $env:AZURE_CLIENT_ID = "$(KeyVaultConfig--ClientId)"
+              $env:AZURE_CLIENT_SECRET = "$(KeyVaultConfig--ClientSecret)"
+              $env:AZURE_TENANT_ID = "$(KeyVaultConfig--TenantId)"
+
+              $coverageDir = "$(Build.SourcesDirectory)\TestResults"
+              mkdir $coverageDir\unit -Force
+              mkdir $coverageDir\integration -Force
+
+              dotnet test "$(Build.SourcesDirectory)\YerbowoBackend\tests\Yerbowo.Unit.Tests\Yerbowo.Unit.Tests.csproj" `
+                --no-build `
+                --configuration $(buildConfiguration) `
+                --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings" `
+                --results-directory "$coverageDir\unit"
+
+              dotnet test "$(Build.SourcesDirectory)\YerbowoBackend\tests\Yerbowo.Integration.Tests\Yerbowo.Integration.Tests.csproj" `
+                --no-build `
+                --configuration $(buildConfiguration) `
+                --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings" `
+                --results-directory "$coverageDir\integration"
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Install ReportGenerator'
+          inputs:
+            command: custom
+            custom: tool
+            arguments: 'install --global dotnet-reportgenerator-globaltool'
+
+        - task: PowerShell@2
+          displayName: 'Merge coverage reports (unit + integration)'
+          inputs:
+            targetType: 'inline'
+            script: |
+              Write-Host "Coverage files found:"
+              Get-ChildItem -Recurse "$(Build.SourcesDirectory)\TestResults" -Include coverage.cobertura.xml | ForEach-Object { Write-Host $_.FullName }
+
+              $env:Path += ";$env:USERPROFILE\.dotnet\tools"
+              reportgenerator `
+                -reports:"$(Build.SourcesDirectory)\TestResults\**\coverage.cobertura.xml" `
+                -targetdir:"$(Build.SourcesDirectory)\TestResults\merged" `
+                -reporttypes:"Cobertura;HtmlInline_AzurePipelines" `
+                -verbosity:Info
+
+        - task: PublishCodeCoverageResults@2
+          displayName: 'Publish merged backend coverage report'
+          inputs:
+            summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/merged/Cobertura.xml'
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish merged HTML coverage report (backend)'
+          inputs:
+            PathtoPublish: '$(Build.SourcesDirectory)/TestResults/merged'
+            ArtifactName: 'backend-coverage-html'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Publish backend project'
+          inputs:
+            command: publish
+            arguments: '--configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)'
+            zipAfterPublish: false
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Backend Artifact'
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'backend-drop'

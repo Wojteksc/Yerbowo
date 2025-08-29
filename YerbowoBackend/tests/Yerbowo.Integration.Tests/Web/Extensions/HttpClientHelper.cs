@@ -1,6 +1,6 @@
-﻿using Yerbowo.Functional.Tests.Web.Converters;
+﻿using Yerbowo.Integration.Tests.Web.Converters;
 
-namespace Yerbowo.Functional.Tests.Web.Extensions;
+namespace Yerbowo.Integration.Tests.Web.Extensions;
 
 public static class HttpClientHelper
 {

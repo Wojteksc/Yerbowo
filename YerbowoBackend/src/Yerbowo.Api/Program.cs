@@ -1,36 +1,22 @@
-﻿namespace Yerbowo.Api;
+﻿using Yerbowo.Api;
 
 public class Program
 {
     public static async Task Main(string[] args)
     {
+        var hostBuilder = CreateHostBuilder(args);
+
+        var host = hostBuilder.Build();
+        var configuration = host.Services.GetRequiredService<IConfiguration>();
+
         Log.Logger = new LoggerConfiguration()
-            .ReadFrom
-            .Configuration(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build())
+            .ReadFrom.Configuration(configuration)
             .CreateLogger();
 
         try
         {
             Log.Information("Application Starting.");
-
-            IHost host =  Host.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    config.AddAppConfigurationFiles(context);
-
-                    if (context.HostingEnvironment.IsProduction())
-                    {
-                        config.AddAzureKeyVault();
-                    }
-                })
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
-                .Build();
-            
-           await host.RunAsync();
+            await host.RunAsync();
         }
         catch (Exception ex)
         {
@@ -42,4 +28,21 @@ public class Program
             Log.CloseAndFlush();
         }
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseSerilog()
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                config.AddAppConfigurationFiles(context);
+
+                if (context.HostingEnvironment.IsProduction())
+                {
+                    config.AddAzureKeyVault();
+                }
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }

@@ -1,0 +1,30 @@
+stages:
+- stage: CombineArtifacts
+  displayName: 'Combine Artifacts'
+  dependsOn:
+    - Backend
+    - Frontend
+  condition: succeeded()
+  jobs:
+  - job: CopyFrontendToBackend
+    displayName: 'Copy Angular to Backend wwwroot'
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - download: current
+      artifact: backend-drop
+
+    - download: current
+      artifact: frontend-drop
+
+    - task: CopyFiles@2
+      displayName: 'Copy Angular files to wwwroot'
+      inputs:
+        SourceFolder: '$(Pipeline.Workspace)/frontend-drop/'
+        TargetFolder: '$(Pipeline.Workspace)/backend-drop/Yerbowo.Api/wwwroot'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Combined Artifact'
+      inputs:
+        PathtoPublish: '$(Pipeline.Workspace)/backend-drop'
+        ArtifactName: 'app-final'

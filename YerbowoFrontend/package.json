@@ -5,8 +5,9 @@
     "ng": "ng",
     "start": "ng serve --ssl",
     "build": "ng build",
-    "prod-build": "ng build --configuration production --aot",
+    "production": "ng build --configuration production --aot",
     "test": "ng test",
+    "test-headless": "ng test --watch=false --browsers=ChromeHeadless --code-coverage=true",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

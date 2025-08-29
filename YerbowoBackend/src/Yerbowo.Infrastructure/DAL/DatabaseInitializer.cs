@@ -89,7 +89,7 @@ public class DatabaseInitializer(YerbowoContext db, IPasswordManager passwordMan
     {
         var admin = new User("Woytech", "Wojciechowski", "user@example.com", "admin");
         var simpleUser = new User("Adam", "Nowak", "user2@example.com", "user");
-        var testUser = new User("FirstName", "LastName", "yerbowoTestAdmin@functionalTestYerbowo.com", "admin");
+        var testUser = new User("FirstName", "LastName", "yerbowoTestAdmin@IntegrationTestYerbowo.com", "admin");
 
         var securedPassword = passwordManager.Secure("Haslo123.");
 

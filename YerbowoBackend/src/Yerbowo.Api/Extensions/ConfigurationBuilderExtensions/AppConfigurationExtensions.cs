@@ -4,7 +4,9 @@ public static class AppConfigurationExtensions
 {
     public static void AddAppConfigurationFiles(this IConfigurationBuilder config, HostBuilderContext context)
     {
-        config.AddJsonFile("appsettings.json");
-        config.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json");
+        config
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json")
+            .AddEnvironmentVariables();
     }
 }

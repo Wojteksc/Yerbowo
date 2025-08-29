@@ -1,4 +1,4 @@
-﻿namespace Yerbowo.Functional.Tests.Web.Converters;
+﻿namespace Yerbowo.Integration.Tests.Web.Converters;
 
 /// <summary>
 /// Convert empty to null when read data json

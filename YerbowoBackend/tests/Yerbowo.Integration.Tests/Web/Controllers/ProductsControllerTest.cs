@@ -1,4 +1,4 @@
-﻿namespace Yerbowo.Functional.Tests.Web.Controllers;
+﻿namespace Yerbowo.Integration.Tests.Web.Controllers;
 
 public class ProductsControllerTest : ApiTestBase
 {

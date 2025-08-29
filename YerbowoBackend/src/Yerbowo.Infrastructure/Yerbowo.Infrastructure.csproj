@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<InternalsVisibleTo Include="Yerbowo.Functional.Tests" />
+	<InternalsVisibleTo Include="Yerbowo.Integration.Tests" />
   </ItemGroup>
 
   <ItemGroup>
