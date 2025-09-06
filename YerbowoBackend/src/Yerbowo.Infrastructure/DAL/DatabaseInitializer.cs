@@ -1,6 +1,6 @@
-
 namespace Yerbowo.Infrastructure.DAL;
 
+[ExcludeFromCodeCoverage]
 public class DatabaseInitializer(YerbowoContext db, IPasswordManager passwordManager)
 {
     private Address _adminAddress1;

@@ -1,5 +1,6 @@
-﻿namespace Yerbowo.Infrastructure.Options;
+﻿namespace Yerbowo.Infrastructure.Authentication.Options;
 
+[ExcludeFromCodeCoverage]
 public record GoogleAuthOptions
 {
     public required string ClientId { get; set; }

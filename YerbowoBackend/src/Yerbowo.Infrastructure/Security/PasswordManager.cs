@@ -1,5 +1,6 @@
 namespace Yerbowo.Infrastructure.Security;
 
+[ExcludeFromCodeCoverage]
 public sealed class PasswordManager(IPasswordHasher<User> passwordHasher) : IPasswordManager
 {
     public string Secure(string password) => passwordHasher.HashPassword(default, password);

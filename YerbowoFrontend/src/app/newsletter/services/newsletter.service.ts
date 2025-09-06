@@ -12,7 +12,7 @@ export class NewsletterService {
   constructor(private http: HttpClient) {}
 
   invite(email: string): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}invite`, email);
+    return this.http.post<string>(`${this.baseUrl}invite`, { email });
   }
 
   subscribe(payload: any): Observable<any> {

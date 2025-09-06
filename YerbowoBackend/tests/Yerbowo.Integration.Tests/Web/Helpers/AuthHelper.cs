@@ -1,6 +1,4 @@
-﻿using Yerbowo.Application.Functions.Users.Query;
-
-namespace Yerbowo.Integration.Tests.Web.Helpers;
+﻿namespace Yerbowo.Integration.Tests.Web.Helpers;
 
 public static class AuthHelper
 {

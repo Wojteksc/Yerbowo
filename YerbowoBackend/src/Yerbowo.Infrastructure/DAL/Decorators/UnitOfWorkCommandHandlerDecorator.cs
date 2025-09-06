@@ -1,5 +1,6 @@
 ﻿namespace Yerbowo.Infrastructure.DAL.Decorators;
 
+[ExcludeFromCodeCoverage]
 internal sealed class UnitOfWorkCommandHandlerDecorator<TCommand>(
     IRequestHandler<TCommand> commandHandler,
     IUnitOfWork unitOfWork) : IRequestHandler<TCommand>
@@ -11,6 +12,7 @@ internal sealed class UnitOfWorkCommandHandlerDecorator<TCommand>(
     }
 }
 
+[ExcludeFromCodeCoverage]
 internal sealed class UnitOfWorkCommandHandlerDecorator<TCommand, TResult>(
     IRequestHandler<TCommand, TResult> commandHandler,
     IUnitOfWork unitOfWork) : IRequestHandler<TCommand, TResult>

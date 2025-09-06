@@ -1,9 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Emails.Command.SendRegistrationConfirmationEmail;
 
 public class SendRegistrationConfirmationEmailHandler(
-    IRegistrationConfirmationEmailSender emailSender,
-    IAppSettings appSettings,
-    IStringLocalizer<SharedResource> localizer) : ICommandHandler<SendRegistrationConfirmationEmailCommand>
+    IEmailService<RegistrationConfirmationTemplate> emailService,
+    IAppSettings appSettings) : ICommandHandler<SendRegistrationConfirmationEmailCommand>
 {
     public async Task Handle(SendRegistrationConfirmationEmailCommand request, CancellationToken cancellationToken)
     {
@@ -13,14 +12,6 @@ public class SendRegistrationConfirmationEmailHandler(
             ConfirmationLink = $"{appSettings.BaseUrl}/auth/potwierdz-email?email={request.Email}&token={request.VerificationToken}"
         };
 
-        var responseEmail = await emailSender.SendEmailAsync(
-            new EmailAddress(request.Email, request.FirstName),
-            dynamicTemplateData
-        );
-
-        if (!responseEmail.IsSuccessStatusCode)
-        {
-            throw new EmailSendingFailedException(localizer);
-        }
+        await emailService.SendAsync(request.Email, dynamicTemplateData);
     }
 }

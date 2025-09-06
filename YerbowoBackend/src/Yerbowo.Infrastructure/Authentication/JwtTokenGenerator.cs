@@ -1,10 +1,11 @@
 ﻿namespace Yerbowo.Infrastructure.Authentication;
 
-public class Authenticator : IAuthenticator
+[ExcludeFromCodeCoverage]
+public class JwtTokenGenerator : ITokenGenerator
 {
     private readonly JwtOptions _jwtSettings;
 
-    public Authenticator(IOptions<JwtOptions> jwtSettings)
+    public JwtTokenGenerator(IOptions<JwtOptions> jwtSettings)
     {
         _jwtSettings = jwtSettings.Value;
     }

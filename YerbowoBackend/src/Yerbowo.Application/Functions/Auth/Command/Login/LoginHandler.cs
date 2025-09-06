@@ -3,7 +3,7 @@ namespace Yerbowo.Application.Functions.Auth.Command.Login;
 public class LoginHandler(
 	IUserRepository userRepository,
     IPasswordManager passwordManager,
-    IAuthenticator authenticator,
+    ITokenGenerator authenticator,
     IStringLocalizer<SharedResource> localizer) : ICommandHandler<LoginCommand, ResponseToken>
 {
     public async Task<ResponseToken> Handle(LoginCommand request, CancellationToken cancellationToken)

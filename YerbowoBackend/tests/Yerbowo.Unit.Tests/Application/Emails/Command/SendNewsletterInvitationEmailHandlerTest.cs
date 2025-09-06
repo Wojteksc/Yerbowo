@@ -2,17 +2,13 @@
 
 public class SendNewsletterInvitationEmailHandlerTest
 {
-    private readonly Mock<INewsletterInvitationEmailSender> _emailSender;
+    private readonly Mock<IEmailService<NewsletterInvitationTemplate>> emailService;
 
     private readonly SendNewsletterInvitationEmailCommand request;
 
-    private IStringLocalizer<SharedResource> _localizer;
-
     public SendNewsletterInvitationEmailHandlerTest()
     {
-        _emailSender = new();
-
-        _localizer = StringLocalizerFactory.Create();
+        emailService = new();
 
         request = new SendNewsletterInvitationEmailCommand("email@email.com", "token");
     }
@@ -22,46 +18,19 @@ public class SendNewsletterInvitationEmailHandlerTest
     {
         var emailAddress = new EmailAddress("email@email.com");
 
-        _emailSender
-            .Setup(x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
-            .ReturnsAsync(new SendGrid.Response(HttpStatusCode.OK, It.IsAny<HttpContent>(), It.IsAny<HttpResponseHeaders>()));
+        emailService
+            .Setup(x => x.SendAsync(It.IsAny<string>(), It.IsAny<object>()));
 
         IAppSettings appSettings = new AppOptions() { BaseUrl = "http://localhost:5000" };
 
         var handler = new SendNewsletterInvitationEmailHandler(
-            _emailSender.Object,
-            appSettings,
-            _localizer);
+            emailService.Object,
+            appSettings);
 
         Func<Task> act = () => handler.Handle(request, It.IsAny<CancellationToken>());
         await act.Should().NotThrowAsync();
-        _emailSender.Verify(
+        emailService.Verify(
             x =>
-            x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()), Times.Once);
-    }
-
-    [Theory]
-    [InlineData("en-US")]
-    [InlineData("pl-PL")]
-    public async Task Should_ThrowException_When_EmailCouldntBeSent(string culture)
-    {
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-        string expectedMessage = _localizer[Localizations.EmailSendingFailedException];
-
-        _emailSender.Setup(
-            x => x.SendEmailAsync(It.IsAny<EmailAddress>(), It.IsAny<object>()))
-            .ReturnsAsync(new SendGrid.Response(HttpStatusCode.Conflict, It.IsAny<HttpContent>(), It.IsAny<HttpResponseHeaders>()));
-
-        IAppSettings appSettings = new AppOptions() { BaseUrl = "http://localhost:5000" };
-
-        var handler = new SendNewsletterInvitationEmailHandler(
-            _emailSender.Object,
-            appSettings,
-            _localizer);
-
-        Func<Task> act = () => handler.Handle(request, It.IsAny<CancellationToken>());
-
-        var exception = await Assert.ThrowsAsync<EmailSendingFailedException>(act);
-        exception.Message.Should().Be(expectedMessage);
+            x.SendAsync(It.IsAny<string>(), It.IsAny<object>()), Times.Once);
     }
 }

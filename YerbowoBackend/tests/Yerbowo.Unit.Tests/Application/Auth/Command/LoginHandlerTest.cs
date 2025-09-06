@@ -4,7 +4,7 @@ public class LoginHandlerTest
 {
     private readonly Mock<IUserRepository> userRepository;
     private readonly Mock<IPasswordManager> passwordManager;
-    private readonly Mock<IAuthenticator> authenticator;
+    private readonly Mock<ITokenGenerator> authenticator;
 
     private readonly LoginHandler _handler;
     private readonly LoginCommand _request;

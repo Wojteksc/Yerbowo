@@ -1,5 +1,6 @@
-﻿namespace Yerbowo.Infrastructure.Authentication;
+﻿namespace Yerbowo.Infrastructure.Authentication.Options;
 
+[ExcludeFromCodeCoverage]
 public record JwtOptions
 {
     public required string Issuer { get; init; }

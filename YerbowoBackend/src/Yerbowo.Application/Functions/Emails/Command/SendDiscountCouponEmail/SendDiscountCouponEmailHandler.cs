@@ -1,9 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Emails.Command.SendDiscountCouponEmail;
 
 public class SendDiscountCouponEmailHandler(
-    INewsletterEmailSender emailSender,
-    IAppSettings appSettings,
-    IStringLocalizer<SharedResource> localizer) : ICommandHandler<SendDiscountCouponEmailCommand>
+    IEmailService<NewsletterCouponTemplate> emailService,
+    IAppSettings appSettings) : ICommandHandler<SendDiscountCouponEmailCommand>
 {
     public async Task Handle(SendDiscountCouponEmailCommand request, CancellationToken cancellationToken)
     {
@@ -15,11 +14,7 @@ public class SendDiscountCouponEmailHandler(
         {
             UnsubscribeLink = $"{appSettings.BaseUrl}/newsletter/unsubscribe?email={request.Email}&token={request.VerificationToken}"
         };
-        var responseEmail = await emailSender.SendEmailAsync(new EmailAddress(request.Email), dynamicTemplateData);
-
-        if (!responseEmail.IsSuccessStatusCode)
-        {
-            throw new EmailSendingFailedException(localizer);
-        }
+        
+        await emailService.SendAsync(request.Email, dynamicTemplateData);
     }
 }

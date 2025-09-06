@@ -36,7 +36,7 @@ describe('NewsletterService', () => {
 
       const req = httpMock.expectOne(baseUrl + 'invite');
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toBe(email);
+      expect(req.request.body).toEqual({email: 'test@example.com'});
       req.flush(mockResponse);
     });
   });

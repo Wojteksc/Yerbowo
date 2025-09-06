@@ -3,7 +3,7 @@
 public class SocialLoginHandlerTest
 {
     private readonly Mock<IUserRepository> userRepository;
-    private readonly Mock<IAuthenticator> authenticator;
+    private readonly Mock<ITokenGenerator> authenticator;
 
     private readonly SocialLoginHandler handler;
     private readonly SocialLoginCommand request;

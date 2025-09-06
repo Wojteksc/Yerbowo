@@ -1,5 +1,6 @@
 ﻿namespace Yerbowo.Infrastructure.DAL;
 
+[ExcludeFromCodeCoverage]
 public class YerbowoContext : DbContext
 {
     public YerbowoContext(DbContextOptions<YerbowoContext> options) : base(options) { }

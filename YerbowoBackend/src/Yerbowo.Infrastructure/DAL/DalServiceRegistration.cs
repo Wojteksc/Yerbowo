@@ -1,5 +1,6 @@
 ﻿namespace Yerbowo.Infrastructure.DAL;
 
+[ExcludeFromCodeCoverage]
 public static class DalServiceRegistration
 {
     public static void AddDalServices(this IServiceCollection services, IConfiguration configuration)

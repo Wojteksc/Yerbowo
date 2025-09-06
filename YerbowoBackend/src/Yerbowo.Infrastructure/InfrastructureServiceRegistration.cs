@@ -1,5 +1,6 @@
 namespace Yerbowo.Infrastructure;
 
+[ExcludeFromCodeCoverage]
 public static class InfrastructureServiceRegistration
 {
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
@@ -10,7 +11,7 @@ public static class InfrastructureServiceRegistration
 
         services.AddOptions(configuration);
         services.AddMiddlewares();
-        services.AddNewsletterServices();
+        services.AddEmailServices(configuration);
         services.AddDalServices(configuration);
         services.AddAuthenticationServices(configuration);
 

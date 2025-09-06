@@ -3,7 +3,7 @@
 public class SocialLoginHandler(
     IUserRepository userRepository,
     IMapper mapper,
-    IAuthenticator authenticator,
+    ITokenGenerator authenticator,
     IStringLocalizer<SharedResource> localizer) : ICommandHandler<SocialLoginCommand, ResponseToken>
 {
     public async Task<ResponseToken> Handle(SocialLoginCommand request, CancellationToken cancellationToken)

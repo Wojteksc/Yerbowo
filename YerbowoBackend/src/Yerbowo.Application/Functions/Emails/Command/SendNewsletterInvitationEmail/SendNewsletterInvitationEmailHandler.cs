@@ -1,9 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Emails.Command.SendNewsletterInvitationEmail;
 
 public class SendNewsletterInvitationEmailHandler(
-    INewsletterInvitationEmailSender emailSender,
-    IAppSettings settings,
-    IStringLocalizer<SharedResource> localizer) : ICommandHandler<SendNewsletterInvitationEmailCommand>
+    IEmailService<NewsletterInvitationTemplate> emailService,
+    IAppSettings settings) : ICommandHandler<SendNewsletterInvitationEmailCommand>
 {
     public async Task Handle(SendNewsletterInvitationEmailCommand request, CancellationToken cancellationToken)
     {
@@ -12,11 +11,6 @@ public class SendNewsletterInvitationEmailHandler(
             ConfirmationLink = $"{settings.BaseUrl}/newsletter/subscribe?email={request.Email}&token={request.VerificationToken}"
         };
 
-        var responseEmail = await emailSender.SendEmailAsync(new EmailAddress(request.Email), dynamicTemplateData);
-
-        if (!responseEmail.IsSuccessStatusCode)
-        {
-            throw new EmailSendingFailedException(localizer);
-        }
+        await emailService.SendAsync(request.Email, dynamicTemplateData);
     }
 }
