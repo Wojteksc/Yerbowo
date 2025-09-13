@@ -65,6 +65,12 @@ stages:
                 --configuration $(buildConfiguration) `
                 --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings" `
                 --results-directory "$coverageDir\integration"
+                
+              dotnet test "$(Build.SourcesDirectory)\YerbowoBackend\tests\Yerbowo.Architecture.Tests\Yerbowo.Architecture.Tests.csproj" `
+                --no-build `
+                --configuration $(buildConfiguration) `
+                --settings "$(Build.SourcesDirectory)\YerbowoBackend\.runsettings" `
+                --results-directory "$coverageDir\architecture"
 
         - task: DotNetCoreCLI@2
           displayName: 'Install ReportGenerator'
