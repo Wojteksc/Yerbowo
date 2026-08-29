@@ -6,7 +6,8 @@ public class ChangeCartItemHandlerTest
     private readonly Product _productDb;
     private readonly CartProductItemDto _cartProductItem;
 
-    const int ProductId = 1000;
+    Guid ProductId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    Guid SubCategoryId = Guid.Parse("10000000-0000-0000-0000-000000000001");
 
     private IStringLocalizer<SharedResource> _localizer;
 
@@ -16,7 +17,7 @@ public class ChangeCartItemHandlerTest
 
         _localizer = StringLocalizerFactory.Create();
 
-        _productDb = new Product(1, "code", "name", "description", 34, 34, 10, ProductState.None, "image.png");
+        _productDb = new Product(ProductId, SubCategoryId, "code", "name", "description", 34, 34, 10, ProductState.None, "image.png");
         _cartProductItem = new CartProductItemDto
         {
             Id = ProductId,
@@ -78,7 +79,7 @@ public class ChangeCartItemHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.ProductNotFound];
 
-        int productId = 999;
+        Guid productId = Guid.Parse("99999999-9999-9999-9999-999999999999");
         var request = new ChangeCartItemCommand(productId, _productDb.Stock + 1);
 
         _productRepositoryMock
@@ -93,7 +94,7 @@ public class ChangeCartItemHandlerTest
             () => handler.Handle(request, CancellationToken.None));
 
         exception.Message.Should().Be(expectedMessage);
-        _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<int>()), Times.Never());
+        _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Never());
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 
@@ -105,7 +106,7 @@ public class ChangeCartItemHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.CartStockIsIncorrect];
 
-        int productId = 999;
+        Guid productId = Guid.Parse("99999999-9999-9999-9999-999999999999");
         var request = new ChangeCartItemCommand(productId, quantity);
         var sessionMock = SessionMockHelper.SetupSession();
         var httpContextAccessor = HttpContextAccessorFactory.Create(sessionMock);
@@ -115,7 +116,7 @@ public class ChangeCartItemHandlerTest
             () => handler.Handle(request, CancellationToken.None));
 
         exception.Message.Should().Be(expectedMessage);
-        _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<int>()), Times.Never());
+        _productRepositoryMock.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Never());
         sessionMock.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Never());
     }
 

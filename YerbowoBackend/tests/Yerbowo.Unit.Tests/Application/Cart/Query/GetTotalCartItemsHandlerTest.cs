@@ -25,7 +25,7 @@ public class GetTotalCartItemsHandlerTest
             {
                 Product = new CartProductItemDto
                 {
-                    Id = 1,
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                     Code = "code1",
                     Name = "name1",
                     Description = "description1",
@@ -42,7 +42,7 @@ public class GetTotalCartItemsHandlerTest
             {
                 Product = new CartProductItemDto
                 {
-                    Id = 2,
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                     Code = "code2",
                     Name = "name2",
                     Description = "description2",
@@ -59,7 +59,7 @@ public class GetTotalCartItemsHandlerTest
             {
                 Product = new CartProductItemDto
                 {
-                    Id = 3,
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
                     Code = "code3",
                     Name = "name3",
                     Description = "description3",

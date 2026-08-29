@@ -61,7 +61,7 @@ steps:
   displayName: 'Login to Docker Hub registry'
   condition: eq('${{ parameters.deployContainer }}', true)
   inputs:
-    azureSubscription: 'azure-resource-manager-yerbowo'
+    azureSubscription: 'Azure subscription key vault'
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
@@ -76,7 +76,7 @@ steps:
   displayName: 'Deploy to Azure Container App'
   condition: eq('${{ parameters.deployContainer }}', true)
   inputs:
-    azureSubscription: 'azure-resource-manager-yerbowo'
+    azureSubscription: 'Azure subscription key vault'
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |

@@ -1,20 +1,19 @@
-﻿namespace Yerbowo.Unit.Tests.Application.Addresses.Command;
+namespace Yerbowo.Unit.Tests.Application.Addresses.Command;
 
 public class CreateAddressHandlerTest
 {
-    private readonly Mock<IAddressRepository> _addressRepository;
+    private readonly Mock<IAddressRepository> _addressRepository = new();
+    private readonly Mock<IIdGenerator> _idGenerator = new();
 
     private readonly CreateAddressHandler _handler;
 
-    const int AddressId = 1000;
+    Guid AddressId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
     public CreateAddressHandlerTest()
     {
-        _addressRepository = new();
-
         _handler = new CreateAddressHandler(
-            AutoMapperConfig.Initialize(),
-            _addressRepository.Object);
+            _addressRepository.Object,
+            _idGenerator.Object);
     }
 
     [Fact]
@@ -22,7 +21,7 @@ public class CreateAddressHandlerTest
     {
         var command = new CreateAddressCommand()
         {
-            UserId = 1,
+            UserId = Guid.Parse("12345678-1234-1234-1234-123456789012"),
             Alias = "aliastTest",
             FirstName = "firstName",
             LastName = "LastName",
@@ -38,7 +37,8 @@ public class CreateAddressHandlerTest
         };
 
         var expectedInsertedAddress = new Address(
-            1,
+            AddressId,
+            Guid.Parse("12345678-1234-1234-1234-123456789012"),
             "aliastTest",
             "firstName",
             "LastName",
@@ -52,21 +52,20 @@ public class CreateAddressHandlerTest
             "1156301130",
             "Company_1");
 
-        typeof(Address).GetProperty(nameof(Address.Id)).SetValue(expectedInsertedAddress, AddressId, null);
-
-        var addresses = new List<Address>();
+        Address insertedAddress = null;
 
         _addressRepository
             .Setup(x => x.AddAsync(It.IsAny<Address>()))
             .Callback<Address>(a => 
             {
-                typeof(Address).GetProperty(nameof(Address.Id)).SetValue(a, AddressId, null);
-                addresses.Add(a); 
+                insertedAddress = a;
             });
 
-        int addressId = await _handler.Handle(command, CancellationToken.None);
+        _idGenerator.Setup(x => x.Generate()).Returns(AddressId);
 
-        addresses.Should().AllBeEquivalentTo(expectedInsertedAddress);
-        addressId.Should().Be(AddressId);
+        Guid addressId = await _handler.Handle(command, CancellationToken.None);
+
+        insertedAddress.Should().BeEquivalentTo(expectedInsertedAddress);
+        addressId.Should().Be(expectedInsertedAddress.Id);
     }
 }

@@ -5,6 +5,10 @@ public class GetAddressesByUserIdHandlerTest
     private readonly Mock<IAddressRepository> _addressRepositoryMock;
     private readonly GetAddressesByUserIdHandler _handler;
 
+    Guid AddressId1 = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    Guid AddressId2 = Guid.Parse("00000000-0000-0000-0000-000000000002");
+    Guid UserId = Guid.Parse("10000000-0000-0000-0000-000000000001");
+
     public GetAddressesByUserIdHandlerTest()
     {
         _addressRepositoryMock = new Mock<IAddressRepository>();
@@ -17,21 +21,22 @@ public class GetAddressesByUserIdHandlerTest
     [Fact]
     public async Task Should_ReturnCorrectAddresses()
     {
-        var address1 = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
+        var address1 = new Address(AddressId1, UserId, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
             "postCodeTest", "phoneTest", "emailTest");
 
-        var address2 = new Address(1, "aliasTest2", "firstNameTest2", "lastNameTest2",
+        var address2 = new Address(AddressId2, UserId, "aliasTest2", "firstNameTest2", "lastNameTest2",
             "streetTest2", "buildingNumberTest2", "apartmentNumberTest2", "placeTest2",
             "postCodeTest2", "phoneTest2", "emailTest2");
 
-        var request = new GetAddressesByUserIdQuery(1);
+        var request = new GetAddressesByUserIdQuery(UserId);
 
         var expectedAddresses = new List<AddressDto>()
         {
             new AddressDto()
             {
-                UserId = 1,
+                Id = AddressId1,
+                UserId = UserId,
                 Alias = "aliasTest",
                 FirstName = "firstNameTest",
                 LastName = "lastNameTest",
@@ -45,7 +50,8 @@ public class GetAddressesByUserIdHandlerTest
             },
             new AddressDto()
             {
-                UserId = 1,
+                Id = AddressId2,
+                UserId = UserId,
                 Alias = "aliasTest2",
                 FirstName = "firstNameTest2",
                 LastName = "lastNameTest2",

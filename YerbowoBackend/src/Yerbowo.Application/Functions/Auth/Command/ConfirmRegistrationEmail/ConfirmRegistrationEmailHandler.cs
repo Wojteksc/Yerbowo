@@ -6,7 +6,7 @@ public class ConfirmRegistrationEmailHandler(
 {
     public async Task Handle(ConfirmRegistrationEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(request.Email) 
+        var user = await userRepository.GetActiveByEmailAsync(request.Email)
             ?? throw new UserNotFoundException(localizer);
         
         if (user.VerificationToken != request.Token)

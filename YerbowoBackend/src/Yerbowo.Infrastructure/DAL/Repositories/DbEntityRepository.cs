@@ -13,10 +13,10 @@ public class DbEntityRepository<TEntity> : IDbEntityRepository<TEntity> where TE
         _db = db;
     }
 
-    public virtual async Task<TEntity> GetAsync(int id) 
+    public virtual async Task<TEntity> GetAsync(Guid id) 
         => await _entitiesNotRemoved.SingleOrDefaultAsync(x => x.Id == id);
 
-    public async Task<TEntity> GetAsync(int id, Func<IQueryable<TEntity>, IQueryable<TEntity>> func)
+    public async Task<TEntity> GetAsync(Guid id, Func<IQueryable<TEntity>, IQueryable<TEntity>> func)
     {
         IQueryable<TEntity> resultWithEagerLoading = func(_entitiesNotRemoved);
 
@@ -26,7 +26,7 @@ public class DbEntityRepository<TEntity> : IDbEntityRepository<TEntity> where TE
     public async Task<IEnumerable<TEntity>> GetAllAsync() 
         => await _entitiesNotRemoved.AsNoTracking().ToListAsync();
 
-    public virtual async Task<bool> ExistsAsync(int id)
+    public virtual async Task<bool> ExistsAsync(Guid id)
         => await _entities.AnyAsync(x => x.Id == id);
 
     public virtual async Task AddAsync(TEntity entity) 

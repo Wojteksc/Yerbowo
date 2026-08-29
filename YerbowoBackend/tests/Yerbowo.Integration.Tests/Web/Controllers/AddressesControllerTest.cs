@@ -1,17 +1,12 @@
 ﻿namespace Yerbowo.Integration.Tests.Web.Controllers;
 
-public class AddressesControllerTest : ApiTestBase
+public class AddressesControllerTest(WebApplicationFactory<Startup> factory) : ApiTestBase(factory)
 {
-    private readonly HttpClient _httpClient;
-    public AddressesControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
-    {
-        _httpClient = CreateClient();
-    }
-
     [Fact]
     public async Task GetAddresses_Should_ReturnStatusCodeUnauthorized_When_UserIsAnonymous()
     {
-        var response = await _httpClient.GetAsync("/api/users/9999999/addresses");
+        Guid guid = Guid.Parse("99999999-9999-9999-9999-999999999999");
+        var response = await _httpClient.GetAsync($"/api/users/{guid}/addresses");
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
@@ -34,7 +29,7 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email,
         };
 
-        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
+        Guid createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, Guid>
             ($"api/users/{User.Id}/addresses", address);
 
         var createdAddress = await _httpClient.GetAsync<AddressDetailsDto>($"api/users/{User.Id}/addresses/{createdAddressId}");
@@ -59,7 +54,7 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email
         };
 
-        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
+        Guid createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, Guid>
             ($"/api/users/{User.Id}/addresses", newAddress);
 
         var addressCommand = new ChangeAddressCommand()
@@ -102,7 +97,7 @@ public class AddressesControllerTest : ApiTestBase
             Email = User.Email
         };
 
-        int createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, int>
+        Guid createdAddressId = await _httpClient.PostAsync<CreateAddressCommand, Guid>
             ($"/api/users/{User.Id}/addresses", addressCommand);
 
         var messageDelete = await _httpClient.DeleteAsync($"/api/users/{User.Id}/addresses/{createdAddressId}");

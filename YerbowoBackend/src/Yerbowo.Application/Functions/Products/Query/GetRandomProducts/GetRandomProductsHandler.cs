@@ -27,8 +27,8 @@ public class GetRandomProductsHandler(
     {
         return products
             .Where(p => p.State == ProductState.Bestseller)
-            .Take(amount)
             .OrderBy(p => Guid.NewGuid())
+            .Take(amount)
             .AsEnumerable();
     }
 
@@ -36,8 +36,8 @@ public class GetRandomProductsHandler(
     {
         return products
             .Where(p => p.State == ProductState.New)
-            .Take(amount)
             .OrderByDescending(p => p.CreatedAt)
+            .Take(amount)
             .AsEnumerable();
     }
 
@@ -45,8 +45,8 @@ public class GetRandomProductsHandler(
     {
         return products
             .Where(p => p.Price != p.OldPrice)
-            .Take(amount)
             .OrderBy(p => Guid.NewGuid())
+            .Take(amount)
             .AsEnumerable();
     }
 }

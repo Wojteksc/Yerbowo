@@ -2,7 +2,7 @@
 
 public class Address : BaseEntity
 {
-    public int UserId { get; protected set; }
+    public Guid UserId { get; protected set; }
 
     public User User { get; protected set; }
     public string Alias { get; protected set; }
@@ -20,11 +20,12 @@ public class Address : BaseEntity
 
     private Address() { }
 
-    public Address(int userId, string alias, string firstName, string lastName,
+    public Address(Guid id, Guid userId, string alias, string firstName, string lastName,
         string street, string buildingNumber, string apartmentNumber, string place,
         string postCode, string phone, string email, string nip = null, string company = null)
     {
-        Against.NegativeOrZero(userId, nameof(userId));
+        Against.Default(id, nameof(id));
+        Against.Default(userId, nameof(userId));
         Against.NullOrEmpty(alias, nameof(alias));
         Against.NullOrEmpty(firstName, nameof(firstName));
         Against.NullOrEmpty(lastName, nameof(lastName));
@@ -35,6 +36,7 @@ public class Address : BaseEntity
         Against.NullOrEmpty(phone, nameof(phone));
         Against.NullOrEmpty(email, nameof(email));
 
+        Id = id;
         UserId = userId;
         Alias = alias;
         FirstName = firstName;

@@ -4,7 +4,7 @@ public interface IProductRepository : IDbEntityRepository<Product>
 {
     Task<Product> GetAsync(string slug);
     
-    Task<Product> GetWithCategoryAsync(int productId);
+    Task<Product> GetWithCategoryAsync(Guid productId);
 
     Task<Product> GetWithCategoryAsync(string slug);
 

@@ -7,6 +7,8 @@ public class ConfirmRegistrationEmailHandlerTest
     private readonly ConfirmRegistrationEmailCommand _request;
     private readonly User _user;
 
+    Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     private IStringLocalizer<SharedResource> _localizer;
 
     public ConfirmRegistrationEmailHandlerTest()
@@ -17,7 +19,7 @@ public class ConfirmRegistrationEmailHandlerTest
 
         _handler = new ConfirmRegistrationEmailHandler(_userRepositoryMock.Object, _localizer);
         _request = new ConfirmRegistrationEmailCommand("email@email.com", "1234567890");
-        _user = new User("firstName", "lastName", "email@email.com");
+        _user = new User(UserId, "firstName", "lastName", "email@email.com");
     }
 
     [Fact]
@@ -25,7 +27,7 @@ public class ConfirmRegistrationEmailHandlerTest
     {
         _user.SetVerificationToken("1234567890");
         
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        _userRepositoryMock.Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .ReturnsAsync(_user);
         
         await _handler.Handle(_request, CancellationToken.None);
@@ -42,7 +44,7 @@ public class ConfirmRegistrationEmailHandlerTest
         string expectedMessage = _localizer[Localizations.InvalidToken];
 
         _user.SetVerificationToken("123456789");
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        _userRepositoryMock.Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .ReturnsAsync(_user);
 
         var exception = await Assert.ThrowsAsync<InvalidTokenException>(
@@ -59,7 +61,7 @@ public class ConfirmRegistrationEmailHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.UserNotFound];
 
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        _userRepositoryMock.Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
         var exception = await Assert.ThrowsAsync<UserNotFoundException>(
@@ -78,7 +80,7 @@ public class ConfirmRegistrationEmailHandlerTest
 
         _user.SetVerificationToken("1234567890");
         _user.SetVerificationDate(DateTime.UtcNow);
-        _userRepositoryMock.Setup(x => x.GetAsync(_request.Email))
+        _userRepositoryMock.Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .ReturnsAsync(_user);
 
         var exception = await Assert.ThrowsAsync<EmailWasAlreadyConfirmedException>(

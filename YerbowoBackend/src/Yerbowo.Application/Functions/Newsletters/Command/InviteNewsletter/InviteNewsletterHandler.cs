@@ -3,7 +3,8 @@
 public class InviteNewsletterHandler(
     INewsletterRepository newsletterRepository,
     IStringLocalizer<SharedResource> localizer,
-    IWebEncoder webEncoder) : ICommandHandler<InviteNewsletterCommand, string>
+    IWebEncoder webEncoder,
+    IIdGenerator idGenerator) : ICommandHandler<InviteNewsletterCommand, string>
 {
     public async Task<string> Handle(InviteNewsletterCommand request, CancellationToken cancellationToken)
     {
@@ -16,10 +17,18 @@ public class InviteNewsletterHandler(
             throw new EmailIsAlreadySubscribedToNewsletterException(localizer);
         }
 
-        newsletter ??= Newsletter.Create(request.Email, token);
-        newsletter.Invite();
-
-        await newsletterRepository.UpdateAsync(newsletter);
+        if (newsletter is null)
+        {
+            var newNewsletter = Newsletter.Create(idGenerator.Generate(), request.Email, token);
+            newNewsletter.Invite();
+            await newsletterRepository.AddAsync(newNewsletter);
+        }
+        else
+        {
+            newsletter.SetToken(token);
+            newsletter.Invite();
+            await newsletterRepository.UpdateAsync(newsletter);
+        }
 
         return localizer[Localizations.NewsletterSentEmailResponse].Value;
     }

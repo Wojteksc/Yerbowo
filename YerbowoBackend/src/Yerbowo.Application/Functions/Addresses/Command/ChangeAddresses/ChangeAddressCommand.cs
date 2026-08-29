@@ -2,7 +2,7 @@
 
 public record ChangeAddressCommand : ICommand, ICommandIdentity
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     [Required(ErrorMessage = "Alias jest wymagany")]
     public string Alias { get; init; }
     [Required(ErrorMessage = "Imię jest wymagane")]

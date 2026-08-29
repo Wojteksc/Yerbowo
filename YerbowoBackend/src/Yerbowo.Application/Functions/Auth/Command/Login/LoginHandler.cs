@@ -8,10 +8,9 @@ public class LoginHandler(
 {
     public async Task<ResponseToken> Handle(LoginCommand request, CancellationToken cancellationToken)
 	{
-		var user = await userRepository.GetAsync(request.Email);
+		var user = await userRepository.GetActiveByEmailAsync(request.Email);
 
-		if (user == null || user.IsRemoved ||
-			!passwordManager.Validate(request.Password, user.Password))
+		if (user == null || !passwordManager.Validate(request.Password, user.Password))
 		{
 			throw new UserInvalidCredentailsException(localizer);
 		}

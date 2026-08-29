@@ -5,8 +5,8 @@
 [ApiController]
 public class UsersController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<UserDetailsDto>> GetUser(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<UserDetailsDto>> GetUser(Guid id)
     {
         var user = await dispatcher.ExecuteQuery(new GetUserByIdQuery(id));
 
@@ -23,7 +23,7 @@ public class UsersController(IRequestDispatcher dispatcher) : ApiControllerBase
 
     [HttpPut("{id}")]
     [BadRequestFilter]
-    public async Task<ActionResult> UpdateUser(int id, ChangeUserCommand user)
+    public async Task<ActionResult> UpdateUser(Guid id, ChangeUserCommand user)
     {
         await dispatcher.ExecuteCommand(user);
 

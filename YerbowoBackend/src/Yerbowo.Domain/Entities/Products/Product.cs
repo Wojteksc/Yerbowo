@@ -2,7 +2,7 @@
 
 public class Product : BaseEntity
 {
-    public int SubcategoryId { get; protected set; }
+    public Guid SubcategoryId { get; protected set; }
 
     public string Code { get; protected set; }
     public string Name { get; protected set; }
@@ -18,85 +18,51 @@ public class Product : BaseEntity
 
     private Product() { }
 
-    public Product(int subcategoryId, string code, string name,
-        string description, decimal price, decimal oldPrice,
-        int stock, ProductState state, string image)
+    public Product(
+        Guid id,
+        Guid subcategoryId, 
+        string code, 
+        string name,
+        string description, 
+        decimal price, 
+        decimal oldPrice,
+        int stock, 
+        ProductState state, 
+        string image)
 
     {
-        SetSubcategoryId(subcategoryId);
-        SetCode(code);
-        SetName(name);
-        SetDescription(description);
-        SetPrice(price);
-        SetOldPrice(oldPrice);
-        SetStock(stock);
-        SetState(state);
-        SetImage(image);
-        SetSlug(name);
-    }
-
-    private void SetSubcategoryId(int subcategoryId)
-    {
-        Against.NegativeOrZero(subcategoryId, nameof(subcategoryId));
-        SubcategoryId = subcategoryId;
-    }
-
-    public void SetCode(string code)
-    {
+        Against.Default(id, nameof(id));
+        Against.Default(subcategoryId, nameof(subcategoryId));
         Against.NullOrEmpty(code, nameof(code));
-        Code = code;
-    }
-
-    private void SetName(string name)
-    {
         Against.NullOrEmpty(name, nameof(name));
-        Name = name;
-    }
-
-    private void SetDescription(string description)
-    {
         Against.NullOrEmpty(description, nameof(description));
+        Against.Negative(price, nameof(price));
+        Against.Negative(stock, nameof(stock));
+        Against.NullOrEmpty(image, nameof(image));
+
+        Id = id;
+        SubcategoryId = subcategoryId;
+        Code = code;
+        Name = name;
         Description = description;
+        Price = price;
+        SetOldPrice(oldPrice);
+        OldPrice = oldPrice;
+        Stock = stock;
+        SetState(state);
+        Image = image;
+        Slug = name.ToSlug();
     }
 
-    private void SetPrice(decimal price)
+    public void SetState(ProductState state)
     {
-        Against.Negative(price, nameof(price));
-        Price = price;
+        Against.Null(state, nameof(state));
+        State = state;
     }
 
     public void SetOldPrice(decimal oldPrice)
     {
         Against.Negative(oldPrice, nameof(oldPrice));
         OldPrice = oldPrice;
-    }
-
-    private void SetStock(int stock)
-    {
-        Against.Negative(stock, nameof(stock));
-        Stock = stock;
-    }
-
-    public void SetState(ProductState state)
-    {
-        State = state;
-    }
-
-    private void SetImage(string image)
-    {
-        Against.NullOrEmpty(image, nameof(image));
-        Image = image;
-    }
-
-    private void SetSlug(string slug)
-    {
-        Against.NullOrEmpty(slug, nameof(slug));
-        Slug = slug.ToSlug();
-    }
-
-    public void SetSubcategory(Subcategory subcategory)
-    {
-        Against.Null(subcategory, nameof(subcategory));
-        Subcategory = subcategory;
     }
 }

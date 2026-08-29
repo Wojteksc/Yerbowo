@@ -16,11 +16,13 @@ public class ChangeAddressHandlerTest
         _localizer = StringLocalizerFactory.Create();
 
         _handler = new ChangeAddressHandler(
-            _addressRepositoryMock.Object, 
+            _addressRepositoryMock.Object,
             AutoMapperConfig.Initialize(),
             _localizer);
 
-        _address = new Address(1,
+        _address = new Address(
+            Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            Guid.Parse("10000000-0000-0000-0000-000000000001"),
             "aliastTest",
             "firstName",
             "LastName",
@@ -34,7 +36,7 @@ public class ChangeAddressHandlerTest
 
         _request = new ChangeAddressCommand()
         {
-            Id = 1,
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
             Alias = "aliastTest_new",
             FirstName = "firstName_new",
             LastName = "LastName_new",
@@ -60,7 +62,7 @@ public class ChangeAddressHandlerTest
         await _handler.Handle(_request, CancellationToken.None);
 
         _addressRepositoryMock.Verify(x => x.UpdateAsync(_address), Times.Once);
-        _address.Should().BeEquivalentTo(_request, options => options.Excluding(x => x.Id));
+        _address.Should().BeEquivalentTo(_request);
     }
 
     [Theory]
@@ -75,7 +77,7 @@ public class ChangeAddressHandlerTest
             .Setup(x => x.GetAsync(_request.Id))
             .ReturnsAsync((Address)null);
 
-        var exception = await Assert.ThrowsAsync<AddressNotFoundException>(() =>_handler.Handle(_request, CancellationToken.None));
+        var exception = await Assert.ThrowsAsync<AddressNotFoundException>(() => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         _addressRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Address>()), Times.Never);
     }

@@ -1,10 +1,17 @@
-﻿namespace Yerbowo.Integration.Tests.Web;
+﻿using Yerbowo.Integration.Tests.Infrastructure;
 
-public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>
+namespace Yerbowo.Integration.Tests.Web;
+
+public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>>, IAsyncLifetime
 {
-    private readonly WebApplicationFactory<Startup> _webApplicationFactory;
+    private readonly WebApplicationFactory<Startup> _baseFactory;
+    private readonly TestDatabaseManager _databaseManager = new();
 
-    public WebApplicationFactory<Startup> WebApplicationFactory => _webApplicationFactory;
+    private WebApplicationFactory<Startup> _webApplicationFactory;
+
+    protected HttpClient _httpClient;
+
+    protected IServiceScopeFactory _scope;
 
     public User User { get; private set; }
 
@@ -15,28 +22,49 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
 #if DEBUG
         Environment = "Development";
 #endif
+        _baseFactory = factory;
+    }
 
-        _webApplicationFactory = factory.WithWebHostBuilder(
-            builder => builder
-            .ConfigureTestServices(services =>
-            {
-                var descriptor = services.Single(s => s.ImplementationType == typeof(OutboxMessagesJob));
-                services.Remove(descriptor);
-            })
-            .UseEnvironment(Environment)
-            .ConfigureAppConfiguration(ConfigureAppConfiguration));
+    public virtual async Task InitializeAsync()
+    {
+        await _databaseManager.StartAsync();
 
-        //Run server
+        _webApplicationFactory = TestHostFactory.Create(
+            _baseFactory,
+            Environment,
+            ConfigureAppConfiguration);
+
         var _ = _webApplicationFactory.Server;
 
-        ExecuteDatabaseInitializerJob();
+        _scope = _webApplicationFactory.Services
+            .GetRequiredService<IServiceScopeFactory>();
 
-        User = GetUserByEmail("yerbowoTestAdmin@IntegrationTestYerbowo.com");
+        await TestDatabaseManager.EnsureCreatedAsync(_webApplicationFactory.Services);
+
+        var userSeeder = new UserSeeder(_scope);
+        await userSeeder.SeedAsync();
+
+        User = await GetUser(UserSeeder.DefaultEmail);
+
+        _httpClient = await CreateHttpClient();
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _databaseManager.DisposeAsync();
     }
 
     protected virtual void ConfigureAppConfiguration(IConfigurationBuilder configuration)
     {
-        configuration.AddInMemoryCollection(new[] { new KeyValuePair<string, string>("UseInMemoryDatabase", "true") });
+        Console.WriteLine($"[TEST] Using connection string: {_databaseManager.ConnectionString}");
+
+        configuration.AddInMemoryCollection(
+            new[]
+            {
+                new KeyValuePair<string, string>(
+                    "ConnectionStrings:DefaultConnection",
+                    _databaseManager.ConnectionString)
+            });
 
         if (Environment == "Test")
         {
@@ -49,6 +77,7 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     private static void LoadEnvOrSystemVariables(IConfigurationBuilder configuration)
     {
         string envFilePath = GetEnvFilePath();
+
         if (File.Exists(envFilePath))
         {
             DotNetEnv.Env.Load(envFilePath);
@@ -62,46 +91,39 @@ public abstract class ApiTestBase : IClassFixture<WebApplicationFactory<Startup>
     private static string GetEnvFilePath()
     {
         string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../../"));
+
         return Path.Combine(root, ".env");
     }
 
-    protected virtual HttpClient CreateClient()
+    private async Task<HttpClient> CreateHttpClient()
     {
-        var client = _webApplicationFactory.CreateClient(new WebApplicationFactoryClientOptions() { AllowAutoRedirect = false });
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        var loginCommand = new LoginCommand() { Email = User.Email, Password = "Haslo123." };
-        
-        Task.Run(async () => await AuthHelper.LoginAsync(client, loginCommand)).Wait();
-     
+        var client = _webApplicationFactory.CreateClient(
+            new WebApplicationFactoryClientOptions
+            {
+                AllowAutoRedirect = false
+            });
+
+        client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+
+        var loginCommand = new LoginCommand
+        {
+            Email = User.Email,
+            Password = UserSeeder.DefaultPassword
+        };
+
+        await AuthHelper.LoginAsync(client, loginCommand);
+
         return client;
     }
 
-    private User GetUserByEmail(string email)
+    private async Task<User> GetUser(string email)
     {
-        using (var scope = WebApplicationFactory.Server.Services.CreateScope())
-        {
-            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-            return userRepository.GetAsync(email).Result;
-        }
-    }
+        await using var scope = _scope.CreateAsyncScope();
 
-    private void ExecuteDatabaseInitializerJob()
-    {
-        try
-        {
-            using var scope = WebApplicationFactory.Server.Services.CreateScope();
-            var scopeFactory = scope.ServiceProvider.GetRequiredService<IServiceScopeFactory>();
-            var loggerService = scope.ServiceProvider.GetRequiredService<ILogger<DatabaseInitializerJob>>();
-            var job = new DatabaseInitializerJob(scopeFactory, loggerService);
-            Task.Run(async () => await job.StartAsync(default)).Wait();
-        }
-        catch (OperationCanceledException)
-        {
-            Console.WriteLine("Task cancelled");
-        }
-        catch (Exception ex)
-        {
-            throw new Exception($"Something went wrong while executing {nameof(DatabaseInitializerJob)}", ex);
-        }
+        var userRepository = scope.ServiceProvider
+            .GetRequiredService<IUserRepository>();
+
+        return await userRepository.GetActiveByEmailAsync(email);
     }
 }

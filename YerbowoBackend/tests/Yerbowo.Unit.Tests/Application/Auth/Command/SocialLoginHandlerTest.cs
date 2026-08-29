@@ -2,29 +2,30 @@
 
 public class SocialLoginHandlerTest
 {
-    private readonly Mock<IUserRepository> userRepository;
-    private readonly Mock<ITokenGenerator> authenticator;
+    private readonly Mock<IUserRepository> userRepository = new();
+    private readonly Mock<ITokenGenerator> authenticator = new();
+    private readonly Mock<IIdGenerator> idGenerator = new();
 
     private readonly SocialLoginHandler handler;
     private readonly SocialLoginCommand request;
     private readonly User user;
 
+    Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     private IStringLocalizer<SharedResource> localizer;
 
     public SocialLoginHandlerTest()
     {
-        userRepository = new();
-        authenticator = new();
-
         localizer = StringLocalizerFactory.Create();
 
         handler = new SocialLoginHandler(
           userRepository.Object,
           AutoMapperConfig.Initialize(),
           authenticator.Object,
-          localizer);
+          localizer,
+          idGenerator.Object);
 
-       user = new User("firstName", "lastName", "email@email.com", "user", null, 
+       user = new User(UserId,"firstName", "lastName", "email@email.com", "user", null, 
             "http://www.test.pl", "Facebook");
 
         request = new SocialLoginCommand()
@@ -40,32 +41,34 @@ public class SocialLoginHandlerTest
     [Fact]
     public async Task Should_CreateNewAccount_When_UserDoesNotExistInDatabase()
     {
-
-        var users = new List<User>();
+        User addedUser = null;
         var token = new TokenDto("token");
 
         userRepository
-            .Setup(x => x.GetAsync(request.Email))
+            .Setup(x => x.GetByEmailAsync(request.Email))
             .ReturnsAsync((User?)null);
 
         userRepository
             .Setup(x => x.AddAsync(It.IsAny<User>()))
-            .Callback<User>(user => users.Add(user));
+            .Callback<User>(u => addedUser = u);
 
         authenticator
-            .Setup(x => x.CreateToken(It.IsAny<int>(), user.Email, user.Role))
+            .Setup(x => x.CreateToken(It.IsAny<Guid>(), user.Email, user.Role))
             .Returns(token);
+
+        idGenerator
+            .Setup(x => x.Generate())
+            .Returns(UserId);
 
         var response = await handler.Handle(request, CancellationToken.None);
 
-        users.Should().ContainSingle();
-        userRepository.Verify(x => x.AddAsync(users.Single()), Times.Once());
+        userRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once());
         userRepository.Verify(x => x.UpdateAsync(It.IsAny<User>()), Times.Never());
 
         response.Should().NotBeNull();
         response.Token.Should().Be(token);
 
-        users.Single().Should().BeEquivalentTo(user, options =>
+        addedUser.Should().BeEquivalentTo(user, options =>
             options.Excluding(u => u.Password));
     }
 
@@ -78,7 +81,7 @@ public class SocialLoginHandlerTest
         var users = new List<User>();
 
         userRepository
-            .Setup(x => x.GetAsync(request.Email))
+            .Setup(x => x.GetByEmailAsync(request.Email))
             .ReturnsAsync(user);
 
         userRepository
@@ -139,7 +142,7 @@ public class SocialLoginHandlerTest
         user.IsRemoved = true;
 
         userRepository
-            .Setup(x => x.GetAsync(request.Email))
+            .Setup(x => x.GetByEmailAsync(request.Email))
             .ReturnsAsync(user);
 
         var exception = await Assert.ThrowsAsync<UserNotFoundException>(

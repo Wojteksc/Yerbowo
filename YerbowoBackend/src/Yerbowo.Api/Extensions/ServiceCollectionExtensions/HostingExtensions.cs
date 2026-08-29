@@ -6,7 +6,7 @@ public static class HostingExtensions
     {
         services.Configure<HostOptions>(options =>
         {
-            options.ServicesStartConcurrently = true;
+            options.ServicesStartConcurrently = false;
             options.ServicesStopConcurrently = false;
         });
     }

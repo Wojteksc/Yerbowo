@@ -3,7 +3,7 @@
 [Route("api/[controller]")]
 public class ApiControllerBase : ControllerBase
 {
-    protected int UserId => User?.Identity.IsAuthenticated == true 
-        ? int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) 
-        : 0;
+    protected Guid UserId => User?.Identity.IsAuthenticated == true 
+        ? Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) 
+        : Guid.Empty;
 }

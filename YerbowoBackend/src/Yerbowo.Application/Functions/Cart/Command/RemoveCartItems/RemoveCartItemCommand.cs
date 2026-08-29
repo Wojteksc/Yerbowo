@@ -1,3 +1,3 @@
 ﻿namespace Yerbowo.Application.Functions.Cart.Command.RemoveCartItems;
 
-public record RemoveCartItemCommand(int ProductId) : ICommand<CartDto> { }
+public record RemoveCartItemCommand(Guid ProductId) : ICommand<CartDto> { }

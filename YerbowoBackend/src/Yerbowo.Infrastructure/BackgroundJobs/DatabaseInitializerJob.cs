@@ -11,7 +11,8 @@ internal sealed class DatabaseInitializerJob(
         await using var scope = scopeFactory.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<YerbowoContext>();
         var passwordManager = scope.ServiceProvider.GetRequiredService<IPasswordManager>();
-        new DatabaseInitializer(dbContext, passwordManager).Seed();
+        var databaseInitalizer = new DatabaseInitializer(dbContext, passwordManager);
+        await databaseInitalizer.Seed();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

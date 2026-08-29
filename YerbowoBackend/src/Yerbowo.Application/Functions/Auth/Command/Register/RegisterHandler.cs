@@ -9,7 +9,7 @@ public class RegisterHandler
 {
     public async Task Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        if (await userRepository.ExistsAsync(request.Email))
+        if (await userRepository.ExistsByEmailAsync(request.Email))
             throw new EmailIsAlreadyInUseException(localizer);
 
         string token = webEncoder.Base64UrlEncodeGuid();

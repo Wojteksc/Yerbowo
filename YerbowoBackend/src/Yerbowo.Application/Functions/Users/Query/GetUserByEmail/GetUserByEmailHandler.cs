@@ -6,7 +6,7 @@ public class GetUserByEmailHandler(
 {
     public async Task<UserDetailsDto> Handle(GetUserByEmailQuery request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(request.Email);
+        var user = await userRepository.GetActiveByEmailAsync(request.Email);
 
         return mapper.Map<UserDetailsDto>(user);
     }

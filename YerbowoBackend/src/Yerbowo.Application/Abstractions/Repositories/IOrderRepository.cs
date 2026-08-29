@@ -2,5 +2,5 @@
 
 public interface IOrderRepository : IDbEntityRepository<Order>
 {
-    Task<ICollection<Order>> GetByUserAsync(int userId);
+    Task<ICollection<Order>> GetByUserAsync(Guid userId);
 }

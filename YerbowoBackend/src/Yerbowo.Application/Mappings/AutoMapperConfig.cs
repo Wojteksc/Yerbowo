@@ -63,7 +63,7 @@ public static class AutoMapperConfig
                 .ForMember(d => d.Sum, s => s.MapFrom(x => x.Sum(a => a.Product.Price * a.Quantity)))
                 .ForMember(d => d.TotalItems, s => s.MapFrom(x => x.Sum(a => a.Quantity)));
 
-            }).CreateMapper();
+            }, NullLoggerFactory.Instance).CreateMapper();
         }
         catch (Exception ex)
         {

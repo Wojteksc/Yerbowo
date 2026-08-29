@@ -4,8 +4,8 @@ public class UnathorizedFilter : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        int userIdRequest = Convert.ToInt32(context.ActionArguments["userId"]);
-        int userIdHttpContext = Convert.ToInt32(context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        Guid userIdRequest = Guid.Parse(context.ActionArguments["userId"].ToString());
+        Guid userIdHttpContext = Guid.Parse(context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         if (userIdRequest != userIdHttpContext)
         {

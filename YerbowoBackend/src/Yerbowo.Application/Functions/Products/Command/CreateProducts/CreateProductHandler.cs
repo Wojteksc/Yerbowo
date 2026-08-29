@@ -2,15 +2,25 @@
 
 public class CreateProductHandler(
 	IProductRepository productRepository,
-    IMapper mapper,
-    IStringLocalizer<SharedResource> localizer) : ICommandHandler<CreateProductCommand, int>
+    IStringLocalizer<SharedResource> localizer,
+	IIdGenerator idGenerator) : ICommandHandler<CreateProductCommand, Guid>
 {
-    public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
 	{
 		if (await productRepository.ExistsAsync(request.Name.ToSlug()))
 			throw new ProductNameIsAlreadyExistsException(localizer);
 
-		var product = mapper.Map<Product>(request);
+		var product = new Product(
+			idGenerator.Generate(),
+			request.SubcategoryId,
+			request.Code,
+			request.Name,
+			request.Description,
+			request.Price,
+			0,
+			request.Stock,
+			request.State,
+			request.Image);
 
 		await productRepository.AddAsync(product);
 

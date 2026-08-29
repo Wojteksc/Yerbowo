@@ -2,17 +2,16 @@
 
 public class ChangeUserHandlerTest
 {
-    private readonly Mock<IUserRepository> userRepository;
-    private readonly Mock<IPasswordManager> passwordManager;
+    private readonly Mock<IUserRepository> userRepository = new();
+    private readonly Mock<IPasswordManager> passwordManager = new();
     private readonly ChangeUserHandler handler;
 
     private IStringLocalizer<SharedResource> localizer;
 
+    private Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     public ChangeUserHandlerTest()
     {
-        userRepository = new();
-        passwordManager = new();
-
         localizer = StringLocalizerFactory.Create();
 
         handler = new ChangeUserHandler(
@@ -25,10 +24,11 @@ public class ChangeUserHandlerTest
     [Fact]
     public async Task Should_UpdateUserCorrectlyWithPassword()
     {
-        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        var user = new User(UserId,"firstName", "lastName", "email@email.com", "user", "companyName");
         user.SetPassword("password");
         var request = new ChangeUserCommand
         {
+            Id = UserId,
             FirstName = "firstName_NEW",
             LastName = "lastName_NEW",
             CompanyName = "companyName_NEW",
@@ -40,6 +40,7 @@ public class ChangeUserHandlerTest
         };
 
         var expectedUpdatedUser = new User(
+            UserId,
             "firstName_NEW",
             "lastName_NEW",
             "email@emailNEW.com",
@@ -47,7 +48,7 @@ public class ChangeUserHandlerTest
             "companyName_NEW");
         expectedUpdatedUser.SetPassword("newhashedPassword");
 
-        var users = new List<User>();
+        User userDb = null;
 
         userRepository
             .Setup(x => x.GetAsync(request.Id))
@@ -55,7 +56,7 @@ public class ChangeUserHandlerTest
 
         userRepository
             .Setup(x => x.UpdateAsync(It.IsAny<User>()))
-            .Callback<User>(u => users.Add(u));
+            .Callback<User>(u => userDb = u);
         
         passwordManager
             .Setup(x => x.Validate("password", "password"))
@@ -67,17 +68,18 @@ public class ChangeUserHandlerTest
 
         await handler.Handle(request, CancellationToken.None);
         userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
-        users.Should().AllBeEquivalentTo(expectedUpdatedUser);
+        userDb.Should().BeEquivalentTo(expectedUpdatedUser);
     }
 
     [Fact]
     public async Task Should_UpdateUserCorrectlyWithoutPassword()
     {
-        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        var user = new User(UserId,"firstName", "lastName", "email@email.com", "user", "companyName");
         user.SetPassword("password");
 
         var request = new ChangeUserCommand
         {
+            Id = UserId,
             FirstName = "firstName_NEW",
             LastName = "lastName_NEW",
             CompanyName = "companyName_NEW",
@@ -87,6 +89,7 @@ public class ChangeUserHandlerTest
         };
 
         var expectedUpdatedUser = new User(
+            UserId,
             "firstName_NEW",
             "lastName_NEW",
             "email@emailNEW.com",
@@ -94,7 +97,7 @@ public class ChangeUserHandlerTest
             "companyName_NEW");
         expectedUpdatedUser.SetPassword("password");
 
-        var users = new List<User>();
+        User userDb = null;
 
         userRepository
             .Setup(x => x.GetAsync(request.Id))
@@ -102,7 +105,7 @@ public class ChangeUserHandlerTest
 
         userRepository
             .Setup(x => x.UpdateAsync(It.IsAny<User>()))
-            .Callback<User>(u => users.Add(u));
+            .Callback<User>(u => userDb = u);
         
         passwordManager
             .Setup(x => x.Validate("password", "password"))
@@ -111,7 +114,7 @@ public class ChangeUserHandlerTest
         await handler.Handle(request, CancellationToken.None);
         userRepository.Verify(x => x.UpdateAsync(user), Times.Once);
         passwordManager.Verify(x => x.Secure(It.IsAny<string>()), Times.Never());
-        users.Should().AllBeEquivalentTo(expectedUpdatedUser);
+        userDb.Should().BeEquivalentTo(expectedUpdatedUser);
     }
 
     [Theory]
@@ -122,7 +125,7 @@ public class ChangeUserHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = localizer[Localizations.UserNotFound];
 
-        var request = new ChangeUserCommand { Id = 1 };
+        var request = new ChangeUserCommand { Id = Guid.Parse("99999999-9999-9999-9999-999999999999") };
 
         userRepository
             .Setup(x => x.GetAsync(request.Id))
@@ -142,9 +145,9 @@ public class ChangeUserHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = localizer[Localizations.UserPasswordIsIncorrect];
 
-        var user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        var user = new User(UserId, "firstName", "lastName", "email@email.com", "user", "companyName");
 
-        var request = new ChangeUserCommand { Id = 1, CurrentPassword = "password_xyz" };
+        var request = new ChangeUserCommand { Id = UserId, CurrentPassword = "password_xyz" };
 
         userRepository.Setup(x => x.GetAsync(request.Id))
             .ReturnsAsync(user);

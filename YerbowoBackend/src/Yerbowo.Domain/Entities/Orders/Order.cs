@@ -1,15 +1,12 @@
-﻿using Yerbowo.Domain.Entities.Addresses;
-using Yerbowo.Domain.Entities.Users;
-
-namespace Yerbowo.Domain.Entities.Orders;
+﻿namespace Yerbowo.Domain.Entities.Orders;
 
 public class Order : BaseEntity
 {
-    public int UserId { get; protected set; }
+    public Guid UserId { get; protected set; }
 
     public User User { get; protected set; }
 
-    public int AddressId { get; protected set; }
+    public Guid AddressId { get; protected set; }
 
     public Address Address { get; protected set; }
 
@@ -23,14 +20,22 @@ public class Order : BaseEntity
 
     private Order() { }
 
-    public Order(int userId, int addressId, OrderStatus orderStatus,
-        decimal totalCost, string comment, List<OrderItem> orderItems)
+    public Order(
+        Guid id,
+        Guid userId, 
+        Guid addressId, 
+        OrderStatus orderStatus,
+        decimal totalCost, 
+        string comment, 
+        List<OrderItem> orderItems)
     {
-        Against.NegativeOrZero(userId, nameof(userId));
-        Against.NegativeOrZero(addressId, nameof(addressId));
+        Against.Default(id, nameof(id));
+        Against.Default(userId, nameof(userId));
+        Against.Default(addressId, nameof(addressId));
         Against.Negative(totalCost, nameof(totalCost));
         Against.Null(orderItems, nameof(orderItems));
 
+        Id = id;
         UserId = userId;
         AddressId = addressId;
         TotalCost = totalCost;

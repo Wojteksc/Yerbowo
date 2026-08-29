@@ -1,8 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Products.Command.CreateProducts;
 
-public record CreateProductCommand : ICommand<int>
+public record CreateProductCommand : ICommand<Guid>
 {
-    public int SubcategoryId { get; init; }
+    public Guid SubcategoryId { get; init; }
     public string Code { get; init; }
     public string Name { get; init; }
     public string Description { get; init; }

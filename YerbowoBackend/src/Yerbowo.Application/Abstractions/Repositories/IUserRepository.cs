@@ -2,6 +2,7 @@
 
 public interface IUserRepository : IDbEntityRepository<User>
 {
-    Task<User> GetAsync(string email);
-    Task<bool> ExistsAsync(string email);
+    Task<User> GetActiveByEmailAsync(string email);
+    Task<User> GetByEmailAsync(string email);
+    Task<bool> ExistsByEmailAsync(string email);
 }

@@ -4,7 +4,7 @@ public class RemoveCartItemHandlerTest
 {
     private readonly CartProductItemDto _cartProductItem;
 
-    const int _productId = 1000;
+    Guid ProductId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
     private IStringLocalizer<SharedResource> _localizer;
 
@@ -14,7 +14,7 @@ public class RemoveCartItemHandlerTest
 
         _cartProductItem = new CartProductItemDto
         {
-            Id = _productId,
+            Id = ProductId,
             Code = "code",
             Name = "name",
             Description = "description",
@@ -30,7 +30,7 @@ public class RemoveCartItemHandlerTest
     [Fact]
     public async Task Should_RemoveProductFromCart()
     {
-        var request = new RemoveCartItemCommand(_productId);
+        var request = new RemoveCartItemCommand(ProductId);
 
         var cartProducts = new List<CartItemDto>
         {
@@ -61,7 +61,7 @@ public class RemoveCartItemHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.ProductNotFound];
 
-        int productId = 999;
+        Guid productId = Guid.Parse("99999999-9999-9999-9999-999999999999");
         var request = new RemoveCartItemCommand(productId);
 
         var cartProducts = new List<CartItemDto>

@@ -70,3 +70,4 @@ global using Yerbowo.Domain.RequestProcessing;
 global using Yerbowo.Domain.RequestProcessing.Command;
 global using Yerbowo.Domain.RequestProcessing.Query;
 global using Yerbowo.DomainEvents;
+global using Microsoft.Extensions.Logging.Abstractions;

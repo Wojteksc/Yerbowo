@@ -15,23 +15,19 @@ public class YerbowoContext : DbContext
     public DbSet<Newsletter> Newsletters { get; set; }
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
-    /// <summary>
-    /// Saves changes to the database
-    /// </summary>
-    /// <param name="isCurrentDate">Option ensures save current of date for CreatedAt and UpdatedAt</param>
-    /// <returns></returns>
-    public override int SaveChanges(bool isCurrentDate = true)
-    {
-        if (isCurrentDate)
-            AddTimestamps();
-
-        return base.SaveChanges(isCurrentDate = true);
-    }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         AddTimestamps();
         return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override async Task<int> SaveChangesAsync(bool isCurrentDate, CancellationToken cancellationToken = default)
+    {
+        if (isCurrentDate)
+            AddTimestamps();
+
+        return await base.SaveChangesAsync(isCurrentDate = true, cancellationToken);
     }
 
     private void AddTimestamps()

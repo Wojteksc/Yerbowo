@@ -27,14 +27,14 @@ public class CartController(IRequestDispatcher dispatcher) : ApiControllerBase
 
 	[HttpPut("{id}")]
 	[BadRequestFilter]
-	public async Task<ActionResult<CartDto>> Put(int id, ChangeCartItemCommand command)
+	public async Task<ActionResult<CartDto>> Put(Guid id, ChangeCartItemCommand command)
 	{
 		var cart = await dispatcher.ExecuteCommand(command);
 		return Ok(cart);
 	}
 
 	[HttpDelete("{id}")]
-	public async Task<ActionResult<CartDto>> Delete(int id)
+	public async Task<ActionResult<CartDto>> Delete(Guid id)
 	{
 		var cart = await dispatcher.ExecuteCommand(new RemoveCartItemCommand(id));
 		return Ok(cart);

@@ -7,7 +7,7 @@ public class OrdersController(IRequestDispatcher dispatcher) : ApiControllerBase
 {
     [HttpGet("{orderId}")]
     [UnathorizedFilter]
-    public async Task<ActionResult<OrderDetailsDto>> GetOrder(int userId, int orderId)
+    public async Task<ActionResult<OrderDetailsDto>> GetOrder(Guid userId, Guid orderId)
     {
         var order = await dispatcher.ExecuteQuery(new GetOrderDetailsByIdQuery(orderId));
 
@@ -16,7 +16,7 @@ public class OrdersController(IRequestDispatcher dispatcher) : ApiControllerBase
 
     [HttpGet]
     [UnathorizedFilter]
-    public async Task<ActionResult<OrderDto>> GetOrders(int userId)
+    public async Task<ActionResult<OrderDto>> GetOrders(Guid userId)
     {
         var orders = await dispatcher.ExecuteQuery(new GetOrdersByUserIdQuery(userId));
 

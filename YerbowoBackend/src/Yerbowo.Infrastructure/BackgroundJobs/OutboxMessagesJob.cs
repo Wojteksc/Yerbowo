@@ -3,29 +3,30 @@
 internal sealed class OutboxMessagesJob(
     IServiceScopeFactory scopeFactory,
     ILogger<OutboxMessagesJob> logger,
-    IInterfaceConverterJsonOptions interfaceConverterJsonOptions) : IHostedService
+    IInterfaceConverterJsonOptions interfaceConverterJsonOptions) : BackgroundService
 {
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("Process: Outbox messages.");
 
-        try
+        while (!stoppingToken.IsCancellationRequested)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                await ProcessOutboxMessages(cancellationToken);
-                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                await ProcessOutboxMessages(stoppingToken);
             }
-        }
-        catch (OperationCanceledException ex) when (cancellationToken.IsCancellationRequested)
-        {
-            logger.LogInformation("OutboxMessagesJob cancelled.");
-            logger.LogError(ex.Message);
+            catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+            {
+                logger.LogInformation("OutboxMessagesJob cancelled.");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while processing outbox messages.");
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
         }
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) 
-        => Task.CompletedTask;
 
     private async Task ProcessOutboxMessages(CancellationToken cancellationToken)
     {
@@ -35,6 +36,8 @@ internal sealed class OutboxMessagesJob(
         List<OutboxMessage> messages = await dbContext
             .Set<OutboxMessage>()
             .Where(m => m.ProccessedAt == null)
+            .OrderBy(m => m.CreatedAt)
+            .ThenBy(m => m.Id)
             .Take(20)
             .ToListAsync(cancellationToken);
 
@@ -49,8 +52,7 @@ internal sealed class OutboxMessagesJob(
         {
             var jsonDeserializerOptions = interfaceConverterJsonOptions.GetJsonOptions(className: outboxMessage.Type);
 
-            IDomainEvent? domainEvent = JsonSerializer
-                .Deserialize<IDomainEvent>(outboxMessage.Content, jsonDeserializerOptions);
+            IDomainEvent? domainEvent = JsonSerializer.Deserialize<IDomainEvent>(outboxMessage.Content, jsonDeserializerOptions);
 
             if (domainEvent is null)
             {

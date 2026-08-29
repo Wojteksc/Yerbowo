@@ -4,23 +4,32 @@ public class SocialLoginHandler(
     IUserRepository userRepository,
     IMapper mapper,
     ITokenGenerator authenticator,
-    IStringLocalizer<SharedResource> localizer) : ICommandHandler<SocialLoginCommand, ResponseToken>
+    IStringLocalizer<SharedResource> localizer,
+    IIdGenerator idGenerator) : ICommandHandler<SocialLoginCommand, ResponseToken>
 {
     public async Task<ResponseToken> Handle(SocialLoginCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.Email))
             throw new UserHasNoEmailException(localizer, request.Provider.ToTitle());
 
-        var user = await userRepository.GetAsync(request.Email);
+        var user = await userRepository.GetByEmailAsync(request.Email);
 
         if (IsUserRemoved(user))
             throw new UserNotFoundException(localizer);
 
         if (user == null)
         {
-            user = mapper.Map<User>(request);
-            user.SetRole("user");
-            await userRepository.AddAsync(user);
+            var newUser = new User(
+                idGenerator.Generate(), 
+                request.FirstName, 
+                request.LastName, 
+                request.Email,
+                role: "user",
+                companyName: null,
+                request.PhotoUrl, 
+                request.Provider);
+            await userRepository.AddAsync(newUser);
+            return new ResponseToken(authenticator.CreateToken(newUser.Id, newUser.Email, newUser.Role), newUser.PhotoUrl);
         }
         else if(string.IsNullOrEmpty(user.PhotoUrl))
         {

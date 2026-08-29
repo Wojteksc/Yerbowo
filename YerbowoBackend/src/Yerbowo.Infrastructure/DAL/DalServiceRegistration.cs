@@ -22,17 +22,9 @@ public static class DalServiceRegistration
 
         services.AddDbContextPool<YerbowoContext>((sp, options) =>
         {
-            options.AddInterceptors(sp.GetService<InsertOutboxMessagesInterceptor>());
-
-            if (configuration.GetValue("UseInMemoryDatabase", false))
-            {
-                options.UseInMemoryDatabase(Guid.NewGuid().ToString())
-                       .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            }
-            else
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            }
+            options
+            .AddInterceptors(sp.GetService<InsertOutboxMessagesInterceptor>())
+            .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
     }
 }

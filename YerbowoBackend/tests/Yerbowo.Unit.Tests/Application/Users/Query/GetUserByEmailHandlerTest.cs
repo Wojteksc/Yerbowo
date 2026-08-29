@@ -14,27 +14,30 @@ public class GetUserByEmailHandlerTest
             _userRepositoryMock.Object);
     }
 
+    private Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     [Fact]
     public async Task Should_ReturnUserCorrectly()
     {
-        var user = new User("firstName", "lastName", "email@email.com");
+        var user = new User(UserId, "firstName", "lastName", "emailTest@email.com");
 
-        var userQuery = new GetUserByEmailQuery("emailTest@email.pl");
+        var userQuery = new GetUserByEmailQuery("emailTest@email.com");
 
-        var userDetailsDto = new UserDetailsDto()
+        var expectedUser = new UserDetailsDto()
         {
+            Id = UserId,
             FirstName = "firstName",
             LastName = "lastName",
-            Email = "email@email.com",
+            Email = "emailTest@email.com",
             Role = "user"
         };
 
         _userRepositoryMock
-            .Setup(x => x.GetAsync(userQuery.Email))
+            .Setup(x => x.GetActiveByEmailAsync(userQuery.Email))
             .ReturnsAsync(user);
 
         var result = await _handler.Handle(userQuery, CancellationToken.None);
 
-        result.Should().BeEquivalentTo(userDetailsDto);
+        result.Should().BeEquivalentTo(expectedUser);
     }
 }

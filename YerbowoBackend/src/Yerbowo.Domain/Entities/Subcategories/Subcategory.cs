@@ -2,7 +2,7 @@
 
 public class Subcategory : BaseEntity
 {
-    public int CategoryId { get; protected set; }
+    public Guid CategoryId { get; protected set; }
     public string Name { get; protected set; }
     public string Slug { get; protected set; }
     public string Description { get; protected set; }
@@ -12,49 +12,25 @@ public class Subcategory : BaseEntity
 
     private Subcategory() { }
 
-    public Subcategory(int categoryId, string name, string description, string image)
+    public Subcategory(
+        Guid id, 
+        Guid categoryId, 
+        string name, 
+        string description, 
+        string image)
     {
-        SetCategoryId(categoryId);
-        SetName(name);
-        SetDescription(description);
-        SetImage(image);
-        SetSlug(name);
-    }
-
-    private void SetCategoryId(int categoryId)
-    {
-        Against.NegativeOrZero(categoryId, nameof(categoryId));
-        CategoryId = categoryId;
-    }
-
-    private void SetName(string name)
-    {
+        Against.Default(id, nameof(id));
+        Against.Default(categoryId, nameof(categoryId));
         Against.NullOrEmpty(name, nameof(name));
-        Name = name;
-    }
-
-    private void SetDescription(string description)
-    {
         Against.NullOrEmpty(description, nameof(description));
-        Description = description;
-    }
-
-    private void SetImage(string image)
-    {
         Against.NullOrEmpty(image, nameof(image));
+        
+        Id = id;
+        CategoryId = categoryId;
+        Name = name;
+        Description = description;
         Image = image;
-    }
-
-    private void SetSlug(string slug)
-    {
-        Against.NullOrEmpty(slug, nameof(slug));
-        Slug = slug.ToSlug();
-    }
-
-    public void SetCategory(Category category)
-    {
-        Against.Null(category, nameof(category));
-        Category = category;
+        Slug = name.ToSlug();
     }
 
 }

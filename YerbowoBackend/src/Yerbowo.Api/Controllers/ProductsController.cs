@@ -26,16 +26,16 @@ public class ProductsController(IRequestDispatcher dispatcher) : ApiControllerBa
     [Authorize(Policy = "HasAdminRole")]
     [Route("~/api/users/{userId}/products")]
     [UnathorizedFilter]
-    public async Task<ActionResult<int>> Create(int userId, CreateProductCommand command)
+    public async Task<ActionResult<Guid>> Create(Guid userId, CreateProductCommand command)
     {
-        int productId = await dispatcher.ExecuteCommand(command);
+        Guid productId = await dispatcher.ExecuteCommand(command);
         return CreatedAtRoute(nameof(Get), new { id = productId }, productId);
     }
 
     [HttpPut("{id}")]
     [Authorize(Policy = "HasAdminRole")]
     [BadRequestFilter]
-    public async Task<ActionResult> Update(int id, ChangeProductCommand command)
+    public async Task<ActionResult> Update(Guid id, ChangeProductCommand command)
     {
         await dispatcher.ExecuteCommand(command);
 
@@ -44,7 +44,7 @@ public class ProductsController(IRequestDispatcher dispatcher) : ApiControllerBa
 
     [HttpDelete("{id}")]
     [Authorize(Policy = "HasAdminRole")]
-    public async Task<ActionResult> Remove(int id)
+    public async Task<ActionResult> Remove(Guid id)
     {
         await dispatcher.ExecuteCommand(new RemoveProductCommand(id));
 

@@ -11,35 +11,17 @@ public class Category : BaseEntity
 
     private Category() { }
 
-    public Category(string name, string description, string image)
+    public Category(Guid id, string name, string description, string image)
     {
-        SetName(name);
-        SetDescription(description);
-        SetImage(image);
-        SetSlug(name);
-    }
-
-    private void SetName(string name)
-    {
+        Against.Default(id, nameof(id));
         Against.NullOrEmpty(name, nameof(name));
-        Name = name;
-    }
-
-    private void SetDescription(string description)
-    {
         Against.NullOrEmpty(description, nameof(description));
-        Description = description;
-    }
-
-    private void SetImage(string image)
-    {
         Against.NullOrEmpty(image, nameof(image));
+        
+        Id = id;
+        Name = name;
+        Description = description;
         Image = image;
-    }
-
-    private void SetSlug(string slug)
-    {
-        Against.NullOrEmpty(slug, nameof(slug));
-        Slug = slug.ToSlug();
+        Slug = name.ToSlug();   
     }
 }

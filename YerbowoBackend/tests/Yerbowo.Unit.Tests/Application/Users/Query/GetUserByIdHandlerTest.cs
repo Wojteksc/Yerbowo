@@ -5,8 +5,9 @@ public class GetUserByIdHandlerTest
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly GetUserByIdHandler _handler;
 
-    const int UserId = 1;
-    
+    private Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+
     public GetUserByIdHandlerTest()
     {
         _userRepositoryMock = new();
@@ -19,9 +20,9 @@ public class GetUserByIdHandlerTest
     [Fact]
     public async Task Should_ReturnUserCorrectly()
     {
-        var user = new User("firstName", "lastName", "email@email.com");
+        var user = new User(UserId, "firstName", "lastName", "email@email.com");
 
-        var userQuery = new GetUserByIdQuery(1);
+        var userQuery = new GetUserByIdQuery(UserId);
 
         var userDetailsDto = new UserDetailsDto()
         {
@@ -31,8 +32,6 @@ public class GetUserByIdHandlerTest
             Email = "email@email.com",
             Role = "user"
         };
-
-        typeof(User).GetProperty(nameof(User.Id)).SetValue(user, UserId, null);
 
         _userRepositoryMock
             .Setup(x => x.GetAsync(userQuery.UserId))

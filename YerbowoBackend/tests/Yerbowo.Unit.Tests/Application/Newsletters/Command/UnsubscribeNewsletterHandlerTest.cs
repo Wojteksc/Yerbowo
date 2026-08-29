@@ -9,6 +9,8 @@ public class UnsubscribeNewsletterHandlerTest
 
     private IStringLocalizer<SharedResource> _localizer;
 
+    Guid NewsletterId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     public UnsubscribeNewsletterHandlerTest()
     {
         _newsletterRepositoryMock = new();
@@ -19,7 +21,7 @@ public class UnsubscribeNewsletterHandlerTest
             _newsletterRepositoryMock.Object,
             StringLocalizerFactory.Create());
 
-        _newsletter = Newsletter.Create("test@test.com", "token");
+        _newsletter = Newsletter.Create(NewsletterId, "test@test.com", "token");
     }
 
     [Fact]
@@ -29,7 +31,7 @@ public class UnsubscribeNewsletterHandlerTest
 
         var request = new UnsubscribeNewsletterCommand("test@test.com", "token");
 
-        var expectedNewsletter = Newsletter.Create("test@test.com", "token");
+        var expectedNewsletter = Newsletter.Create(NewsletterId, "test@test.com", "token");
         expectedNewsletter.Unsubscribe();
 
         _newsletterRepositoryMock

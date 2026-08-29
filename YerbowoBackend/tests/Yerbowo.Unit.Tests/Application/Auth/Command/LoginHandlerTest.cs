@@ -10,6 +10,9 @@ public class LoginHandlerTest
     private readonly LoginCommand _request;
     private readonly User _user;
 
+    Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
+
     private IStringLocalizer<SharedResource> _localizer;
 
     public LoginHandlerTest()
@@ -18,7 +21,7 @@ public class LoginHandlerTest
         passwordManager = new();
         authenticator = new();
 
-        _user = new User("firstName", "lastName", "email@email.com");
+        _user = new User(UserId, "firstName", "lastName", "email@email.com");
         _request = new LoginCommand { Email = "email@email.com" };
         _localizer = StringLocalizerFactory.Create();
 
@@ -37,7 +40,7 @@ public class LoginHandlerTest
         _user.SetVerificationDate(DateTime.UtcNow);
 
         userRepository
-            .Setup(x => x.GetAsync(_request.Email))
+            .Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .ReturnsAsync(_user);
 
         passwordManager
@@ -61,30 +64,9 @@ public class LoginHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.UserInvalidCredentails];
 
-        userRepository.Setup(x => x.GetAsync(_request.Email))
+        userRepository.Setup(x => x.GetActiveByEmailAsync(_request.Email))
             .Returns(Task.FromResult<User>(null));
 
-        var exception = await Assert.ThrowsAsync<UserInvalidCredentailsException>(
-            () => _handler.Handle(_request, CancellationToken.None));
-        exception.Message.Should().Be(expectedMessage);
-        passwordManager.Verify(x =>
-            x.Validate(It.IsAny<string>(), It.IsAny<string>())
-            , Times.Never);
-    }
-
-    [Theory]
-    [InlineData("en-US")]
-    [InlineData("pl-PL")]
-    public async Task Should_ThrowException_When_UserIsRemoved(string culture)
-    {
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-        string expectedMessage = _localizer[Localizations.UserInvalidCredentails];
-
-        _user.IsRemoved = true;
-
-        userRepository.Setup(x => x.GetAsync(_request.Email))
-            .ReturnsAsync(_user);
-        
         var exception = await Assert.ThrowsAsync<UserInvalidCredentailsException>(
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
@@ -101,7 +83,7 @@ public class LoginHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.UserRegistrationWasNotConfirmed];
 
-        userRepository.Setup(x => x.GetAsync(_user.Email))
+        userRepository.Setup(x => x.GetActiveByEmailAsync(_user.Email))
             .ReturnsAsync(_user);
 
         passwordManager
@@ -112,7 +94,7 @@ public class LoginHandlerTest
             () => _handler.Handle(_request, CancellationToken.None));
         exception.Message.Should().Be(expectedMessage);
         authenticator.Verify(x => 
-            x.CreateToken(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>())
+            x.CreateToken(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>())
             , Times.Never);
     }
 }

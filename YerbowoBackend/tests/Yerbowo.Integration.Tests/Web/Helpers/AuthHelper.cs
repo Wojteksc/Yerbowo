@@ -44,10 +44,10 @@ public static class AuthHelper
 	{
         await RegisterAsync(httpClient, registerCommand);
 
-        var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        await using var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
         var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-        var userDb = await userRepository.GetAsync(registerCommand.Email);
+        var userDb = await userRepository.GetByEmailAsync(registerCommand.Email);
 
 		var confirmEmailCommand = new ConfirmRegistrationEmailCommand(registerCommand.Email, userDb.VerificationToken);
 

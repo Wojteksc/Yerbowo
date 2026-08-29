@@ -1,8 +1,8 @@
 ﻿namespace Yerbowo.Application.Functions.Addresses.Command.CreateAddresses;
 
-public record CreateAddressCommand : ICommand<int>
+public record CreateAddressCommand : ICommand<Guid>
 {
-    public int UserId { get; init; }
+    public Guid UserId { get; init; }
 
     [Required(ErrorMessage = "Alias jest wymagany")]
     public string Alias { get; init; }

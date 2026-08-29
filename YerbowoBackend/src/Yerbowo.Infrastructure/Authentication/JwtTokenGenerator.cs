@@ -10,7 +10,7 @@ public class JwtTokenGenerator : ITokenGenerator
         _jwtSettings = jwtSettings.Value;
     }
 
-    public TokenDto CreateToken(int userId, string userName, string role)
+    public TokenDto CreateToken(Guid userId, string userName, string role)
     {
         var now = DateTime.UtcNow;
         var claims = new Claim[]

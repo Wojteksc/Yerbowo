@@ -2,5 +2,5 @@
 
 public interface ITokenGenerator
 {
-    TokenDto CreateToken(int userId, string userName, string role);
+    TokenDto CreateToken(Guid userId, string userName, string role);
 }

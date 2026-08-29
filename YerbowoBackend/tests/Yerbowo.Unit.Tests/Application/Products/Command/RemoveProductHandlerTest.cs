@@ -8,6 +8,9 @@ public class RemoveProductHandlerTest
 
     private IStringLocalizer<SharedResource> _localizer;
 
+    private Guid ProductId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    private Guid SubcategoryId = Guid.Parse("10000000-0000-0000-0000-000000000001");
+
     public RemoveProductHandlerTest()
     {
         _productRepositoryMock = new();
@@ -18,7 +21,9 @@ public class RemoveProductHandlerTest
             _productRepositoryMock.Object,
             StringLocalizerFactory.Create());
 
-        _product = new Product(1,
+        _product = new Product(
+            ProductId,
+            SubcategoryId,
             "Code",
             "Name of the product",
             "Description",
@@ -32,7 +37,7 @@ public class RemoveProductHandlerTest
     [Fact]
     public async Task Should_RemoveProductCorrectly()
     {
-        var request = new RemoveProductCommand(1);
+        var request = new RemoveProductCommand(ProductId);
         var addresses = new List<Product>();
 
         _productRepositoryMock
@@ -56,7 +61,7 @@ public class RemoveProductHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.ProductNotFound];
 
-        var request = new RemoveProductCommand(999);
+        var request = new RemoveProductCommand(Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
         _productRepositoryMock
             .Setup(x => x.GetAsync(request.Id))
@@ -77,7 +82,7 @@ public class RemoveProductHandlerTest
 
         _product.IsRemoved = true;
 
-        var request = new RemoveProductCommand(2);
+        var request = new RemoveProductCommand(ProductId);
 
         _productRepositoryMock
             .Setup(x => x.GetAsync(request.Id))

@@ -1,6 +1,4 @@
-﻿using Yerbowo.Infrastructure.DAL.Repositories;
-
-namespace Yerbowo.Infrastructure.DAL.Repositories.Orders;
+﻿namespace Yerbowo.Infrastructure.DAL.Repositories.Orders;
 
 public class OrderRepository : DbEntityRepository<Order>, IOrderRepository
 {
@@ -8,25 +6,36 @@ public class OrderRepository : DbEntityRepository<Order>, IOrderRepository
     {
     }
 
-    public override async Task<Order> GetAsync(int id)
+    public override async Task<Order> GetAsync(Guid id)
     {
         return await _entitiesNotRemoved
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(x => x.Address)
             .Include(x => x.OrderItems)
-            .ThenInclude(oi => (oi as OrderItem).Product)
-            .ThenInclude(p => (p as Product).Subcategory)
-            .ThenInclude(s => (s as Subcategory).Category)
-            .AsNoTracking()
+            .ThenInclude(x => x.Product)
+            .ThenInclude(x => x.Subcategory)
+            .ThenInclude(x => x.Category)
             .SingleAsync(x => x.Id == id);
     }
 
-    public async Task<ICollection<Order>> GetByUserAsync(int userId)
+    public async Task<ICollection<Order>> GetByUserAsync(Guid userId)
     {
+        //Do testów:
+
+        var query = _entitiesNotRemoved
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.Id);
+
+        var sql = query.ToQueryString();
+
         return await _entitiesNotRemoved
             .Include(x => x.OrderItems)
             .ThenInclude(y => (y as OrderItem).Product)
-            .Where(t => t.User.Id == userId)
-            .OrderByDescending(x => x.Id)
+            .Where(t => t.UserId == userId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.Id)
             .AsNoTracking()
             .ToListAsync();
     }

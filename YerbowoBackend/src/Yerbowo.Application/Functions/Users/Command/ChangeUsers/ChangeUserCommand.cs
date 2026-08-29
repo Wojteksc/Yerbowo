@@ -2,7 +2,7 @@
 
 public record ChangeUserCommand : ICommand, ICommandIdentity
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
 
     [Required(ErrorMessage = "Imię jest wymagane")]
     public string FirstName { get; init; }

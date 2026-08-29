@@ -1,16 +1,8 @@
 ﻿namespace Yerbowo.Integration.Tests.Web.Controllers;
 
-public class AuthControllerTest : ApiTestBase
+public class AuthControllerTest(WebApplicationFactory<Startup> factory) : ApiTestBase(factory)
 {
-    private readonly HttpClient _httpClient;
-    private readonly IServiceScopeFactory _scope;
     private const string PrimaryPassword = "secret";
-
-    public AuthControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
-    {
-        _scope = WebApplicationFactory.Services.GetRequiredService<IServiceScopeFactory>();
-        _httpClient = CreateClient();
-    }
 
     [Fact]
     public async Task SocialLogin_Should_ReturnToken()
@@ -62,11 +54,11 @@ public class AuthControllerTest : ApiTestBase
 
     private async Task ConfirmEmailScenario(string email)
     {
-        using (var scope = _scope.CreateScope())
+        await using var scope = _scope.CreateAsyncScope();
         {
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
 
-            var userDb = await userRepository.GetAsync(email);
+            var userDb = await userRepository.GetByEmailAsync(email);
 
             var confirmEmailCommand = new ConfirmRegistrationEmailCommand(email, userDb.VerificationToken);
 

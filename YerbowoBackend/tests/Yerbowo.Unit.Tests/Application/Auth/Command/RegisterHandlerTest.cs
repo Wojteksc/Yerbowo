@@ -12,7 +12,8 @@ public class RegisterHandlerTest
 
     private IStringLocalizer<SharedResource> localizer;
 
-    private const int UserId = 1000;
+    Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
 
     public RegisterHandlerTest()
     {
@@ -21,10 +22,9 @@ public class RegisterHandlerTest
         passwordManager = new();
 
         localizer = StringLocalizerFactory.Create();
-        user = new User("firstName", "lastName", "email@email.com", "user", "companyName");
+        user = new User(UserId, "firstName", "lastName", "email@email.com", "user", "companyName");
         user.SetVerificationToken("token");
         user.SetPassword("hashedPassword");
-        typeof(User).GetProperty(nameof(User.Id)).SetValue(user, UserId, null);
 
         request = new RegisterCommand() 
         {
@@ -51,7 +51,7 @@ public class RegisterHandlerTest
         var users = new List<User>();
 
         userRepository
-            .Setup(x => x.ExistsAsync(request.Email))
+            .Setup(x => x.ExistsByEmailAsync(request.Email))
             .ReturnsAsync(false);
 
         userRepository
@@ -85,7 +85,7 @@ public class RegisterHandlerTest
         string expectedMessage = localizer[Localizations.EmailIsAlreadyInUse];
 
         userRepository
-            .Setup(x => x.ExistsAsync(request.Email))
+            .Setup(x => x.ExistsByEmailAsync(request.Email))
             .ReturnsAsync(true);
 
         userRepository.Setup(x => x.AddAsync(It.IsAny<User>()));

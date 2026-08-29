@@ -11,7 +11,7 @@ public class BadRequestFilter : ActionFilterAttribute
             .Select(x => x.Id)
             .Single();
 
-        int idRequest = Convert.ToInt32(context.ActionArguments["id"]);
+        Guid idRequest = Guid.Parse(context.ActionArguments["id"].ToString());
 
         if (idRequest != idCommand) 
         {

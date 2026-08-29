@@ -1,4 +1,4 @@
-﻿namespace Yerbowo.Unit.Tests.Application.Products.Command;
+namespace Yerbowo.Unit.Tests.Application.Products.Command;
 
 public class ChangeProductHandlerTest
 {
@@ -6,6 +6,9 @@ public class ChangeProductHandlerTest
     private readonly ChangeProductHandler _handler;
 
     private IStringLocalizer<SharedResource> _localizer;
+
+    Guid ProductId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    Guid SubcategoryId = Guid.Parse("10000000-0000-0000-0000-000000000001");
 
     public ChangeProductHandlerTest()
     {
@@ -24,17 +27,20 @@ public class ChangeProductHandlerTest
     {
         var request = new ChangeProductCommand()
         {
-            Id = 1,
-            SubcategoryId = 2,
+            Id = ProductId,
+            SubcategoryId = SubcategoryId,
             Code = "Code_new",
             Name = "Name_new",
             Description = "Description_new",
             Price = 20,
+            Stock = 5,
             State = ProductState.Bestseller,
             Image = "Image_new.png",
         };
 
-        var product = new Product(1,
+        var productDb = new Product(
+            ProductId,
+            SubcategoryId,
             "code",
             "name",
             "description",
@@ -44,11 +50,23 @@ public class ChangeProductHandlerTest
             ProductState.None,
             "image.png");
 
-        var products = new List<Product>();
+        var expectedProduct = new Product(
+            ProductId,
+            SubcategoryId,
+            request.Code,
+            request.Name,
+            request.Description,
+            request.Price,
+            34,
+            request.Stock,
+            request.State,
+            request.Image);
+
+        Product productUpdated = null;
 
         _productRepositoryMock
             .Setup(x => x.GetAsync(request.Id))
-            .ReturnsAsync(product);
+            .ReturnsAsync(productDb);
         
         _productRepositoryMock
             .Setup(x => x.ExistsAsync(request.Name.ToSlug()))
@@ -56,12 +74,12 @@ public class ChangeProductHandlerTest
         
         _productRepositoryMock
             .Setup(x => x.UpdateAsync(It.IsAny<Product>()))
-            .Callback<Product>(p => products.Add(p));
+            .Callback<Product>(p => productUpdated = p);
 
         await _handler.Handle(request, CancellationToken.None);
 
-        _productRepositoryMock.Verify(x => x.UpdateAsync(product), Times.Once);
-        product.Should().BeEquivalentTo(request, options => options.Excluding(x => x.Id));
+        _productRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Product>()), Times.Once);
+        productUpdated.Should().BeEquivalentTo(expectedProduct);
     }
 
     [Theory]
@@ -72,7 +90,7 @@ public class ChangeProductHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.ProductNotFound];
 
-        var request = new ChangeProductCommand { Id = 1, Name = "Name of the product" };
+        var request = new ChangeProductCommand { Id = ProductId, Name = "Name of the product" };
 
         _productRepositoryMock
             .Setup(x => x.GetAsync(request.Id))
@@ -92,9 +110,11 @@ public class ChangeProductHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.ProductNameIsAlreadyExists];
 
-        var request = new ChangeProductCommand { Id = 1, Name = "Name of the product" };
+        var request = new ChangeProductCommand { Id = ProductId, Name = "Name of the product" };
 
-        var product = new Product(1,
+        var product = new Product(
+            ProductId,
+            SubcategoryId,
             "code",
             "Name of the product",
             "description",
@@ -125,7 +145,9 @@ public class ChangeProductHandlerTest
         Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         string expectedMessage = _localizer[Localizations.PromotionalProductPriceMustBeLowerThanCurrent];
 
-        var product = new Product(1,
+        var product = new Product(
+            ProductId,
+            SubcategoryId,
             "code",
             "name",
             "description",
@@ -137,8 +159,8 @@ public class ChangeProductHandlerTest
 
         var request = new ChangeProductCommand()
         {
-            Id = 1,
-            SubcategoryId = 2,
+            Id = ProductId,
+            SubcategoryId = SubcategoryId,
             Code = "Code_new",
             Name = "Name_new",
             Description = "Description_new",

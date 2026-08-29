@@ -2,29 +2,29 @@
 
 public class CreateProductHandlerTest
 {
-    private readonly Mock<IProductRepository> _productRepositoryMock;
+    private readonly Mock<IProductRepository> _productRepositoryMock = new();
+    private readonly Mock<IIdGenerator> _idGeneratorMock = new();
     
     private readonly CreateProductHandler _handler;
     private readonly CreateProductCommand _request;
 
     private readonly IStringLocalizer<SharedResource> _localizer;
 
-    const int ProductId = 1000;
+    Guid ProductId = Guid.Parse("00000000-0000-0000-0000-000000001000");
+    Guid SubcategoryId = Guid.Parse("10000000-0000-0000-0000-000000001000");
 
     public CreateProductHandlerTest()
     {
-        _productRepositoryMock = new();
-
         _localizer = StringLocalizerFactory.Create();
 
         _handler = new CreateProductHandler(
             _productRepositoryMock.Object,
-            AutoMapperConfig.Initialize(),
-            StringLocalizerFactory.Create());
+            StringLocalizerFactory.Create(),
+            _idGeneratorMock.Object);
 
         _request = new CreateProductCommand
         {
-            SubcategoryId = 1,
+            SubcategoryId = SubcategoryId,
             Code = "Code",
             Name = "Name of the product",
             Description = "Description",
@@ -38,7 +38,9 @@ public class CreateProductHandlerTest
     [Fact]
     public async Task Should_CreateProductCorrectly()
     {
-        var expectedInsertedProduct = new Product(1,
+        var expectedInsertedProduct = new Product(
+            ProductId,
+            SubcategoryId,
             "Code",
             "Name of the product",
             "Description",
@@ -47,35 +49,24 @@ public class CreateProductHandlerTest
             20,
             ProductState.New,
             "Image.png");
-        typeof(Product).GetProperty(nameof(Product.Id)).SetValue(expectedInsertedProduct, ProductId, null);
 
-
-        var expectedResult = new ProductDto
-        {
-            Code = "Code",
-            Name = "Name of the product",
-            Slug = "name-of-the-product",
-            Description = "Description",
-            Price = 36,
-            Stock = 20,
-            State = ProductState.New,
-            Image = "Image.png"
-        };
-
-        var products = new List<Product>();
+        Product productDb = null;
 
         _productRepositoryMock
             .Setup(x => x.AddAsync(It.IsAny<Product>()))
             .Callback<Product>(p =>
             {
-                typeof(Product).GetProperty(nameof(Product.Id)).SetValue(p, ProductId, null);
-                products.Add(p);
+                productDb = p;
             });
 
-        int productId = await _handler.Handle(_request, CancellationToken.None);
+        _idGeneratorMock
+            .Setup(x => x.Generate())
+            .Returns(ProductId);
+
+        Guid productId = await _handler.Handle(_request, CancellationToken.None);
 
         _productRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Product>()), Times.Once());
-        products.Should().AllBeEquivalentTo(expectedInsertedProduct);
+        productDb.Should().BeEquivalentTo(expectedInsertedProduct);
         productId.Should().Be(ProductId);
 
     }

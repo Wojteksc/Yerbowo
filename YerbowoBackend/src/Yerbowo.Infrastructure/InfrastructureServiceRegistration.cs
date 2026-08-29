@@ -1,3 +1,5 @@
+using Yerbowo.Infrastructure.Ids;
+
 namespace Yerbowo.Infrastructure;
 
 [ExcludeFromCodeCoverage]
@@ -15,6 +17,7 @@ public static class InfrastructureServiceRegistration
         services.AddDalServices(configuration);
         services.AddAuthenticationServices(configuration);
 
+        services.AddSingleton<IIdGenerator, SequentialGuidGenerator>();
         services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
         services.AddSingleton<IPasswordManager, PasswordManager>();
     }

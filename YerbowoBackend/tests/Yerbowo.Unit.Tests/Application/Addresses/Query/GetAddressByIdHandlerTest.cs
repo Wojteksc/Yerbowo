@@ -5,7 +5,8 @@ public class GetAddressByIdHandlerTest
     private readonly Mock<IAddressRepository> _addressRepositoryMock;
     private readonly GetAddressByIdHandler _handler;
 
-    const int AddressId = 1;
+    Guid AddressId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+    Guid UserId = Guid.Parse("10000000-0000-0000-0000-000000000002");
 
     public GetAddressByIdHandlerTest()
     {
@@ -19,16 +20,16 @@ public class GetAddressByIdHandlerTest
     [Fact]
     public async Task Should_ReturnAddressCorrectly()
     {
-        var address = new Address(1, "aliasTest", "firstNameTest", "lastNameTest",
+        var address = new Address(AddressId, UserId, "aliasTest", "firstNameTest", "lastNameTest",
             "streetTest", "buildingNumberTest", "apartmentNumberTest", "placeTest",
             "postCodeTest", "phoneTest", "emailTest");
 
-        var addressQuery = new GetAddressByIdQuery(1);
+        var addressQuery = new GetAddressByIdQuery(AddressId);
 
         var addressDetailsDto = new AddressDetailsDto()
         {
             Id = AddressId,
-            UserId = 1,
+            UserId = UserId,
             Alias = "aliasTest",
             FirstName = "firstNameTest",
             LastName = "lastNameTest",
@@ -40,7 +41,6 @@ public class GetAddressByIdHandlerTest
             Phone = "phoneTest",
             Email = "emailTest"
         };
-        typeof(Address).GetProperty(nameof(Address.Id)).SetValue(address, AddressId, null);
 
         _addressRepositoryMock
             .Setup(x => x.GetAsync(addressQuery.Id))

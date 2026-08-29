@@ -17,7 +17,9 @@ public class User : AgregateRoot
 
     private User() { }
 
-    public User(string firstName, 
+    public User(
+        Guid id,
+        string firstName, 
         string lastName, 
         string email,
         string role = "user",
@@ -26,10 +28,12 @@ public class User : AgregateRoot
         string provider = null)
     {
 
+        Against.Default(id, nameof(id));
         Against.NullOrEmpty(firstName, nameof(firstName));
         Against.NullOrEmpty(lastName, nameof(lastName));
         Against.NullOrEmpty(email, nameof(email));
 
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

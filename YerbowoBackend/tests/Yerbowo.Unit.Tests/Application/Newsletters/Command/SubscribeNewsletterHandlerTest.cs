@@ -9,6 +9,8 @@ public class SubscribeNewsletterHandlerTest
 
     private IStringLocalizer<SharedResource> _localizer;
 
+    Guid NewsletterId = Guid.Parse("00000000-0000-0000-0000-000000000001");
+
     public SubscribeNewsletterHandlerTest()
 	{
         _newsletterRepositoryMock = new();
@@ -19,17 +21,17 @@ public class SubscribeNewsletterHandlerTest
 			_newsletterRepositoryMock.Object,
             _localizer);
 
-		_newsletter = Newsletter.Create("test@test.com", "token");
+		_newsletter = Newsletter.Create(NewsletterId, "test@test.com", "token");
     }
 
     [Fact]
     public async Task Should_SubscribeNewsletter()
 	{
-		var newsletters = new List<Newsletter>();
+		Newsletter newsletter = null;
 
         var request = new SubscribeNewsletterCommand("test@test.com", "token");
 
-        var expectedNewsletter = Newsletter.Create("test@test.com", "token");
+        var expectedNewsletter = Newsletter.Create(NewsletterId, "test@test.com", "token");
 		expectedNewsletter.Subscribe();
 
 		_newsletterRepositoryMock
@@ -38,17 +40,17 @@ public class SubscribeNewsletterHandlerTest
 
 		_newsletterRepositoryMock
 			.Setup(x => x.UpdateAsync(It.IsAny<Newsletter>()))
-			.Callback<Newsletter>(n => newsletters.Add(n));
+			.Callback<Newsletter>(n => newsletter = n);
 
 		await _handler.Handle(request, default);
 
 		_newsletterRepositoryMock.Verify(x => x.GetAsync(request.Email), Times.Once());
-		_newsletterRepositoryMock.Verify(x => x.UpdateAsync(newsletters.First()), Times.Once());
-        newsletters.Should().AllBeEquivalentTo(expectedNewsletter, 
+		_newsletterRepositoryMock.Verify(x => x.UpdateAsync(newsletter), Times.Once());
+        newsletter.Should().BeEquivalentTo(expectedNewsletter, 
 			options => options
 			.Excluding(x => x.VerifiedAt));
 
-		newsletters.First().Should().NotBeNull();
+		newsletter.Should().NotBeNull();
     }
 
     [Theory]

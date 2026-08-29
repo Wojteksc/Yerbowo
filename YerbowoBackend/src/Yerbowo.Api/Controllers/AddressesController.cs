@@ -7,7 +7,7 @@ public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerB
 {
     [HttpGet("{id}", Name = nameof(GetAddress))]
     [UnathorizedFilter]
-    public async Task<ActionResult<AddressDetailsDto>> GetAddress(int userId, int id)
+    public async Task<ActionResult<AddressDetailsDto>> GetAddress(Guid userId, Guid id)
     {
         var address = await dispatcher.ExecuteQuery(new GetAddressByIdQuery(id));
         return Ok(address);
@@ -15,7 +15,7 @@ public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerB
 
     [HttpGet]
     [UnathorizedFilter]
-    public async Task<ActionResult<AddressDto>> GetAddresses(int userId)
+    public async Task<ActionResult<AddressDto>> GetAddresses(Guid userId)
     {
         var addresses = await dispatcher.ExecuteQuery(new GetAddressesByUserIdQuery(userId));
         return Ok(addresses);
@@ -23,9 +23,9 @@ public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerB
 
     [HttpPost]
     [UnathorizedFilter]
-    public async Task<ActionResult<int>> Create(int userId, CreateAddressCommand command)
+    public async Task<ActionResult<Guid>> Create(Guid userId, CreateAddressCommand command)
     { 
-        int addressId = await dispatcher.ExecuteCommand(command);
+        Guid addressId = await dispatcher.ExecuteCommand(command);
 
         return CreatedAtRoute(nameof(GetAddress), new { userId, id = addressId }, addressId);
     }
@@ -33,7 +33,7 @@ public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerB
     [HttpPut("{id}")]
     [UnathorizedFilter]
     [BadRequestFilter]
-    public async Task<ActionResult> Update(int userId, int id, ChangeAddressCommand command)
+    public async Task<ActionResult> Update(Guid userId, Guid id, ChangeAddressCommand command)
     {
         await dispatcher.ExecuteCommand(command);
 
@@ -42,7 +42,7 @@ public class AddressesController(IRequestDispatcher dispatcher) : ApiControllerB
 
     [HttpDelete("{id}")]
     [UnathorizedFilter]
-    public async Task<ActionResult> Delete(int userId, int id)
+    public async Task<ActionResult> Delete(Guid userId, Guid id)
     {
         await dispatcher.ExecuteCommand(new RemoveAddressCommand(id));
 

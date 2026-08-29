@@ -8,15 +8,19 @@ public class Newsletter : AgregateRoot
     
     protected Newsletter() { }
 
-    private Newsletter(string email, string verificationToken)
+    private Newsletter(Guid id, string email, string verificationToken)
     {
-        SetEmail(email);
-        SetVerificationToken(verificationToken);
+        Against.Default(id, nameof(id));
+        Against.NullOrEmpty(email, nameof(email));
+        
+        Id = id;
+        Email = email;
+        SetToken(verificationToken);
     }
 
-    public static Newsletter Create(string email, string verificationToken)
+    public static Newsletter Create(Guid id, string email, string verificationToken)
     {
-        return new Newsletter(email, verificationToken);
+        return new Newsletter(id, email, verificationToken);
     }
 
     public void Invite()
@@ -41,17 +45,9 @@ public class Newsletter : AgregateRoot
         return VerifiedAt != null;
     }
 
-    private void SetEmail(string email)
+    public void SetToken(string token)
     {
-        Against.NullOrEmpty(email, nameof(email));
-
-        Email = email;
-    }
-
-    private void SetVerificationToken(string verificationToken)
-    {
-        Against.NullOrEmpty(verificationToken, nameof(verificationToken));
-
-        VerificationToken = verificationToken;
+        Against.NullOrEmpty(token, nameof(token));
+        VerificationToken = token;
     }
 }

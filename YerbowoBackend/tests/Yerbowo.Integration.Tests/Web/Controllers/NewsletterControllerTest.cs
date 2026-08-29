@@ -1,15 +1,61 @@
 ﻿namespace Yerbowo.Integration.Tests.Web.Controllers;
 
-public class NewsletterControllerTest : ApiTestBase
+public class NewsletterControllerTest(WebApplicationFactory<Startup> factory) : ApiTestBase(factory)
 {
-    private readonly HttpClient _httpClient;
-    private readonly IServiceScopeFactory _scope;
-
-    public NewsletterControllerTest(WebApplicationFactory<Startup> factory) : base(factory)
+    [Fact]
+    public async Task SavingChanges_Should_Insert_Outbox_Message_For_Domain_Event()
     {
-        _scope = WebApplicationFactory.Services.GetRequiredService<IServiceScopeFactory>();
-        _httpClient = CreateClient();
+        string email = $"outbox-{Guid.NewGuid()}@test.com";
+
+        var command = new InviteNewsletterCommand
+        {
+            Email = email
+        };
+
+        await _httpClient.PostAsync(
+            "api/newsletter/invite",
+            command);
+
+        await using var scope = _scope.CreateAsyncScope();
+
+        var context = scope.ServiceProvider
+            .GetRequiredService<YerbowoContext>();
+
+        var outboxMessages = await context.OutboxMessages
+            .ToListAsync();
+
+        outboxMessages.Should().HaveCount(1);
+
+        outboxMessages.Single().Type
+            .Should().Be(nameof(NewsletterInvitedDomainEvent));
     }
+
+[Fact]
+public async Task Invite_Should_Refresh_Verification_Token_When_Newsletter_Already_Exists()
+{
+    string email = $"invite-existing-{Guid.NewGuid()}@test.com";
+
+    await InviteNewsletterScenario(email);
+
+    await using var scope = _scope.CreateAsyncScope();
+
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<YerbowoContext>();
+
+    string firstToken = (await dbContext.Newsletters
+        .SingleAsync(x => x.Email == email))
+        .VerificationToken;
+
+    await InviteNewsletterScenario(email);
+
+    dbContext.ChangeTracker.Clear();
+
+    string secondToken = (await dbContext.Newsletters
+        .SingleAsync(x => x.Email == email))
+        .VerificationToken;
+
+    secondToken.Should().NotBe(firstToken);
+}
 
     [Fact]
     public async Task Resubscribe_Should_Work()
@@ -70,14 +116,14 @@ public class NewsletterControllerTest : ApiTestBase
     {
         await using var scope = _scope.CreateAsyncScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<YerbowoContext>();
-        return dbContext.OutboxMessages.ToList();
+        return await dbContext.OutboxMessages.ToListAsync();
     }
 
     private async Task<bool> IsNewsletterSubsribed(string email) => (await GetNewsletter(email)).IsSubscribed();
 
     private async Task<Newsletter> GetNewsletter(string email)
     {
-        using var scope = _scope.CreateScope();
+        await using var scope = _scope.CreateAsyncScope();
 
         var newsletterRepository = scope.ServiceProvider.GetRequiredService<INewsletterRepository>();
 
